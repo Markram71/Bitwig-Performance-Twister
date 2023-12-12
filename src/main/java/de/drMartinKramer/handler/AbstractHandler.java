@@ -105,9 +105,12 @@ public class AbstractHandler {
 
     /**
      * Here we handle incoming Midi from the MFT Controller. This abstract method 
-     * should be called to handle long clicks, i.e. when 
-     * @param msg
-     * @return
+     * should be called to handle long clicks, i.e. when a button is clicked and hold for a specified
+     * time in order to trigger a second action with this button.
+     * We will also check if the button is clicked and turned at the same time. 
+     * The concrete handler implementation are freed from this task. 
+     * @param msg the incoming mdid message from the MFT
+     * @return true if we were able to handle the message, false if not
      */
     public boolean handleMidi (ShortMidiMessage msg){
         //first check for a downclick (which is the case when data2 is 127)
