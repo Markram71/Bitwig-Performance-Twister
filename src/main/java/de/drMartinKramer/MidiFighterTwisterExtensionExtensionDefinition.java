@@ -1,3 +1,22 @@
+/*
+ * Copyright 2023 Dr. Martin Kramer
+ *
+ * This file is part of the Extension "Bitwig Performance Twister".
+ *
+ * Bitwig Performance Twister (BPT) is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or any later version.
+ *
+ * I have written Bitwig Performance Twister for my own use and hope that it can be of some value for you. 
+ * Nevertheless, BPT does come WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with Twister
+ * Sister. If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+
 package de.drMartinKramer;
 import java.util.UUID;
 
@@ -29,7 +48,7 @@ public class MidiFighterTwisterExtensionExtensionDefinition extends ControllerEx
    @Override
    public String getVersion()
    {
-      return "0.2";
+      return "0.3";
    }
 
    @Override
@@ -47,7 +66,7 @@ public class MidiFighterTwisterExtensionExtensionDefinition extends ControllerEx
    @Override
    public String getHardwareModel()
    {
-      return "Midi Fighter Twister (Java)";
+      return "Midi Fighter Twister";
    }
 
    @Override

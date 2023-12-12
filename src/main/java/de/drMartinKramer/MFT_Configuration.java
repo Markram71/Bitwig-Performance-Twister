@@ -1,6 +1,23 @@
+/*
+ * Copyright 2023 Dr. Martin Kramer
+ *
+ * This file is part of the Extension "Bitwig Performance Twister".
+ *
+ * Bitwig Performance Twister (BPT) is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or any later version.
+ *
+ * I have written Bitwig Performance Twister for my own use and hope that it can be of some value for you. 
+ * Nevertheless, BPT does come WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with Twister
+ * Sister. If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+
 package de.drMartinKramer;
-
-
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.Preferences;
@@ -74,7 +91,7 @@ public class MFT_Configuration {
         MFT_Configuration.mixerLongButtonSetting = preferences.getEnumSetting("Long Click Action", "Mixer", mixerLongButtonClickActions, mixerLongButtonClickActions[0]);
         
         //Channel Strip Configurations
-        MFT_Configuration.channelStripEncoder4Setting = preferences.getEnumSetting("Channel strip Encoder 4 function", "Channel Strip", channelStripEncoder4SettingStrings, channelStripEncoder4SettingStrings[0]);
+        MFT_Configuration.channelStripEncoder4Setting = preferences.getEnumSetting("Channel strip Encoder #4 function", "Channel Strip", channelStripEncoder4SettingStrings, channelStripEncoder4SettingStrings[0]);
     }  
 
     public static boolean isMixerLongButtonActionSolo(){

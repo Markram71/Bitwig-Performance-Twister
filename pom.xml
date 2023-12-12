@@ -6,7 +6,7 @@
 	<artifactId>MidiFighterTwisterExtension</artifactId>
 	<packaging>jar</packaging>
 	<name>Midi Fighter Twister</name>
-	<version>0.2</version>
+	<version>0.3</version>
 	
 	<repositories>
        <repository>
