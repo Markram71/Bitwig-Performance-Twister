@@ -243,7 +243,7 @@ public class DeviceHandler extends AbstractHandler
 					//this.host.println("Encoder 9 clicked");	                
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_10:
-	            	//this.host.println("Encoder 10 clicked");	                
+	            	//this.host.println("Encoder 10 clicked");	                 
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_11:
 	            	//this.host.println("Encoder 11 clicked");	                
