@@ -2,3 +2,4 @@
 /${bitwig.extension.directory}
 /target
 /.classpath
+/.vscode
