@@ -1,1 +1,4 @@
 .DS_Store
+/${bitwig.extension.directory}
+/target
+/.classpath
