@@ -7,21 +7,14 @@ With this extension you will be able to use the midi controller
 ## Table of Contents <!-- omit in toc -->
 
 -[Introduction](#introduction)
-
 -[Overview of available features](#features)
-
 -[Installation](#installation)
-
 -[Implemented Banks](#banks)
-
     - Bank 1: Tracks and Mixer
-
 -[Installation]
-
     -[Setup of the Midi Fighter Twister](#mft-setup)
-
     -[Setup in Bitwig](#bitwig-setup)
-    
+
 
 ## Introduction
 
