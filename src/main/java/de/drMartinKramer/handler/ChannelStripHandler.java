@@ -20,12 +20,12 @@ package de.drMartinKramer.handler;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.RemoteControlsPage;
-import com.bitwig.extension.api.util.midi.ShortMidiMessage;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.MasterTrack;
 
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
+import de.drMartinKramer.support.MFT_MidiMessage;
 
 public class ChannelStripHandler extends AbstractHandler
 {
@@ -221,7 +221,7 @@ public class ChannelStripHandler extends AbstractHandler
 		setEncoderColor(MFT_Hardware.MFT_BANK2_BUTTON_04, isFillModeActive ? 127 : 0);
 	}
 	
-	public boolean handleMidi (ShortMidiMessage msg)
+	public boolean handleMidi (MFT_MidiMessage msg)
 	{
 		super.handleMidi(msg); //check for long clicks
 		//first the buttons
@@ -233,7 +233,7 @@ public class ChannelStripHandler extends AbstractHandler
 	        {
 	            
 	            case MFT_Hardware.MFT_BANK2_BUTTON_01:	    
-					if(isLongClicked()){ //pin on long clicks
+					if(msg.isLongClick()){ //pin on long clicks
 						this.isPinned = !this.isPinned; //let's change the pinned status and also tell Bitwig about it...
 	                	this.cursorTrack.isPinned().set(this.isPinned);
 					} else {

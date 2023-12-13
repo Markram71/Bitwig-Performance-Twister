@@ -19,13 +19,12 @@
 package de.drMartinKramer.handler;
 
 
-import com.bitwig.extension.api.util.midi.ShortMidiMessage;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.MidiOut;
 import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Transport;
 
-import de.drMartinKramer.MFT_Configuration;
+import de.drMartinKramer.support.MFT_MidiMessage;
 
 public class AbstractHandler {
 
@@ -33,11 +32,7 @@ public class AbstractHandler {
     protected Transport transport = null; 
     private MidiOut outPort = null;
     protected Project project = null; //get access to the project in Bitwig
-
-    //the following variables are used to detect a long click on an encoder
-    private boolean longClicked = false; //store if the last click was a long click
-    private int lastEncoder = -1; //which encoder was part of the last click
-    private long downClickTime = -1; //store the time when the last click happened
+    
     
     /**
      * Constructor. Takes the Bitwig 
@@ -47,7 +42,7 @@ public class AbstractHandler {
         this.host = host;
         this.transport = host.createTransport();
         this.outPort = host.getMidiOutPort(0);
-        this.project = host.getProject(); 
+        this.project = host.getProject();         
     }
 
     /**
@@ -102,51 +97,17 @@ public class AbstractHandler {
         sendMidi(0xB0, encoder, value);
     }
 
+
+
     /**
-     * Here we handle incoming Midi from the MFT Controller. This abstract method 
-     * should be called to handle long clicks, i.e. when a button is clicked and hold for a specified
-     * time in order to trigger a second action with this button.
-     * We will also check if the button is clicked and turned at the same time. 
-     * The concrete handler implementation are freed from this task. 
-     * @param msg the incoming mdid message from the MFT
-     * @return true if we were able to handle the message, false if not
+     * Handle incoming midi message from the MFT
+     * @param msg
+     * @return
      */
-    public boolean handleMidi (ShortMidiMessage msg){
-        //first check for a downclick (which is the case when data2 is 127)
-        if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==127){
-            lastEncoder = msg.getData1(); //store the number of the encoder has just been clicked
-            downClickTime = System.currentTimeMillis(); //record when the click happened
-        }else if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0){
-            //now check for the upclick (which is the case when data2 is 0)
-            if (lastEncoder == msg.getData1()){
-                //we have a click on the same encoder as before
-                long duration = System.currentTimeMillis() - downClickTime;
-                if(duration > MFT_Configuration.getGlobalLongClickMillis()) longClicked = true; //we have a long click
-                else longClicked = false;
-            }else{
-                //we have a click on a different encoder, so let's reset the last encoder
-                lastEncoder = -1; //reset the last encoder
-                longClicked = false;   
-                downClickTime = -1;             
-            }
-        }        
+    public boolean handleMidi (MFT_MidiMessage msg){
         return false;
     }
 
-    /**
-     * Has the last click on an encoder been a long click or not
-     * @return
-     */
-    public boolean isLongClicked(){
-        return longClicked;
-    }
-    /**
-     * Get the id of the last controller which has been clicked
-     * @return ID of the last encoder
-     */
-    public int getLastEncoder(){
-        return lastEncoder;
-    }
     /**
      * Convienince method to send a global command to the MFT. 
      * @param encoderID which encoder should be effected

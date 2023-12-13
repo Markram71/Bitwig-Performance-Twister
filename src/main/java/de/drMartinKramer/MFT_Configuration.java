@@ -33,6 +33,8 @@ public class MFT_Configuration {
 
     private static ControllerHost host = null;
     private static Preferences preferences = null;
+
+
     
 
     //GLOBAL CONFIGURATION -----------------------------------------------------
@@ -119,5 +121,10 @@ public class MFT_Configuration {
     }
     public static boolean isChannelStripEncoder4_CueVolume(){
         return MFT_Configuration.channelStripEncoder4Setting.get().equals(CHANNEL_STRIP_ENCODER_4_CUE_VOLUME);
+    }
+
+
+    public static void println(String msg){
+        host.println(msg);
     }
 }

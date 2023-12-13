@@ -28,6 +28,8 @@ import de.drMartinKramer.handler.BankHandler;
 import de.drMartinKramer.handler.ChannelStripHandler;
 import de.drMartinKramer.handler.DeviceHandler;
 import de.drMartinKramer.handler.TrackHandler;
+import de.drMartinKramer.support.EncoderStateMap;
+import de.drMartinKramer.support.MFT_MidiMessage;
 
 
 public class MidiFighterTwisterExtensionExtension extends ControllerExtension
@@ -39,12 +41,15 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
    private DeviceHandler deviceHandler = null; // Bank 3
 	private MidiFighterTwisterExtensionExtensionDefinition definition = null;
    private MFT_Configuration configuration = null;
+   private EncoderStateMap encoderStateMap = null; //a hashmap that stores the current state of the encoders  
+
 	
    protected MidiFighterTwisterExtensionExtension(final MidiFighterTwisterExtensionExtensionDefinition definition, final ControllerHost host)
    {
       super(definition, host);
       this.definition = definition;
       this.host = host; 
+      this.encoderStateMap = new EncoderStateMap();
    }
 
    /**
@@ -83,15 +88,38 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
       // currently nothing to do here.
    }
 
+   private MFT_MidiMessage parseMidiMessage(ShortMidiMessage msg) {
+      MFT_MidiMessage mftMessage = new MFT_MidiMessage(msg); 
+      if(mftMessage.isButtonClickMessage()){ //button click message
+         if(mftMessage.getData2()==127){
+            this.encoderStateMap.encoderClickDown(mftMessage.getEncoderID()); //click down
+         }
+         else if(mftMessage.getData2()==0) //this is click up
+         {
+            if(encoderStateMap.isLongClick(mftMessage.getEncoderID())) mftMessage.setLongClick(true); //button up
+            else mftMessage.setLongClick(false); 
+            this.encoderStateMap.encoderClickUp(mftMessage.getEncoderID()); //button up
+         }
+      } else if(mftMessage.isEncoderTurnkMessage()){
+         if(encoderStateMap.isEncoderCurrentlyClickedDown(mftMessage.getEncoderID())) {
+            mftMessage.setButtonCurrentlyDown(true);
+            this.encoderStateMap.resetLongClick(mftMessage.getEncoderID());            
+         }
+         else mftMessage.setButtonCurrentlyDown(false);
+      }
+      return mftMessage;
+   }
+
    /** Called when we receive short MIDI message on port 0. */
    private void onMidi0(ShortMidiMessage msg) 
    {
 	   
 	   try {
-		   if(bankHandler.handleMidi(msg)) return;  //let's first check if a bank has changed		   
-		   if(trackHandler.handleMidi(msg)) return;
-		   if(channelStripHandler.handleMidi(msg)) return;	
-         if(deviceHandler.handleMidi(msg)) return;	   		
+         MFT_MidiMessage mftMessage = parseMidiMessage(msg);
+		   if(bankHandler.handleMidi(mftMessage)) return;  //let's first check if a bank has changed		   
+		   if(trackHandler.handleMidi(mftMessage)) return;
+		   if(channelStripHandler.handleMidi(mftMessage)) return;	
+         if(deviceHandler.handleMidi(mftMessage)) return;	   		
 		   
 	   }catch(Exception e) {
 		   host.errorln("Something went wrong after the MFT sent a Midi message. The script could not handle this message correctly. ");

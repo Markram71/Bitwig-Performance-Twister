@@ -20,12 +20,12 @@
 package de.drMartinKramer.handler;
 
 import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.api.util.midi.ShortMidiMessage;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
+import de.drMartinKramer.support.MFT_MidiMessage;
 
 
 public class TrackHandler extends AbstractHandler
@@ -86,26 +86,30 @@ public class TrackHandler extends AbstractHandler
      * @param track which track is affected
      * @param msg the incoming midi message from the MFT
      */
-	private void updateMFT_Volume (Track track, ShortMidiMessage msg)
+	private void updateMFT_Volume (Track track, MFT_MidiMessage msg)
 	{
-	    track.volume().inc (msg.getData2()-64, 128); 
-	    updateDelay++;
-	    if(updateDelay > 20 && MFT_Configuration.mixerMakeVisible()){ //only every 20th time and only if we should update the view 
-	    	track.makeVisibleInArranger();
-	        track.makeVisibleInMixer();
-	        updateDelay=0;
-	    }		
+	    if(!msg.isButtonCurrentlyDown()){ //the button is currently not pressed
+			track.volume().inc (msg.getData2()-64, 128); 
+			updateDelay++;
+			if(updateDelay > 20 && MFT_Configuration.mixerMakeVisible()){ //only every 20th time and only if we should update the view 
+				track.makeVisibleInArranger();
+				track.makeVisibleInMixer();
+				updateDelay=0;
+			}	
+		}else{
+			track.pan().inc(msg.getData2()-64, 128);
+		}
 	}
 	
-/**
+	/**
      * Method is called as a response to an encoder value change on the MFT. We update Bitwig by either increasing of decreasing its current value
      * @param track which track is affected
      * @param msg the incoming midi message from the MFT
      */
-	private void clickedOnEncoder (int index)
+	private void clickedOnEncoder (int index, MFT_MidiMessage msg)
 	{
 	    Track myNewTrack = this.trackBank.getItemAt (index);
-	    if(isLongClicked()){
+	    if(msg.isLongClick()){
 			if(MFT_Configuration.isMixerLongButtonActionArm())
 				myNewTrack.arm().toggle();
 			else if(MFT_Configuration.isMixerLongButtonActionMute())
@@ -122,7 +126,7 @@ public class TrackHandler extends AbstractHandler
 		}
 	}
 
-	public boolean handleMidi (ShortMidiMessage msg)
+	public boolean handleMidi (MFT_MidiMessage msg)
 	{   
 		super.handleMidi(msg);//we first need to check for long clicks
 		//check for CC message on channel 2 (which is here 1 and button clicked which is indicated by value (data2) = 127)
@@ -133,52 +137,52 @@ public class TrackHandler extends AbstractHandler
 	        {
 	            
 	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-	                clickedOnEncoder(0);	                
+	                clickedOnEncoder(0, msg);	                
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_02:
-	            	clickedOnEncoder(1);
+	            	clickedOnEncoder(1, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_03:
-	            	clickedOnEncoder(2);
+	            	clickedOnEncoder(2, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_04:
-	            	clickedOnEncoder(3);	                
+	            	clickedOnEncoder(3, msg);	                
 	                return true;     
 	            case MFT_Hardware.MFT_BANK1_BUTTON_05:
-	            	clickedOnEncoder(4);	                
+	            	clickedOnEncoder(4, msg);	                
 	                return true;   
 	            case MFT_Hardware.MFT_BANK1_BUTTON_06:
-	            	clickedOnEncoder(5);                
+	            	clickedOnEncoder(5, msg);                
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_07:
-	            	clickedOnEncoder(6);                
+	            	clickedOnEncoder(6, msg);                
 	                return true;  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_08:
-	            	clickedOnEncoder(7);	                
+	            	clickedOnEncoder(7, msg);	                
 	                return true; 
 	            case MFT_Hardware.MFT_BANK1_BUTTON_09:
-	            	clickedOnEncoder(8);
+	            	clickedOnEncoder(8, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_10:
-	            	clickedOnEncoder(9);
+	            	clickedOnEncoder(9, msg);
 	                return true;  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_11:
-	            	clickedOnEncoder(10);
+	            	clickedOnEncoder(10, msg);
 	                return true;  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_12:
-	            	clickedOnEncoder(11);
+	            	clickedOnEncoder(11, msg);
 	                return true;                                                  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_13:
-	            	clickedOnEncoder(12);
+	            	clickedOnEncoder(12, msg);
 	                return true;  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_14:
-	            	clickedOnEncoder(13);
+	            	clickedOnEncoder(13, msg);
 	                return true;  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_15:
-	            	clickedOnEncoder(14);
+	            	clickedOnEncoder(14, msg);
 	                return true;  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_16:
-	            	clickedOnEncoder(15);
+	            	clickedOnEncoder(15, msg);
 	                return true;  
 	            default:	                
 	                return false; //no midi handled here
@@ -192,7 +196,7 @@ public class TrackHandler extends AbstractHandler
 	            // We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
 	            //thus, data2-64 gives us either +1 or -1 and we can use this value to increment (or decrement) the volum
 	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-	                this.updateMFT_Volume(this.trackBank.getItemAt (0), msg);
+	                this.updateMFT_Volume(this.trackBank.getItemAt (0), msg);					
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_02:                
 	                this.updateMFT_Volume(this.trackBank.getItemAt (1), msg);

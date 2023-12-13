@@ -20,10 +20,10 @@
 package de.drMartinKramer.handler;
 
 import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.api.util.midi.ShortMidiMessage;
 
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
+import de.drMartinKramer.support.MFT_MidiMessage;
 
 /**
  * The BankHandler is used to handle the 4 different banks of the MFT. It keeps track of the current state, it sends a feedback (as a 
@@ -72,7 +72,7 @@ public class BankHandler  extends AbstractHandler
 	 * @param The incoming Midi message
 	 * @return true if the Midi message was handled by the bank handler, false if no bank midi message was sent. 
 	 */
-	public boolean handleMidi (ShortMidiMessage msg){
+	public boolean handleMidi (MFT_MidiMessage msg){
 	   //check for CC message on channel 4 (which is here 3 and left/right button clicked which is indicated by value (data2) = 127)
 	    int encoderId = msg.getData1();	 
 		if (msg.isControlChange() && msg.getChannel()==3 && msg.getData2()==127) 

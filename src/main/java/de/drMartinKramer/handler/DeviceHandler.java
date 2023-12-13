@@ -25,12 +25,9 @@ import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
-//import com.bitwig.extension.controller.api.MidiOut;
-//import com.bitwig.extension.controller.api.RemoteControlsPage;
-import com.bitwig.extension.api.util.midi.ShortMidiMessage;
-//import com.bitwig.extension.controller.api.MasterTrack;
 
 import de.drMartinKramer.hardware.*;
+import de.drMartinKramer.support.MFT_MidiMessage;
 
 public class DeviceHandler extends AbstractHandler 
 {
@@ -184,9 +181,9 @@ public class DeviceHandler extends AbstractHandler
 	}
 
 
-	public boolean handleMidi (ShortMidiMessage msg)
+	public boolean handleMidi (MFT_MidiMessage msg)
 	{
-        super.handleMidi(msg); //handle the long clicks
+        super.handleMidi(msg); 
 		
 		//first the buttons
 		//check for CC message on channel 2 (which is here 1 and button clicked which is indicated by value (data2) = 127)
@@ -200,7 +197,7 @@ public class DeviceHandler extends AbstractHandler
                 //first encoder button: toggle the device on/off
 				
 				case MFT_Hardware.MFT_BANK3_BUTTON_01:	 
-					if(isLongClicked()) { //long click -> toggle the device window open/closed
+					if(msg.isLongClick()) { //long click -> toggle the device window open/closed
 						this.cursorDevice.isEnabled().toggle();						
 					}else { //short click
 						this.cursorDevice.selectFirst();
@@ -219,7 +216,7 @@ public class DeviceHandler extends AbstractHandler
 					deviceButtonClicked = true;	            	                
 					return true;  
 				case MFT_Hardware.MFT_BANK3_BUTTON_05:
-					if(isLongClicked()) { //long click -> toggle the device window open/closed
+					if(msg.isLongClick()) { //long click -> toggle the device window open/closed
 						this.cursorDevice.isWindowOpen().toggle(); //toggle the device window open/closed
 					}else { //short click
 						myDeviceParameterPage.selectFirst(); //select the first parameter page 
