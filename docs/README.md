@@ -30,8 +30,31 @@ lorem ipsum
 ## Implemented Banks
 
 ### Bank 1 Tracks and Mixer
+This bank or mode contains a basic mixer for 16 channels in Bitwig. Every encoder of the Midi Fighter Twister is associated to one track in Bitwig. 
+
+| Encoder | Turn (Twisting)      | Click & turn | Click           | Long Click          | RGB Light                   |
+|:-------:|----------------------|--------------|-----------------|---------------------|-----------------------------|
+|1-16     |Volume of track 1-16  |tbd           |Select track 1-16|arm, mute, or solo** |color of the track in Bitwig
 
 ### Bank 2 Channel Strip
+This bank focuses on a single selected track. The first encoder is used to select a track. The other encoders are
+can be used to change parameters for this selected track. 
+
+Obviously you can use other controllers or Bitwig itself to change the selected track. The encoder in this bank 
+always control the parameters of the selected track. This is not always the desired state, i.e. you might want to 
+keep the controls fixed on a certain track. This is what the *pin functionality* is for. Bitwig has a feature to 
+pin a controller to a certain track (or device, see below). This can be done with a long click on Encoder 1. Once the 
+Midi Fighter Twister is pinned to the currently selected track, the first encoder turn green and you cannot change the selected
+track with encoder 1 any more. 
+
+| Encoder | Turn (Twisting)        | Click & turn | Click           | Long Click          | RGB Light                   |
+|:-------:|------------------------|--------------|-----------------|---------------------|-----------------------------|
+|1        |select a track          |tbd           |toggle arm       |pin the track        | green if track is selected |
+|2        |volume of selected track|tbd           |toggle solo      |n/a                  | yellow if track is soloed
+
+
+
+
 
 ### Bank 3 Device and Project-wide Remote Controls
 
