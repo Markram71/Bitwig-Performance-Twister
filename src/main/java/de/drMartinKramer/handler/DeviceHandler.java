@@ -43,7 +43,8 @@ public class DeviceHandler extends AbstractHandler
 	CursorRemoteControlsPage myDeviceParameterPage = null; //this is a page of 8 device parameters
 	int[] deviceParameterColorArray = {82,75,64,50,40,15,110,105};
 	boolean deviceButtonClicked = false;
-	boolean parameterPageButtonClicked = false; 
+	boolean parameterPageButtonClicked = false; //indicates if the use clicked on a parameter page button, i.e. we need to change the device parameter page
+	boolean projectParameterPageClicked = false; //the same for the project-wide parameter 
 	CursorRemoteControlsPage projectControlsPage = null;
 	
 	public  DeviceHandler(ControllerHost host) 
@@ -62,8 +63,9 @@ public class DeviceHandler extends AbstractHandler
 
 		//**** Access to the project remote controls */
 		this.projectControlsPage = this.project.getRootTrackGroup().createCursorRemoteControlsPage(BITWIG_SIZE_OF_PARAMTER_PAGE);
+		this.projectControlsPage.getName().markInterested();
+		this.projectControlsPage.getName().addValueObserver((name) -> reactToProjectParameterPageNameChange(name));
 		
-
 		for(int i=0; i<BITWIG_SIZE_OF_PARAMTER_PAGE; i++)
 		{
 			//* First we handle the device parameter group, i.e. the first two rows of the MFT are for the device */
@@ -167,6 +169,21 @@ public class DeviceHandler extends AbstractHandler
 		}
 	}
 
+
+	/**
+	 * Callback function that is called whenever the parameter page of a project-wide remote controls is changed (e.g. by click on the button) 
+	 * We use this callback to show a popup notification with the name of new parameter page. 
+	 * The paraemter name is not required. 
+	 * @param name the name of the new parameter page
+	 */
+	private void reactToProjectParameterPageNameChange(String name) {
+		if(this.projectParameterPageClicked){
+			parameterPageButtonClicked = false; //reset 
+			showPopupNotification("Project-wide Parameter Page: " + projectControlsPage.getName().get());
+		}
+	}
+
+
 	public boolean handleMidi (ShortMidiMessage msg)
 	{
         super.handleMidi(msg); //handle the long clicks
@@ -235,16 +252,20 @@ public class DeviceHandler extends AbstractHandler
 	            	this.host.println("Encoder 12 clicked");	                
                     return true;                                                
 	            case MFT_Hardware.MFT_BANK3_BUTTON_13:
-	            	this.host.println("Encoder 13 clicked");	                
+	            	projectControlsPage.selectFirst();					       
+                    this.projectParameterPageClicked = true;	                
                     return true; 
 	            case MFT_Hardware.MFT_BANK3_BUTTON_14:
-	            	this.host.println("Encoder 14 clicked");	                
+	            	projectControlsPage.selectPreviousPage(false);				       
+                    this.projectParameterPageClicked = true;                
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_15:
-	            	this.host.println("Encoder 15 clicked");	                
+	            	projectControlsPage.selectNextPage(false);				       
+                    this.projectParameterPageClicked = true;            	                
                     return true; 
 	            case MFT_Hardware.MFT_BANK3_BUTTON_16:
-	            	this.host.println("Encoder 16 clicked");	                
+	            	projectControlsPage.selectLast();					       
+                    this.projectParameterPageClicked = true;	                
                     return true;  
 	            default:
 	                return false;
