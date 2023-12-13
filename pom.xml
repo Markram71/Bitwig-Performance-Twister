@@ -3,11 +3,19 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.drMartinKramer</groupId>
-	<artifactId>MidiFighterTwisterExtension</artifactId>
+	<artifactId>BitwigPerformanceTwister</artifactId>
 	<packaging>jar</packaging>
-	<name>Midi Fighter Twister</name>
+	<name>Bitwig Performance Twister</name>
 	<version>0.3</version>
 	
+	<licenses>
+			<license>
+				<name>LGPL-3-or-later</name>
+				<url>https://www.gnu.org/licenses/</url>
+				<distribution>repo</distribution>
+			</license>
+		</licenses>
+
 	<repositories>
        <repository>
          <id>bitwig</id>
@@ -29,12 +37,11 @@
 		   <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-compiler-plugin</artifactId>
-               <version>3.8.0</version>
+               <version>3.11.0</version>
                <configuration>
-                  <optimize>true</optimize>
                   <fork>true</fork>
-                  <source>1.8</source>
-                  <target>1.8</target>
+                  <source>17</source>
+                  <target>17</target>
                   <encoding>UTF-8</encoding>
                   <maxmem>1024m</maxmem>
                </configuration>
@@ -53,11 +60,11 @@
 						</goals>
 						<configuration>
 							<sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-							<destinationFile>/Users/mkramer/Documents/Bitwig Studio/Extensions/MidiFighterTwisterExtension.bwextension</destinationFile>
+							<destinationFile>/Users/mkramer/Documents/Bitwig Studio/Extensions/BitwigPerformanceTwister.bwextension</destinationFile>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>			
 		</plugins>
 	</build>
 

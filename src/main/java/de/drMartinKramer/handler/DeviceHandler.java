@@ -35,6 +35,7 @@ import de.drMartinKramer.hardware.*;
 public class DeviceHandler extends AbstractHandler 
 {
 	
+	final public static int BITWIG_SIZE_OF_PARAMTER_PAGE = 8; //the number of parameters that are shown on a parameter page in Bitwig
 	private DeviceBank deviceBank = null; //A window to look over the device chain
 	private CursorTrack cursorTrack = null; //the track that is currently selected
     //private MasterTrack masterTrack= null;
@@ -43,6 +44,7 @@ public class DeviceHandler extends AbstractHandler
 	int[] deviceParameterColorArray = {82,75,64,50,40,15,110,105};
 	boolean deviceButtonClicked = false;
 	boolean parameterPageButtonClicked = false; 
+	CursorRemoteControlsPage projectControlsPage = null;
 	
 	public  DeviceHandler(ControllerHost host) 
 	{
@@ -58,8 +60,13 @@ public class DeviceHandler extends AbstractHandler
 		myDeviceParameterPage.getName().markInterested();
 		myDeviceParameterPage.getName().addValueObserver((name) -> reactToParameterPageNameChange(name));
 
-		for(int i=0; i<MFT_Hardware.MFT_No_ENCODER; i++)
+		//**** Access to the project remote controls */
+		this.projectControlsPage = this.project.getRootTrackGroup().createCursorRemoteControlsPage(BITWIG_SIZE_OF_PARAMTER_PAGE);
+		
+
+		for(int i=0; i<BITWIG_SIZE_OF_PARAMTER_PAGE; i++)
 		{
+			//* First we handle the device parameter group, i.e. the first two rows of the MFT are for the device */
 			//set the indication that we are interested in the value of the parameter, and add an observer with a callback function
 			final int myParameter = i; //"final" is very important otherwise the callback is always called for the last encoder 
 			myDeviceParameterPage.getParameter(myParameter).value().markInterested();
@@ -69,7 +76,17 @@ public class DeviceHandler extends AbstractHandler
 			//register callback for the existence of a device parameter
 			myDeviceParameterPage.getParameter(myParameter).exists().addValueObserver((exists)->reactToDeviceParameterExists(myParameter, exists));
 
+			/** Now we do the same for the project-wide project controls. That is for row 3 and 4 */
+			final int myProjectParameter = i;
+			projectControlsPage.getParameter(myProjectParameter).value().markInterested();
+			projectControlsPage.getParameter(myProjectParameter).setIndication (true);
+			//register the callback: 
+			projectControlsPage.getParameter(i).value().addValueObserver((newValue)->reactToProjectParameterChange(myParameter, newValue));
+			//register callback for the existence of a device parameter
+			projectControlsPage.getParameter(myParameter).exists().addValueObserver((exists)->reactToProjectParameterExists(myParameter, exists));
 		}
+
+		
 		println("Device Handler created");
     }//end of constructor
 	
@@ -96,6 +113,33 @@ public class DeviceHandler extends AbstractHandler
 			setEncoderColor(MFT_Hardware.MFT_BANK3_BUTTON_01+remoteIndex, exists ? newColor : 0);				
 		}
     }
+
+/**
+	 * Callback function that is called whenever a project-wide parameter change happens
+	 * @param index the index (encoder) of the project parameter that changed
+	 * @param newValue the new value of the project-wide parameter
+	 */
+	private void reactToProjectParameterChange(int index, double newValue) {
+    	updateEncoderRingValue(MFT_Hardware.MFT_BANK3_BUTTON_01+BITWIG_SIZE_OF_PARAMTER_PAGE+index, (int) Math.round(newValue*127));		
+    }
+		
+	/**
+	 * Callback function that is called to indicate if a project-wide control exists or not.  
+	 * In case when a project-wide control exists, we can light up the LED for the remote control
+	 * Otherwise we want to shut off the LED. 
+	 * @param remoteIndex the index of the project-wide parameter (from 0 to 7)
+	 * @param exists indicates if the project-wide control exists or not
+	 */
+	private void reactToProjectParameterExists(int remoteIndex, boolean exists) {
+		if(remoteIndex<8){
+
+			int newColor = deviceParameterColorArray[remoteIndex];
+			setEncoderColor(MFT_Hardware.MFT_BANK3_BUTTON_01+BITWIG_SIZE_OF_PARAMTER_PAGE+remoteIndex, exists ? newColor : 0);				
+		}
+    }
+
+
+
 	/**
 	 * Callback function that is called whenever the name of the device changes. 
 	 * We use this callback to show a popup notification with the name of the device. 
@@ -238,28 +282,28 @@ public class DeviceHandler extends AbstractHandler
                     return true;
 	            //Row 3-4 Global Remote Controls
 				case MFT_Hardware.MFT_BANK3_BUTTON_09:  
-					this.host.println("Encoder 9 moved");	 
+					projectControlsPage.getParameter(0).inc(msg.getData2()-64, 128);             	 
 					return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_10:                
-	            	this.host.println("Encoder 10 moved");	
+	            	projectControlsPage.getParameter(1).inc(msg.getData2()-64, 128); 	
 					return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_11:                
-	            	this.host.println("Encoder 11 moved");	                
+	            	projectControlsPage.getParameter(2).inc(msg.getData2()-64, 128); 	                
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_12:                
-	            	this.host.println("Encoder 12 moved");	                
+	            	projectControlsPage.getParameter(3).inc(msg.getData2()-64, 128);                 
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_13:                
-	            	this.host.println("Encoder 13 moved");	                
+	            	projectControlsPage.getParameter(4).inc(msg.getData2()-64, 128); 	                
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_14:                
-	            	this.host.println("Encoder 14 moved");	                
+	            	projectControlsPage.getParameter(5).inc(msg.getData2()-64, 128); 	                
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_15:                
-	            	this.host.println("Encoder 15 moved");	                
+	            	projectControlsPage.getParameter(6).inc(msg.getData2()-64, 128);                 
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_16:                
-	            	this.host.println("Encoder 16 moved");	                
+	            	projectControlsPage.getParameter(7).inc(msg.getData2()-64, 128);                 
                     return true;
 	            default:
 	                return false; //false = no midi handled here
