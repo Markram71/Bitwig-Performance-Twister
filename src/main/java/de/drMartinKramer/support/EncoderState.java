@@ -34,7 +34,10 @@ public class EncoderState {
     
     /** When did the user click down an encoder, 0 means it currently not clicked down */
     private long downClickTime = 0;
-    
+
+    /** Not every first turn of the encoder will reset the long click*/
+    private int turnMessageCounter = 0;
+
     /** the state if the encoder, e.g. if it's clicked down or not*/
     private boolean isCurrentlyClickedDown = false;
    
@@ -44,7 +47,8 @@ public class EncoderState {
      */
     EncoderState(int encoderID){
         this.downClickTime = System.currentTimeMillis();
-        this.isCurrentlyClickedDown = true;        
+        this.isCurrentlyClickedDown = true;  
+        this.turnMessageCounter = 0;      
     }
 
     /**
@@ -53,6 +57,7 @@ public class EncoderState {
     public void clickDown(){
         this.downClickTime = System.currentTimeMillis();
         this.isCurrentlyClickedDown = true;
+        this.turnMessageCounter = 0;
     }
 
     /**
@@ -61,6 +66,7 @@ public class EncoderState {
     public void clickUp(){
         this.isCurrentlyClickedDown = false;
         this.downClickTime = 0;
+        this.turnMessageCounter = 0;
     }
 
     public boolean isCurrentlyClickedDown(){
@@ -76,8 +82,11 @@ public class EncoderState {
         return (System.currentTimeMillis() - this.downClickTime) > MFT_Configuration.getGlobalLongClickMillis();
     } 
 
-    public void resetLongClick(){
-        this.downClickTime =0;                
+    public void resetLongClickByTurn(){
+        if(this.turnMessageCounter++>4){
+            this.downClickTime =0; 
+            this.turnMessageCounter = 0;
+        }             
     }       
     
 }

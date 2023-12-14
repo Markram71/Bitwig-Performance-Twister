@@ -89,7 +89,7 @@ public class TrackHandler extends AbstractHandler
 	private void updateMFT_Volume (Track track, MFT_MidiMessage msg)
 	{
 	    if(!msg.isButtonCurrentlyDown()){ //the button is currently not pressed
-			track.volume().inc (msg.getData2()-64, 128); 
+			track.volume().inc ((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128); 
 			updateDelay++;
 			if(updateDelay > 20 && MFT_Configuration.mixerMakeVisible()){ //only every 20th time and only if we should update the view 
 				track.makeVisibleInArranger();
@@ -97,7 +97,7 @@ public class TrackHandler extends AbstractHandler
 				updateDelay=0;
 			}	
 		}else{
-			track.pan().inc(msg.getData2()-64, 128);
+			track.pan().inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);
 		}
 	}
 	

@@ -83,12 +83,14 @@ public class EncoderStateMap {
 
     /**
      * Message is called if the encoder is turned while beeing pressed down
-     * In this case we don't have a long click any more
+     *  In this case we don't have a long click any more, but we don't swith directly, so there is 
+     * a bit of buffer to let a few turn messagees come through. 
+     * 
      * @param encoderID
      */
-    public void resetLongClick(int encoderID){
-        if (this.encoderStateMap.containsKey(encoderID)){
-            this.encoderStateMap.get(encoderID).resetLongClick();
+    public void resetLongClickByTurn(int encoderID){
+        if (this.encoderStateMap.containsKey(encoderID)){            
+            this.encoderStateMap.get(encoderID).resetLongClickByTurn();
         }        
     }
 }

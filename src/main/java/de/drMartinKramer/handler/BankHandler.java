@@ -62,7 +62,6 @@ public class BankHandler  extends AbstractHandler
 	 * @param newBank new bank to change to (0-3)
 	 */
 	private  void changeMFT_Bank(int newBank){
-		println("Change MFT Bank to " + newBank);
 		sendMFT_Global_Command( newBank, 127); // in order to set the MFT to bank 1 we need to send CC0 on channel four with velocity of 127, see MFT manual
 	}
 	
@@ -84,7 +83,6 @@ public class BankHandler  extends AbstractHandler
 		{
 			//the consecutive up click 
 			double duration = System.currentTimeMillis()-lastBankDownClickTime;
-			host.println("duration:" + duration + " --- " + MFT_Configuration.getGlobalLongClickMillis());
 			if(duration > MFT_Configuration.getGlobalLongClickMillis())
 			{
 				

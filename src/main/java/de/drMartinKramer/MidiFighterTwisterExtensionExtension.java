@@ -103,7 +103,7 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
       } else if(mftMessage.isEncoderTurnkMessage()){
          if(encoderStateMap.isEncoderCurrentlyClickedDown(mftMessage.getEncoderID())) {
             mftMessage.setButtonCurrentlyDown(true);
-            this.encoderStateMap.resetLongClick(mftMessage.getEncoderID());            
+            this.encoderStateMap.resetLongClickByTurn(mftMessage.getEncoderID());            
          }
          else mftMessage.setButtonCurrentlyDown(false);
       }
@@ -115,7 +115,9 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
    {
 	   
 	   try {
+         //an important first step is to add context to the midi message, e.g. let us know that an encoder was clicked shortly before
          MFT_MidiMessage mftMessage = parseMidiMessage(msg);
+
 		   if(bankHandler.handleMidi(mftMessage)) return;  //let's first check if a bank has changed		   
 		   if(trackHandler.handleMidi(mftMessage)) return;
 		   if(channelStripHandler.handleMidi(mftMessage)) return;	

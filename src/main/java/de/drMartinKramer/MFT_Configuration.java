@@ -42,6 +42,11 @@ public class MFT_Configuration {
     public static final double GLOBAL_LONG_CLICK_MILLIS_MAX = 2000;
     private static SettableRangedValue globalLongClickMillis  = null;
     
+    private static double GLOBAL_TURN_SPEED_UP_MAX = 10;
+    private static SettableRangedValue globalTurnFactor  = null;
+    private static SettableRangedValue globalClickDownTurnFactor  = null;
+
+
     // Configuration for the long clicks in the mixer bank
     private static SettableEnumValue mixerLongButtonSetting  = null;
     public static final String MIXER_LONG_BUTTON_ACTION_SOLO = "Solo";
@@ -86,8 +91,25 @@ public class MFT_Configuration {
         MFT_Configuration.preferences = MFT_Configuration.host.getPreferences();
         
         //Global Configurations
-        MFT_Configuration.mixerMakeVisibleSetting = preferences.getEnumSetting("Make tracks visible", "Global", mixerMakeVisibleSettingStrings, mixerMakeVisibleSettingStrings[0]);
-        MFT_Configuration.globalLongClickMillis = preferences.getNumberSetting("Long click duration in milliseconds", "Global", 0, GLOBAL_LONG_CLICK_MILLIS_MAX, 10, "ms", 500);
+        MFT_Configuration.mixerMakeVisibleSetting = preferences.getEnumSetting( "Make tracks visible", 
+                                                                                "Global", 
+                                                                                mixerMakeVisibleSettingStrings, 
+                                                                                mixerMakeVisibleSettingStrings[0]);
+        MFT_Configuration.globalLongClickMillis = preferences.getNumberSetting("Long click duration in milliseconds", 
+                                                                                "Global", 0, 
+                                                                                GLOBAL_LONG_CLICK_MILLIS_MAX, 10, 
+                                                                                "ms", 500);
+
+        MFT_Configuration.globalTurnFactor = preferences.getNumberSetting("Encoder turn speedup factor ", 
+                                                                                "Global", 0, 
+                                                                                GLOBAL_TURN_SPEED_UP_MAX, 0.1, 
+                                                                                "", 1);
+
+
+        MFT_Configuration.globalClickDownTurnFactor = preferences.getNumberSetting("Encoder turn speedup factor when clicked down", 
+                                                                                "Global", 0, 
+                                                                                GLOBAL_TURN_SPEED_UP_MAX, 0.1, 
+                                                                                "", 3);
 
         //Mixer / Track Bank Configurations
         MFT_Configuration.mixerLongButtonSetting = preferences.getEnumSetting("Long Click Action", "Mixer", mixerLongButtonClickActions, mixerLongButtonClickActions[0]);
@@ -123,7 +145,27 @@ public class MFT_Configuration {
         return MFT_Configuration.channelStripEncoder4Setting.get().equals(CHANNEL_STRIP_ENCODER_4_CUE_VOLUME);
     }
 
+    /**
+     * A factor to increase or decrease the turning speed in normal case when the encoder is not clicked down.
+     * @return a factor to multiply the turn speed. 
+     */
+    public static double getNormalTurnFactor(){
+        return MFT_Configuration.globalTurnFactor.getAsDouble() *GLOBAL_TURN_SPEED_UP_MAX;
+    }
 
+    /**
+     *  A factor to increase or decrease the turning speed when the encoder is clicked down.
+     * @return the factor by which the encoder turn is multiplied to get the actual turn value
+     */
+    public static double getClickTurnFactor(){
+        return MFT_Configuration.globalClickDownTurnFactor.getAsDouble() *GLOBAL_TURN_SPEED_UP_MAX;
+    }
+  
+
+    /**
+     * Static convinience method to print a message to the console from anywhere in the code. 
+     * @param msg Message to be printed to the Bitwig console
+     */
     public static void println(String msg){
         host.println(msg);
     }
