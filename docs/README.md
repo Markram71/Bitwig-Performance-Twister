@@ -19,6 +19,7 @@ With this extension you will be able to use the midi controller
     1. [Setup of the Midi Fighter Twister](#setup-of-the-midi-fighter-twister)
     1. [Setup in Bitwig](#setup-in-bitwig)
 
+1. [Implementation Notes](#implementation-notes)
 
 
 ## Introduction
@@ -26,6 +27,14 @@ With this extension you will be able to use the midi controller
 lorem ipsum
 
 ## Overview of the available features 
+Bitwig performance Twister offers the following features 
+
+* **Banks:** The Bitwig Performance Twister offers six different banks or modes for the 16 encoders of the midi controller. Each bank can be accessed by clicking on one of the buttons on the side.
+  The encoders for the Midi Figher Twister then behave differently
+on each bank, see further details below. You also have the possibility of a temporary bank switch. For that press on the side button for the bank you temporaririly want to switch to and hold the side button pressed. You can turn and click on the encoders of the newly selected bank. Once you release the side button, you immediately return to the previous bank. You can use this, for instance to quickly adjust the volume of a track in the mixer and directly return a device control. 
+
+* **Long clicks:** By clicking and keeping the encoder pressed down for a short time, you can get access to a secondary action for some of the encoders
+* **Click & turn:** Click down an encoder button and turn the encoder while it's pressed down. This gives access to a secondary paramter which can be controlled with this same encoder.  
 
 ## Implemented Banks
 
@@ -34,7 +43,7 @@ This bank or mode contains a basic mixer for 16 channels in Bitwig. Every encode
 
 | Encoder | Turn (Twisting)      | Click & turn | Click           | Long Click          | RGB Light                   |
 |:-------:|----------------------|--------------|-----------------|---------------------|-----------------------------|
-|1-16     |Volume of track 1-16  |tbd           |Select track 1-16|arm, mute, or solo** |color of the track in Bitwig
+|1-16     |Volume of track 1-16  |panning       |Select track 1-16|arm, mute, or solo** |color of the track in Bitwig
 
 ### Bank 2 Channel Strip
 This bank focuses on a single selected track. The first encoder is used to select a track. The other encoders are
@@ -68,24 +77,24 @@ The control depends on the setting of the controller configuration. See [Control
 
 
 ### Bank 3 Device and Project-wide Remote Controls
-| Encoder | Turn (Twisting)              | Click & turn | Click                    | Long Click          | RGB Light                      |
-|:-------:|------------------------------|--------------|--------------------------|---------------------|--------------------------------|
-|1        |device parameter 1            |tbd           |go to first device        |toggle device on/off | color on Bitwig parameter page |
-|2        |device parameter 2            |tbd           |go to previous deviece    |n/a                  | color on Bitwig parameter page |
-|3        |device parameter 3            |tbd           |go to next device         |n/a                  | color on Bitwig parameter page |
-|4        |device parameter 4            |tbd           |go to last device         |n/a                  | color on Bitwig parameter page |
-|5        |device parameter 5            |tbd           |go to first param bank    |n/a                  | color on Bitwig parameter page |
-|6        |device parameter 6            |tbd           |go to previous param bank |n/a                  | color on Bitwig parameter page |
-|7        |device parameter 7            |tbd           |go to next param bank     |n/a                  | color on Bitwig parameter page |
-|8        |device parameter 8            |tbd           |go to last param bank     |n/a                  | color on Bitwig parameter page |
-|9        |global remote control 1       |tbd           |go to first device        |toggle device on/off | color on Bitwig parameter page |
-|10       |global remote control 2       |tbd           |go to previous deviece    |n/a                  | color on Bitwig parameter page |
-|11       |global remote control 3       |tbd           |go to next device         |n/a                  | color on Bitwig parameter page |
-|12       |global remote control 4       |tbd           |go to last device         |n/a                  | color on Bitwig parameter page |
-|13       |global remote control 5       |tbd           |go to first param bank    |n/a                  | color on Bitwig parameter page |
-|14       |global remote control 6       |tbd           |go to previous param bank |n/a                  | color on Bitwig parameter page |
-|15       |global remote control 7       |tbd           |go to next param bank     |n/a                  | color on Bitwig parameter page |
-|16       |global remote control 8       |tbd           |go to last param bank     |n/a                  | color on Bitwig parameter page |
+| Encoder | Turn (Twisting)        | Click & turn | Click                    | Long Click          | RGB Light                      |
+|:-------:|------------------------|--------------|--------------------------|---------------------|--------------------------------|
+|1        |device parameter 1      |tbd           |go to first device        |toggle device on/off | color on Bitwig parameter page |
+|2        |device parameter 2      |tbd           |go to previous deviece    |n/a                  | color on Bitwig parameter page |
+|3        |device parameter 3      |tbd           |go to next device         |n/a                  | color on Bitwig parameter page |
+|4        |device parameter 4      |tbd           |go to last device         |n/a                  | color on Bitwig parameter page |
+|5        |device parameter 5      |tbd           |go to first param bank    |n/a                  | color on Bitwig parameter page |
+|6        |device parameter 6      |tbd           |go to previous param bank |n/a                  | color on Bitwig parameter page |
+|7        |device parameter 7      |tbd           |go to next param bank     |n/a                  | color on Bitwig parameter page |
+|8        |device parameter 8      |tbd           |go to last param bank     |n/a                  | color on Bitwig parameter page |
+|9        |Project remote  1       |tbd           |go to first device        |toggle device on/off | color on Bitwig parameter page |
+|10       |Project remote  2       |tbd           |go to previous deviece    |n/a                  | color on Bitwig parameter page |
+|11       |Project remote  3       |tbd           |go to next device         |n/a                  | color on Bitwig parameter page |
+|12       |Project remote  4       |tbd           |go to last device         |n/a                  | color on Bitwig parameter page |
+|13       |Project remote  5       |tbd           |go to first param bank    |n/a                  | color on Bitwig parameter page |
+|14       |Project remote  6       |tbd           |go to previous param bank |n/a                  | color on Bitwig parameter page |
+|15       |Project remote  7       |tbd           |go to next param bank     |n/a                  | color on Bitwig parameter page |
+|16       |Project remote  8       |tbd           |go to last param bank     |n/a                  | color on Bitwig parameter page |
 
 
 
@@ -102,5 +111,8 @@ The control depends on the setting of the controller configuration. See [Control
 ### Setup in Bitwig
 
 ## Controller Configuration
+
+## Implementation Notes
+how are the 4 banks of the MFT mapped to the 6 banks of the BPT...
 
 ## License
