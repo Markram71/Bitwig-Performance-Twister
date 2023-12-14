@@ -21,21 +21,28 @@ package de.drMartinKramer.support;
 
 import de.drMartinKramer.MFT_Configuration;
 
+/**
+ * Simple convinience class to store the state of our encoders
+ * This class is basically a record and it's only used by the EncoderStateMap. 
+ * The EncoderStateMap stores objects of this class in it's hashmap to manage that state of the encoders. 
+ * E.g. it's important to remember is an encoder was clicked before it's turned or not. /**
+ * The time when the down click occurred.
+ */
+
+ 
 public class EncoderState {
     
+    /** When did the user click down an encoder, 0 means it currently not clicked down */
     private long downClickTime = 0;
-    private final int encoderID;
-    private boolean isCurrentlyClickedDown = false;
-    private boolean lastClickWasLong = false;
-
     
+    /** the state if the encoder, e.g. if it's clicked down or not*/
+    private boolean isCurrentlyClickedDown = false;
+   
     /*
-     * Constructor. 
      * This constructor should beused when the encoderState is created as a response to the downclick 
      * @param encoderID the ID of the encoder
      */
     EncoderState(int encoderID){
-        this.encoderID = encoderID;
         this.downClickTime = System.currentTimeMillis();
         this.isCurrentlyClickedDown = true;        
     }
@@ -61,7 +68,7 @@ public class EncoderState {
     }   
 
     /**
-     * Returns true if the click was a long click
+     * Calculates the time between the first down click and a subsequent release of the encoder button
      * @return true if the click was a long click, false otherwise
      */
     public boolean isLongClick(){
@@ -71,10 +78,6 @@ public class EncoderState {
 
     public void resetLongClick(){
         this.downClickTime =0;                
-    }
-    
-    public int getEncoderID(){
-        return this.encoderID;
-    }   
+    }       
     
 }

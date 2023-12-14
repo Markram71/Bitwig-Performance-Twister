@@ -21,8 +21,6 @@ package de.drMartinKramer.support;
 
 import java.util.HashMap;
 
-import de.drMartinKramer.MFT_Configuration;
-
 /**
  * Simple convinience class to store the state of our encoders
  * Basically it's hashmap that stores encoder states
