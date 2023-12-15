@@ -21,6 +21,8 @@ package de.drMartinKramer.support;
 
 import com.bitwig.extension.api.util.midi.ShortMidiMessage;
 
+import de.drMartinKramer.hardware.MFT_Hardware;
+
 public class MFT_MidiMessage {
     ShortMidiMessage msg = null;  //the core midi message from the MFT
     private int encoderID = -1; //the ID of the encoder that sent the message
@@ -44,17 +46,17 @@ public class MFT_MidiMessage {
     }
 
     public boolean isButtonClickMessage(){
-        if(this.msg.isControlChange() && this.msg.getChannel() == 1) return true;
+        if(this.msg.isControlChange() && this.msg.getChannel() == MFT_Hardware.MFT_BUTTON_CLICK_MIDI_CHANNEL) return true;
         return false;
     }
 
     public boolean isEncoderTurnkMessage(){
-        if(this.msg.isControlChange() && this.msg.getChannel() == 0) return true;
+        if(this.msg.isControlChange() && this.msg.getChannel() == MFT_Hardware.MFT_ENCODER_TURN_MIDI_CHANNEL) return true;
         return false;
     }
     
     public boolean isGlobalMessage(){
-        if(this.msg.isControlChange() && this.msg.getChannel() == 3) return true;
+        if(this.msg.isControlChange() && this.msg.getChannel() == MFT_Hardware.MFT_GLOBAL_MIDI_CHANNEL) return true;
         return false;
     } 
 

@@ -25,6 +25,12 @@ public class MFT_Hardware
 
 	public static final int MFT_No_ENCODER = 16;
 	public static final int MFG_NUMBER_OF_ENCODERS = 16;
+	/** On which Midi channel does the MFT send global messages (channel 0-15) */
+	public static final int MFT_GLOBAL_MIDI_CHANNEL = 3;
+	/** On which Midi channel does the MFT send button click messages (channel 0-15) */
+	public static final int MFT_BUTTON_CLICK_MIDI_CHANNEL = 1;
+	/** On which Midi channel does the MFT send encoder turn messages (channel 0-15) */
+	public static final int MFT_ENCODER_TURN_MIDI_CHANNEL = 0;
 	//Bank1: The CC number for each of the  encoders in this bank
 	public static final int MFT_BANK1_BUTTON_01 = 0x00; 
 	public static final int MFT_BANK1_BUTTON_02 = 0x01; 

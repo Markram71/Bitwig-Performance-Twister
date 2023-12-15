@@ -110,7 +110,7 @@ public class MFT_Configuration {
                                                                                 "Global", 0, 
                                                                                 GLOBAL_TURN_SPEED_UP_MAX, 0.1, 
                                                                                 "", 3);
-
+// 
         //Mixer / Track Bank Configurations
         MFT_Configuration.mixerLongButtonSetting = preferences.getEnumSetting("Long Click Action", "Mixer", mixerLongButtonClickActions, mixerLongButtonClickActions[0]);
         
@@ -118,6 +118,10 @@ public class MFT_Configuration {
         MFT_Configuration.channelStripEncoder4Setting = preferences.getEnumSetting("Channel strip Encoder #4 function", "Channel Strip", channelStripEncoder4SettingStrings, channelStripEncoder4SettingStrings[0]);
     }  
 
+    /**
+     * Function to let us know what should happen when the user clicks a button in the mixer bank for a long time.
+     * @return true, if within the mixer bank, the long click action is set to "Solo"
+     */
     public static boolean isMixerLongButtonActionSolo(){
         return MFT_Configuration.mixerLongButtonSetting.get().equals(MIXER_LONG_BUTTON_ACTION_SOLO);
     }
