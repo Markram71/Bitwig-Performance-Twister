@@ -24,6 +24,7 @@ import com.bitwig.extension.controller.api.MidiOut;
 import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Transport;
 
+import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.support.MFT_MidiMessage;
 
 public class AbstractHandler {
@@ -58,7 +59,7 @@ public class AbstractHandler {
      * @param msg
      */
     protected void showPopupNotification(String msg){
-        host.showPopupNotification(msg);
+        if(MFT_Configuration.showPupupNotifications()) host.showPopupNotification(msg);
     }
 
     /**

@@ -26,23 +26,36 @@ import de.drMartinKramer.hardware.*;
 import de.drMartinKramer.support.MFT_MidiMessage;
 
 /**
- * The BankHandler is used to handle the 4 different banks of the MFT. It keeps track of the current state, it sends a feedback (as a 
- * pop up text message in Bitwig when a button on the left and right was clicked.  
- * it also reacts to the two buttons on the left that are connect to a transport function. 
+ * The ModeHandler is used to handle sixe different modes of the Bitwig Performance Twister
+ * It keeps track of the current mode, it sends a feedback (as a 
+ * pop up text message in Bitwig when a button on the left and right has been pressed.  
+ * We need to differentiate two concepts: 1. the MFT Banks of which there are four. And 2. the six 
+ * different modes that this controller script offers. 
+ * With the six buttons on the side, 3 on the left, 3 on the right, we now have the possibility
+ * to implement six different modes and each mode is directly available by a click on the associated
+ * button on the left of the right. The MFT device has only four mode banks though. So two of the 
+ * modes need to reuse a bank from another mode. Specifically all three buttons on the left 
+ * are associated to bank 1 of the MFT.    
+ * We have configured the MFT device in such a way that the buttons on the side only send
+ * CC messages and no bank changes on the MFT devices are initiated by the device itself.
+ * We nevertheless need to change the banks and this is what this ModeHandler does. 
+ * So you will see two notions here: 1. "Mode" and 2. "Bank". The differentiation should now be clear.  
  */
-public class BankHandler  extends AbstractHandler
+public class ModeHandler  extends AbstractHandler
 {
 	
-	public  static final int MFT_BANK_1 = 1;
-	public static final int MFT_BANK_2 = 2;
-	public static final int MFT_BANK_3 = 3;
-	public static final int MFT_BANK_4 = 4;
-	private int bankMode = MFT_BANK_1; //we start on bank 1
-	private int lastEncoderID = MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1;
-	private double lastBankDownClickTime = -1;
+	public static final int MFT_MODE_MIXER = 1;
+	public static final int MFT_MODE_CHANNEL_STRIP = 2;
+	public static final int MFT_MODE_EQ = 3;
+	public static final int MFT_MODE_DEVICE = 4;
+	public static final int MFT_MODE_GLOBAL = 5;
+	public static final int MFT_MODE_USER = 6;
+	private int mode = MFT_MODE_MIXER; //we start on bank 1
+	private int lastSideButtonID = MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1;
+	private double lastModekDownClickTime = -1;
    
 	
-	public BankHandler(ControllerHost host)
+	public ModeHandler(ControllerHost host)
 	{    
 		super(host);
 	    //we want the initialize the MFT to bank 1 in order to sync the MFT with the bank mode in this handler object
@@ -53,12 +66,12 @@ public class BankHandler  extends AbstractHandler
 	 * Returns the mode that the MFT is currently in
 	 * @return the current mode of the MFT
 	 */
-	public int getBankMode() {
-		return this.bankMode;
+	public int getMode() {
+		return this.mode;
 	}
 
 	/**
-	 * Change the MFT to one of the four banks
+	 * Change the MFT to one of the four internal (hardware) banks
 	 * @param newBank new bank to change to (0-3)
 	 */
 	private  void changeMFT_Bank(int newBank){
@@ -73,24 +86,23 @@ public class BankHandler  extends AbstractHandler
 	 */
 	public boolean handleMidi (MFT_MidiMessage msg){
 	   //check for CC message on channel 4 (which is here 3 and left/right button clicked which is indicated by value (data2) = 127)
-	    int encoderId = msg.getData1();	 
-		if (msg.isControlChange() && msg.getChannel()==3 && msg.getData2()==127) 
+	    int sideButtonID = msg.getData1();	 
+		if (msg.isGlobalMessage() && msg.getData2()==127) 
 	    {	
 			//the button is clicked down, we change to a new bank            
-			lastBankDownClickTime = System.currentTimeMillis(); //record when the side click happened
-			return handleBankChange(encoderId);				
-		}else if (msg.isControlChange() && msg.getChannel()==3 && msg.getData2()==0) 
+			lastModekDownClickTime = System.currentTimeMillis(); //record when the side click happened
+			return handleModeChange(sideButtonID);				
+		}else if (msg.isGlobalMessage() && msg.getData2()==0) 
 		{
 			//the consecutive up click 
-			double duration = System.currentTimeMillis()-lastBankDownClickTime;
+			double duration = System.currentTimeMillis()-lastModekDownClickTime;
 			if(duration > MFT_Configuration.getGlobalLongClickMillis())
-			{
-				
-				//we have a long click, i.e. we need to change back to the original bank
-				return handleBankChange(lastEncoderID);
+			{				
+				//we have a long click, i.e. we need to change back to the last mode 
+				return handleModeChange(lastSideButtonID);
 			}else 
 			{ //we have a short click, i.e. we will not return to the original bank
-				lastEncoderID = encoderId; //store the last encoder ID
+				lastSideButtonID = sideButtonID; //store the last encoder ID
 				return true;
 			}
 		}
@@ -104,36 +116,38 @@ public class BankHandler  extends AbstractHandler
 	 * @param buttonID The ID of the button that is delivered via a Midi CC message. 
 	 * @return if a bank transfer was successfully handled or not. 
 	 */
-	private boolean handleBankChange(int buttonID){
+	private boolean handleModeChange(int buttonID){
 	// Click on a button on the left or the right
-		switch (buttonID) //data1 contains the button number, we use this to differentiate the different encoders
+		switch (buttonID) //data1 contains the button number, we use this to differentiate the different side buttons
 		{   
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1:
 				showPopupNotification("Midi Fighter Twister: Mixer Mode");
-				bankMode = MFT_BANK_1;	                
+				mode = MFT_MODE_MIXER;	                
 				changeMFT_Bank(0);
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_2: 
 				showPopupNotification("Midi Fighter Twister: EQ Mode");
+				mode = MFT_MODE_EQ;
 				changeMFT_Bank(0);				
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_3: 
 				showPopupNotification("Midi Fighter Twister: Global Parameters");
+				mode = MFT_MODE_GLOBAL;
 				changeMFT_Bank(0);
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_1: 
 				showPopupNotification("Midi Fighter Twister: Channel strip mode");
-				bankMode = MFT_BANK_2;
+				mode = MFT_MODE_CHANNEL_STRIP;
 				changeMFT_Bank(1);
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_2: 
 				showPopupNotification("Midi Fighter Twister: Device mode");
-				bankMode = MFT_BANK_3;
+				mode = MFT_MODE_DEVICE;
 				changeMFT_Bank(2);
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_3: 
 				showPopupNotification("Midi Fighter Twister: User mode");
-				bankMode = MFT_BANK_4;
+				mode = MFT_MODE_USER;
 				changeMFT_Bank(3);
 				return true;
 			default: 

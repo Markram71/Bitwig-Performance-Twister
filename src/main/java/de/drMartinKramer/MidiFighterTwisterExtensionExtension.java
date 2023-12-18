@@ -24,9 +24,10 @@ import com.bitwig.extension.callback.ShortMidiMessageReceivedCallback;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.ControllerExtension;
 
-import de.drMartinKramer.handler.BankHandler;
+import de.drMartinKramer.handler.ModeHandler;
 import de.drMartinKramer.handler.ChannelStripHandler;
 import de.drMartinKramer.handler.DeviceHandler;
+import de.drMartinKramer.handler.EQ_Handler;
 import de.drMartinKramer.handler.TrackHandler;
 import de.drMartinKramer.support.EncoderStateMap;
 import de.drMartinKramer.support.MFT_MidiMessage;
@@ -35,10 +36,11 @@ import de.drMartinKramer.support.MFT_MidiMessage;
 public class MidiFighterTwisterExtensionExtension extends ControllerExtension
 {
 	private ControllerHost host = null;
-	private BankHandler bankHandler = null;
+	private ModeHandler modeHandler = null;
 	private TrackHandler trackHandler = null; //Bank 1
 	private ChannelStripHandler channelStripHandler = null; // Bank 2
    private DeviceHandler deviceHandler = null; // Bank 3
+   private EQ_Handler eq_Handler = null; // Bank 4
 	private MidiFighterTwisterExtensionExtensionDefinition definition = null;
    private MFT_Configuration configuration = null;
    private EncoderStateMap encoderStateMap = null; //a hashmap that stores the current state of the encoders  
@@ -53,7 +55,10 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
    }
 
    /**
-    * The init method is called to by Bitwig to initialize the controller script. Some calls are only possible here
+    * The init method is called to by Bitwig to initialize the controller script. 
+    * Some calls to Bitwig are only possible here. E.g. calls to register callbacks or 
+    * markInterested. 
+    * So, it's important to create the Handler objects right nere and not in the constructor.
     */
 @Override
    
@@ -62,10 +67,11 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
       final ControllerHost host = getHost();   
       
       host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
-      this.bankHandler = new BankHandler(host);  
+      this.modeHandler = new ModeHandler(host);  
       this.trackHandler = new TrackHandler(host);
       this.channelStripHandler = new ChannelStripHandler(host);
       this.deviceHandler = new DeviceHandler(host);
+      this.eq_Handler = new EQ_Handler(host);
       this.configuration = new MFT_Configuration(host);
       		  
       // For now just show a pop up notification for verification that it is running.
@@ -118,12 +124,19 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
          //an important first step is to add context to the midi message, e.g. let us know that an encoder was clicked shortly before
          MFT_MidiMessage mftMessage = parseMidiMessage(msg);
 
-		   if(bankHandler.handleMidi(mftMessage)) return;  //let's first check if a bank has changed		   
-		   if(trackHandler.handleMidi(mftMessage)) return;
-		   if(channelStripHandler.handleMidi(mftMessage)) return;	
-         if(deviceHandler.handleMidi(mftMessage)) return;	   		
-		   
-	   }catch(Exception e) {
+         //Now let's select a handler based on the mode
+		   if(mftMessage.isGlobalMessage()){ //but let's first check if a bank has changed, these are sent by global messages
+            modeHandler.handleMidi(mftMessage);
+         }else if(modeHandler.getMode() == ModeHandler.MFT_MODE_MIXER){
+            trackHandler.handleMidi(mftMessage);
+         } else if(modeHandler.getMode() == ModeHandler.MFT_MODE_EQ){
+            eq_Handler.handleMidi(mftMessage);
+         } else if(modeHandler.getMode() == ModeHandler.MFT_MODE_CHANNEL_STRIP){
+            channelStripHandler.handleMidi(mftMessage); 
+         } else if (modeHandler.getMode() == ModeHandler.MFT_MODE_DEVICE){
+            deviceHandler.handleMidi(mftMessage);
+         }      
+      }catch(Exception e) {
 		   host.errorln("Something went wrong after the MFT sent a Midi message. The script could not handle this message correctly. ");
 		   host.errorln("Exception thrown: " + e.getLocalizedMessage());
 	   }   	   

@@ -32,10 +32,7 @@ import com.bitwig.extension.controller.api.SettableRangedValue;
 public class MFT_Configuration {
 
     private static ControllerHost host = null;
-    private static Preferences preferences = null;
-
-
-    
+    private static Preferences preferences = null;    
 
     //GLOBAL CONFIGURATION -----------------------------------------------------
     // Global configuration for long clicks 
@@ -47,16 +44,16 @@ public class MFT_Configuration {
     private static SettableRangedValue globalClickDownTurnFactor  = null;
 
 
-    // Configuration for the long clicks in the mixer bank
-    private static SettableEnumValue mixerLongButtonSetting  = null;
-    public static final String MIXER_LONG_BUTTON_ACTION_SOLO = "Solo";
-    public static final String MIXER_LONG_BUTTON_ACTION_ARM = "RecArm";
-    public static final String MIXER_LONG_BUTTON_ACTION_MUTE = "Mute";
-    private final static String[] mixerLongButtonClickActions = {
-        MIXER_LONG_BUTTON_ACTION_SOLO,
-        MIXER_LONG_BUTTON_ACTION_ARM,
-        MIXER_LONG_BUTTON_ACTION_MUTE       
+
+    // Global config: show messages, or not
+    private static SettableEnumValue globalShowMessagesSetting  = null;
+    public static final String GLOBAL_SHOW_MESSAGES_YES = "yes";
+    public static final String GLOBAL_SHOW_MESSAGES_NO = "no";
+    private final static String[] globalShowMessagesStrings = {
+        GLOBAL_SHOW_MESSAGES_YES,
+        GLOBAL_SHOW_MESSAGES_NO       
     }; 
+
    
     // MIXER CONFIGURATION -----------------------------------------------------
     // Configuration for making the newly clicked tracks visible in the mixer and the arranger
@@ -67,7 +64,17 @@ public class MFT_Configuration {
         MIXER_MAKE_VISIBLE_YES,
         MIXER_MAKE_VISIBLE_NO       
     }; 
-    
+
+    // Configuration for the long clicks in the mixer bank
+    private static SettableEnumValue mixerLongButtonSetting  = null;
+    public static final String MIXER_LONG_BUTTON_ACTION_SOLO = "Solo";
+    public static final String MIXER_LONG_BUTTON_ACTION_ARM = "RecArm";
+    public static final String MIXER_LONG_BUTTON_ACTION_MUTE = "Mute";
+    private final static String[] mixerLongButtonClickActions = {
+        MIXER_LONG_BUTTON_ACTION_SOLO,
+        MIXER_LONG_BUTTON_ACTION_ARM,
+        MIXER_LONG_BUTTON_ACTION_MUTE       
+    };     
     
     // Button 4 im Mixer: Master volume
     private static SettableEnumValue channelStripEncoder4Setting  = null;
@@ -79,6 +86,18 @@ public class MFT_Configuration {
         CHANNEL_STRIP_ENCODER_4_CROSSFADER, 
         CHANNEL_STRIP_ENCODER_4_CUE_VOLUME      
     };
+
+    // Configuration for the click and turn function in the mixer
+    private static SettableEnumValue mixerClickAndTurnFunctionSetting  = null;
+    public static final String MIXER_CLICK_AND_TURN_FUNCTION_PAN  = "Pan";
+    public static final String MIXER_CLICK_AND_TURN_FUNCTION_SEND1  = "Send to fx 1";
+    public static final String MIXER_CLICK_AND_TURN_FUNCTION_TRACK_REMOTE1  = "Track remote 1";
+    
+    private final static String[] mixerClickAndTurnFunctionStrings = {
+        MIXER_CLICK_AND_TURN_FUNCTION_PAN,
+        MIXER_CLICK_AND_TURN_FUNCTION_SEND1,    
+        MIXER_CLICK_AND_TURN_FUNCTION_TRACK_REMOTE1
+    }; 
 
 
     /**
@@ -95,11 +114,12 @@ public class MFT_Configuration {
                                                                                 "Global", 
                                                                                 mixerMakeVisibleSettingStrings, 
                                                                                 mixerMakeVisibleSettingStrings[0]);
-        MFT_Configuration.globalLongClickMillis = preferences.getNumberSetting("Long click duration in milliseconds", 
-                                                                                "Global", 0, 
-                                                                                GLOBAL_LONG_CLICK_MILLIS_MAX, 10, 
-                                                                                "ms", 500);
-
+         MFT_Configuration.globalShowMessagesSetting = preferences.getEnumSetting( "Show pop up notifications", 
+                                                                                "Global", 
+                                                                                globalShowMessagesStrings, 
+                                                                                globalShowMessagesStrings[0]);
+       
+        
         MFT_Configuration.globalTurnFactor = preferences.getNumberSetting("Encoder turn speedup factor ", 
                                                                                 "Global", 0, 
                                                                                 GLOBAL_TURN_SPEED_UP_MAX, 0.1, 
@@ -111,12 +131,26 @@ public class MFT_Configuration {
                                                                                 GLOBAL_TURN_SPEED_UP_MAX, 0.1, 
                                                                                 "", 3);
 // 
-        //Mixer / Track Bank Configurations
+        //Mixer / Track Mode  Configurations
         MFT_Configuration.mixerLongButtonSetting = preferences.getEnumSetting("Long Click Action", "Mixer", mixerLongButtonClickActions, mixerLongButtonClickActions[0]);
         
+        MFT_Configuration.mixerClickAndTurnFunctionSetting = preferences.getEnumSetting( "Click&Turn function", 
+                                                                                "Mixer", 
+                                                                                mixerClickAndTurnFunctionStrings, 
+                                                                                mixerClickAndTurnFunctionStrings[2]);
+       
+        MFT_Configuration.globalLongClickMillis = preferences.getNumberSetting("Long click duration in milliseconds", 
+                                                                                "Global", 0, 
+                                                                                GLOBAL_LONG_CLICK_MILLIS_MAX, 10, 
+                                                                                "ms", 500);
+
+
+
         //Channel Strip Configurations
         MFT_Configuration.channelStripEncoder4Setting = preferences.getEnumSetting("Channel strip Encoder #4 function", "Channel Strip", channelStripEncoder4SettingStrings, channelStripEncoder4SettingStrings[0]);
-    }  
+    }  //end of constructor
+
+    // GLBOAL FUNCTIONS --------------------------------------------------------
 
     /**
      * Function to let us know what should happen when the user clicks a button in the mixer bank for a long time.
@@ -137,7 +171,21 @@ public class MFT_Configuration {
     public static double getGlobalLongClickMillis(){
         return MFT_Configuration.globalLongClickMillis.getAsDouble() * GLOBAL_LONG_CLICK_MILLIS_MAX;
     }
+
+    public static boolean showPupupNotifications(){
+        return MFT_Configuration.globalShowMessagesSetting.get().equals(GLOBAL_SHOW_MESSAGES_YES);
+    }
     
+    public static boolean isMixerClickAdnTurnFunctionPan(){
+        return MFT_Configuration.mixerClickAndTurnFunctionSetting.get().equals(MIXER_CLICK_AND_TURN_FUNCTION_PAN);
+    }
+    public static boolean isMixerClickAdnTurnFunctionSend1(){
+        return MFT_Configuration.mixerClickAndTurnFunctionSetting.get().equals(MIXER_CLICK_AND_TURN_FUNCTION_SEND1);
+    }
+    public static boolean isMixerClickAdnTurnFunctionTrackRemote1(){
+        return MFT_Configuration.mixerClickAndTurnFunctionSetting.get().equals(MIXER_CLICK_AND_TURN_FUNCTION_TRACK_REMOTE1);
+    }
+
     //Channel Strip Encoder 4
     public static boolean isChannelStripEncoder4_MasterVolume(){
         return MFT_Configuration.channelStripEncoder4Setting.get().equals(CHANNEL_STRIP_ENCODER_4_MASTERVOLUME);
