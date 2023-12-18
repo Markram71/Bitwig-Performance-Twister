@@ -44,7 +44,7 @@
                   <target>17</target>
                   <encoding>UTF-8</encoding>                  
                </configuration>
-         </plugin>
+         	</plugin>
 		
 			<plugin>
 				<groupId>com.coderplus.maven.plugins</groupId>
@@ -62,8 +62,22 @@
 							<destinationFile>/Users/mkramer/Documents/Bitwig Studio/Extensions/BitwigPerformanceTwister.bwextension</destinationFile>
 						</configuration>
 					</execution>
+
+					<execution> 
+						<id>rename-file-copy-to-dropbox</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
+							<destinationFile>/Users/mkramer/Library/CloudStorage/Dropbox/Martin/Bitwig Studio/Extensions/BitwigPerformanceTwister.bwextension</destinationFile>
+						</configuration>
+					</execution>
+
 				</executions>
-			</plugin>			
+			</plugin>
+
 		</plugins>
 	</build>
 
