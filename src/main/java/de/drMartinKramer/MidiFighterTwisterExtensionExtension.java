@@ -24,7 +24,6 @@ import java.util.HashMap;
 import com.bitwig.extension.api.util.midi.ShortMidiMessage;
 import com.bitwig.extension.callback.ShortMidiMessageReceivedCallback;
 import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.NoteInput;
 import com.bitwig.extension.controller.ControllerExtension;
 
 import de.drMartinKramer.handler.ModeHandler;
@@ -71,7 +70,9 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
    {
       final ControllerHost host = getHost(); 
       
-      NoteInput noteInput = host.getMidiInPort(0).createNoteInput("Midi Fighter Twister", "B4????", "B6????");
+      //create a note input: this will make the MFT messages visible in Bitwig, with it's on input port. We can also filter there only for MFT bank 4
+      //The CC messages on Bank 4 are sent on channel 5 and 6 
+      host.getMidiInPort(0).createNoteInput("Midi Fighter Twister", "B4????", "B6????");
       
       host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
       this.configuration = new MFT_Configuration(host);
