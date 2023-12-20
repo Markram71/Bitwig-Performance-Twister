@@ -123,7 +123,7 @@ public class ChannelStripHandler extends AbstractHandler
 	 * @param newValue new volume of the currently selected track
 	 */
 	private void reactToTrackVolumeChange(double newValue) {
-    	updateEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_02, (int) Math.round(newValue*127));
+    	setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_02, (int) Math.round(newValue*127));
     }
 	/**
 	 * Callback function that is called whenever the current track changes its volume
@@ -131,17 +131,17 @@ public class ChannelStripHandler extends AbstractHandler
 	 */
 	private void reactToMasterTrackVolumeChange(double newValue) {
     	if(MFT_Configuration.isChannelStripEncoder4_MasterVolume()){
-			updateEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_04, (int) Math.round(newValue*127));
+			setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_04, (int) Math.round(newValue*127));
 		}
 	}
 	private void reactToCrossfadeValueChange(double newValue){
 		if(MFT_Configuration.isChannelStripEncoder4_Crossfader()){
-			updateEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_04, (int) Math.round(newValue*127));
+			setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_04, (int) Math.round(newValue*127));
 		}	
 	}
 	private void reactToCueVolumeChange(double newValue){
 		if(MFT_Configuration.isChannelStripEncoder4_CueVolume	()){
-			updateEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_04, (int) Math.round(newValue*127));
+			setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_04, (int) Math.round(newValue*127));
 		}
 	}
 
@@ -151,7 +151,7 @@ public class ChannelStripHandler extends AbstractHandler
 	 * @param newValue New panning of the currently selected track
 	 */
 	private void reactToTrackPanningChange(double newValue) {
-    	updateEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_03, (int) Math.round(newValue*127));
+    	setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_03, (int) Math.round(newValue*127));
     }
 	
 	/**
@@ -159,7 +159,7 @@ public class ChannelStripHandler extends AbstractHandler
 	 * @param newValue the new send value of the track that is indicated by the track-index
 	 */
 	private void reactToTrackSendChange(int index, double newValue) {
-    	updateEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_05+index, (int) Math.round(newValue*127));		
+    	setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_05+index, (int) Math.round(newValue*127));		
     }
 	/**
 	 * Callback function that is called to indicate if the send channel exists. 

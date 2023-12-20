@@ -19,16 +19,20 @@
 
 package de.drMartinKramer;
 
+import java.util.HashMap;
+
 import com.bitwig.extension.api.util.midi.ShortMidiMessage;
 import com.bitwig.extension.callback.ShortMidiMessageReceivedCallback;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.ControllerExtension;
 
 import de.drMartinKramer.handler.ModeHandler;
+import de.drMartinKramer.handler.AbstractHandler;
 import de.drMartinKramer.handler.ChannelStripHandler;
 import de.drMartinKramer.handler.DeviceHandler;
 import de.drMartinKramer.handler.EQ_Handler;
-import de.drMartinKramer.handler.TrackHandler;
+import de.drMartinKramer.handler.MixerHandler;
+import de.drMartinKramer.hardware.MFT_Hardware;
 import de.drMartinKramer.support.EncoderStateMap;
 import de.drMartinKramer.support.MFT_MidiMessage;
 
@@ -37,7 +41,7 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
 {
 	private ControllerHost host = null;
 	private ModeHandler modeHandler = null;
-	private TrackHandler trackHandler = null; //Bank 1
+	private MixerHandler trackHandler = null; //Bank 1
 	private ChannelStripHandler channelStripHandler = null; // Bank 2
    private DeviceHandler deviceHandler = null; // Bank 3
    private EQ_Handler eq_Handler = null; // Bank 4
@@ -67,16 +71,27 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
       final ControllerHost host = getHost();   
       
       host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
-      this.modeHandler = new ModeHandler(host);  
-      this.trackHandler = new TrackHandler(host);
-      this.channelStripHandler = new ChannelStripHandler(host);
-      this.deviceHandler = new DeviceHandler(host);
-      this.eq_Handler = new EQ_Handler(host);
       this.configuration = new MFT_Configuration(host);
-      		  
+      
+      // First, create a HashMap of Handlers in which we can store all the handlers
+      final HashMap<Integer, AbstractHandler> handlerMap = new HashMap<>();
+      //then, let's create all the handlers and add them to the handlerMap
+      this.trackHandler = new MixerHandler(host);
+      handlerMap.put(ModeHandler.MFT_MODE_MIXER, this.trackHandler);
+      this.channelStripHandler = new ChannelStripHandler(host);
+      handlerMap.put(ModeHandler.MFT_MODE_CHANNEL_STRIP, this.channelStripHandler);
+      this.deviceHandler = new DeviceHandler(host);
+      handlerMap.put(ModeHandler.MFT_MODE_DEVICE, this.deviceHandler);
+      this.eq_Handler = new EQ_Handler(host);      
+      handlerMap.put(ModeHandler.MFT_MODE_EQ, this.eq_Handler);
+      
+      //finally we create the mode handler and inform it about the handlers      
+      this.modeHandler = new ModeHandler(host, handlerMap);  
+      this.modeHandler.changeToMode(MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1); //Change to mixer mode
+      
       // For now just show a pop up notification for verification that it is running.
       host.showPopupNotification("Midi Fighter Twister initialized, Version " + definition.getVersion());     
-   }
+   } //end of init
 
    public MFT_Configuration getConfiguration() {
       return this.configuration;

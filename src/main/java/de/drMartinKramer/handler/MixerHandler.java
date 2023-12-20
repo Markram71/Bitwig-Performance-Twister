@@ -28,15 +28,15 @@ import de.drMartinKramer.hardware.*;
 import de.drMartinKramer.support.MFT_MidiMessage;
 
 
-public class TrackHandler extends AbstractHandler
+public class MixerHandler extends AbstractCachingHandler
 {
 	private TrackBank trackBank = null;
 	private int updateDelay = 0; //how often should the Bitwig mixer and arranger be updated?
 		
-	public TrackHandler (ControllerHost host)
+	public MixerHandler (ControllerHost host)
 	{		
 		super(host);
-	    this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 0, 0);
+		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 0, 0);
 	       
 	    for (int i = 0; i < this.trackBank.getSizeOfBank (); i++)
 	    {
@@ -64,7 +64,7 @@ public class TrackHandler extends AbstractHandler
 	 * @param newValue the new value of of the track volume
 	 */
     private void reactToTrackVolumeChange(int trackIndex, double newValue) {
-    	updateEncoderRingValue(trackIndex, (int) Math.round(newValue*127));
+    	setEncoderRingValueCached(trackIndex,trackIndex,  (int) Math.round(newValue*127));
     }
     
     /**
@@ -78,7 +78,7 @@ public class TrackHandler extends AbstractHandler
      */
     private void reactToColorChange(int trackIndex, float red, float green, float blue) {
     	int colorIndex = MFT_Colors.getClosestMFT_Color(red,green,blue);
-    	setEncoderColor(trackIndex, colorIndex);    	
+    	setEncoderColorCached(trackIndex, trackIndex,colorIndex);    	
     }
     
     /**
@@ -248,6 +248,8 @@ public class TrackHandler extends AbstractHandler
 	        }
 	    }
 	    return false; //we did not handle any incoming midi   
-	}	
+	}	//end of handleMidi
+
+	
 	
 }

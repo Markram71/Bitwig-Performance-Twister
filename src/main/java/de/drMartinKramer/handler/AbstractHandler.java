@@ -31,9 +31,11 @@ public class AbstractHandler {
 
     protected ControllerHost host = null;
     protected Transport transport = null; 
-    private MidiOut outPort = null;
+    private MidiOut outPort = null; //let's make this private to channel all midi messages through the methods defined in this handler
     protected Project project = null; //get access to the project in Bitwig
     
+    protected boolean isActive = false; //is this handler currently active or not    
+
     
     /**
      * Constructor. Takes the Bitwig 
@@ -43,8 +45,21 @@ public class AbstractHandler {
         this.host = host;
         this.transport = host.createTransport();
         this.outPort = host.getMidiOutPort(0);
-        this.project = host.getProject();         
+        this.project = host.getProject(); 
     }
+
+    /**
+     * This method is called from BankHanlder to activate or deactivate this handler.
+     * @param isActive true if this handler should be active, false otherwise
+     */
+    public void setActive(boolean  newActiveState){
+        this.isActive = newActiveState;
+    }
+
+    protected boolean isActive(){
+        return this.isActive;
+    }
+       
 
     /**
      * Convinience method to easily print to the Bitwig Console
@@ -71,7 +86,7 @@ public class AbstractHandler {
     }
 
     /**
-     * Send a midi message to the MFT 
+     * Send a midi message to the MFT. We make this a private method, since we want to encapsulate the midi interface to the MFT
      * @param status Midi status 
      * @param data1 Midi data 1      
      * @param data2 Midi data 2 //the parameter value
@@ -89,14 +104,19 @@ public class AbstractHandler {
         sendMidi(0xB1, encoder, color);
     }
 
+    
+
     /**
-     * Update the encoder ring value
-     * @param encoder for which encoder should there be a change
+     * Update the encoder ring value (if this handler is active)
+     * @param encoder for which encoder should there be a change (Encoder CC value)
      * @param value the value for the ring (0-127)
      */
-    protected void updateEncoderRingValue(int encoder, int value){
+    protected void setEncoderRingValue(int encoder, int value){
         sendMidi(0xB0, encoder, value);
+        
     }
+
+    
 
 
 
@@ -108,6 +128,7 @@ public class AbstractHandler {
     public boolean handleMidi (MFT_MidiMessage msg){
         return false;
     }
+    
 
     /**
      * Convienince method to send a global command to the MFT. 

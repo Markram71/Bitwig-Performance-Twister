@@ -103,28 +103,7 @@ public class MFT_Hardware
 	public static final int MFT_BANK4_BUTTON_15 = 0x3E; 
 	public static final int MFT_BANK4_BUTTON_16 = 0x3F;  
 
-
-	/* old implementation of the side buttons
-	//The side buttons on the left and right also send Midi CC
-	//They send on Channel 4, First the last Button is set to value (data2) 0
-	//Then a second CC message is sent with the new mode and value (data2) of 127
-	//For buttons 2 and 3 on the left side the order seems to be reversed
-	//So let's concentrate on the "on"-messages with value (data2) == 127
-	public static final int MFT_SIDE_BUTTON_CC_LEFT_1 = 0;
-	public static final int MFT_SIDE_BUTTON_CC_LEFT_2 = 9;
-	public static final int MFT_SIDE_BUTTON_CC_LEFT_3 = 10;
-	public static final int MFT_SIDE_BUTTON_CC_RIGHT_1 = 1;
-	public static final int MFT_SIDE_BUTTON_CC_RIGHT_2 = 2; 
-	public static final int MFT_SIDE_BUTTON_CC_RIGHT_3 = 3;
-
-	public static final int MFT_SIDE_BUTTON_CC_LEFT_2_ALT1 = 15;
-	public static final int MFT_SIDE_BUTTON_CC_LEFT_2_ALT2 = 21;
-	public static final int MFT_SIDE_BUTTON_CC_LEFT_2_ALT3 = 27;
-
-	public static final int MFT_SIDE_BUTTON_CC_LEFT_3_ALT1 = 16;
-	public static final int MFT_SIDE_BUTTON_CC_LEFT_3_ALT2 = 22;
-	public static final int MFT_SIDE_BUTTON_CC_LEFT_3_ALT3 = 28;
-	*/
+	
 	/* New side button implementation - all go only to CC message, we need to provide the bank switch ourself */
 	//The side buttons on the left and right also send Midi CC
 	//They send on Channel 4, just like the encoders, first a downclick with 127 in data2, 

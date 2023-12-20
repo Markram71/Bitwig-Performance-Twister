@@ -19,6 +19,8 @@
 
 package de.drMartinKramer.handler;
 
+import java.util.HashMap;
+
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import de.drMartinKramer.MFT_Configuration;
@@ -44,22 +46,23 @@ import de.drMartinKramer.support.MFT_MidiMessage;
 public class ModeHandler  extends AbstractHandler
 {
 	
-	public static final int MFT_MODE_MIXER = 1;
-	public static final int MFT_MODE_CHANNEL_STRIP = 2;
-	public static final int MFT_MODE_EQ = 3;
-	public static final int MFT_MODE_DEVICE = 4;
-	public static final int MFT_MODE_GLOBAL = 5;
-	public static final int MFT_MODE_USER = 6;
-	private int mode = MFT_MODE_MIXER; //we start on bank 1
-	private int lastSideButtonID = MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1;
-	private double lastModekDownClickTime = -1;
+	public static final int MFT_MODE_MIXER = MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1;
+	public static final int MFT_MODE_CHANNEL_STRIP = MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_1;
+	public static final int MFT_MODE_EQ = MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_2;
+	public static final int MFT_MODE_DEVICE = MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_2;
+	public static final int MFT_MODE_GLOBAL = MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_3;
+	public static final int MFT_MODE_USER = MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_3;
+	private  int mode = MFT_MODE_MIXER; //
+	private  int lastMode = mode;
+	private  int lastSideButtonID = MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1;
+	private static double lastModekDownClickTime = -1;
+	HashMap<Integer, AbstractHandler> handlerMap = null;
    
 	
-	public ModeHandler(ControllerHost host)
+	public ModeHandler(ControllerHost host, HashMap<Integer, AbstractHandler> handlerMap)	
 	{    
 		super(host);
-	    //we want the initialize the MFT to bank 1 in order to sync the MFT with the bank mode in this handler object
-		sendMFT_Global_Command( 0, 127); // in order to set the MFT to bank 1 we need to send CC0 on channel four with velocity of 127, see MFT manual
+		this.handlerMap = handlerMap;
 	}
 	
 	/**
@@ -74,7 +77,7 @@ public class ModeHandler  extends AbstractHandler
 	 * Change the MFT to one of the four internal (hardware) banks
 	 * @param newBank new bank to change to (0-3)
 	 */
-	private  void changeMFT_Bank(int newBank){
+	private void changeMFT_Bank(int newBank){
 		sendMFT_Global_Command( newBank, 127); // in order to set the MFT to bank 1 we need to send CC0 on channel four with velocity of 127, see MFT manual
 	}
 	
@@ -109,6 +112,9 @@ public class ModeHandler  extends AbstractHandler
 		return false;	    
 	}//end of handleMidi	
 
+	public void changeToMode(int buttonID){
+		handleModeChange(buttonID);
+	}	
 
 	/**
 	 * Manage the main action to change the bank to a new bank as a result of a click on one
@@ -118,41 +124,50 @@ public class ModeHandler  extends AbstractHandler
 	 */
 	private boolean handleModeChange(int buttonID){
 	// Click on a button on the left or the right
+		println("Handle mode change: " + buttonID);
 		switch (buttonID) //data1 contains the button number, we use this to differentiate the different side buttons
 		{   
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1:
-				showPopupNotification("Midi Fighter Twister: Mixer Mode");
-				mode = MFT_MODE_MIXER;	                
-				changeMFT_Bank(0);
+				handleModeChange(MFT_MODE_MIXER, 0, "Midi Fighter Twister: Mixer mode");				
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_2: 
-				showPopupNotification("Midi Fighter Twister: EQ Mode");
-				mode = MFT_MODE_EQ;
-				changeMFT_Bank(0);				
+				handleModeChange(MFT_MODE_EQ, 0, "Midi Fighter Twister: EQ mode");				
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_3: 
-				showPopupNotification("Midi Fighter Twister: Global Parameters");
-				mode = MFT_MODE_GLOBAL;
-				changeMFT_Bank(0);
+				handleModeChange(MFT_MODE_GLOBAL, 0, "Midi Fighter Twister: Global parameters");				
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_1: 
-				showPopupNotification("Midi Fighter Twister: Channel strip mode");
-				mode = MFT_MODE_CHANNEL_STRIP;
-				changeMFT_Bank(1);
+				handleModeChange(MFT_MODE_CHANNEL_STRIP, 1, "Midi Fighter Twister: Channel strip mode");				
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_2: 
-				showPopupNotification("Midi Fighter Twister: Device mode");
-				mode = MFT_MODE_DEVICE;
-				changeMFT_Bank(2);
+				handleModeChange(MFT_MODE_DEVICE, 2, "Midi Fighter Twister: Device mode");
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_3: 
-				showPopupNotification("Midi Fighter Twister: User mode");
-				mode = MFT_MODE_USER;
-				changeMFT_Bank(3);
+				handleModeChange(MFT_MODE_USER, 3, "Midi Fighter Twister: User mode");
 				return true;
 			default: 
 				errorln("no left/right button identiified");
 				return false; //no midi was handled
 		}//end of switch
 	}//end of handleBankChange
+
+	/**
+	 * this messages handles all the internal changes and shows a pop up message in Bitwig
+	 * @param newMode the new mode to be changed to
+	 * @param newBank the new bank to be changed to
+	 * @param popUpMessage the message to be shown in Bitwig (if pop up messages are enabled)
+	 */
+	private void handleModeChange(int newMode, int newBank, String popUpMessage)
+	{
+		showPopupNotification(popUpMessage);
+		this.lastMode = this.mode;
+		this.mode = newMode;
+		changeMFT_Bank(newBank);
+		AbstractHandler newHandler = handlerMap.get(newMode);
+		if(newHandler != null) newHandler.setActive(true);
+		if(newMode != lastMode) {
+			AbstractHandler oldHandler = handlerMap.get(lastMode);
+			if(oldHandler!=null) oldHandler.setActive(false);
+		}
+	}
 }

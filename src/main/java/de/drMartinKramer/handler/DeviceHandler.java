@@ -95,7 +95,7 @@ public class DeviceHandler extends AbstractHandler
 	 * @param newValue the new value of the device parameter
 	 */
 	private void reactToDeviceParameterChange(int index, double newValue) {
-    	updateEncoderRingValue(MFT_Hardware.MFT_BANK3_BUTTON_01+index, (int) Math.round(newValue*127));		
+    	setEncoderRingValue(MFT_Hardware.MFT_BANK3_BUTTON_01+index, (int) Math.round(newValue*127));		
     }
 		
 	/**
@@ -119,7 +119,7 @@ public class DeviceHandler extends AbstractHandler
 	 * @param newValue the new value of the project-wide parameter
 	 */
 	private void reactToProjectParameterChange(int index, double newValue) {
-    	updateEncoderRingValue(MFT_Hardware.MFT_BANK3_BUTTON_01+BITWIG_SIZE_OF_PARAMTER_PAGE+index, (int) Math.round(newValue*127));		
+    	setEncoderRingValue(MFT_Hardware.MFT_BANK3_BUTTON_01+BITWIG_SIZE_OF_PARAMTER_PAGE+index, (int) Math.round(newValue*127));		
     }
 		
 	/**
