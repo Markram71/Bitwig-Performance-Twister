@@ -38,9 +38,7 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
             
             setEncoderColorCached(i, i, 19+i);
             setEncoderRingValueCached(i, i, 50+i*2);
-        }
-
-        println("Global Parameter Handler initialized");
+        }       
     }   
 
     public boolean handleMidi (MFT_MidiMessage msg)

@@ -38,7 +38,7 @@ import de.drMartinKramer.support.EncoderStateMap;
 import de.drMartinKramer.support.MFT_MidiMessage;
 
 
-public class MidiFighterTwisterExtensionExtension extends ControllerExtension
+public class BitwigPerformanceTwister extends ControllerExtension
 {
 	private ControllerHost host = null;
 
@@ -50,12 +50,12 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
    private DeviceHandler deviceHandler = null; 
    private EQ_Handler eq_Handler = null; 
    private GlobalParameterHandler globalParameterHandler= null;
-	private MidiFighterTwisterExtensionExtensionDefinition definition = null;
+	private BitwigPerformanceTwisterDefinition definition = null;
    private MFT_Configuration configuration = null;
    private EncoderStateMap encoderStateMap = null; //a hashmap that stores the current state of the encoders  
 
 	
-   protected MidiFighterTwisterExtensionExtension(final MidiFighterTwisterExtensionExtensionDefinition definition, final ControllerHost host)
+   protected BitwigPerformanceTwister(final BitwigPerformanceTwisterDefinition definition, final ControllerHost host)
    {
       super(definition, host);
       this.definition = definition;
@@ -98,14 +98,18 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
       
       //finally we create the mode handler and inform it about the handlers      
       this.modeHandler = new ModeHandler(host, handlerMap);  
-      this.modeHandler.changeToMode(MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1); //Change to mixer mode
-      
-      // For now just show a pop up notification for verification that it is running.
-      host.showPopupNotification("Bitwig Performance Twister initialized, Version " + definition.getVersion());     
+           
+      //we schedule the initial startup of the MFT and give is some time to initialize itself
+      host.scheduleTask((Runnable)()->scheduledInitialStartup(), 2500);
+
    } //end of init
 
-   public MFT_Configuration getConfiguration() {
-      return this.configuration;
+   /**
+    * This method is scheduled to execute after init method has finished. 
+    */
+   public void scheduledInitialStartup(){
+      //set the controller to the inital mode and show a popup notification for that. 
+      this.modeHandler.changeToMode(MFT_Configuration.getFirstMode());     
    }
 
    @Override

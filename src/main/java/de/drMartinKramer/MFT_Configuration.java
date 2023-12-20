@@ -24,6 +24,8 @@ import com.bitwig.extension.controller.api.Preferences;
 import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.SettableRangedValue;
 
+import de.drMartinKramer.hardware.MFT_Hardware;
+
 /**
  * This is the access to the configration of the controller script within Bitwig. 
  * We encapsulate the configuration and the access to Bitwig to read and set it
@@ -44,7 +46,6 @@ public class MFT_Configuration {
     private static SettableRangedValue globalClickDownTurnFactor  = null;
 
 
-
     // Global config: show messages, or not
     private static SettableEnumValue globalShowMessagesSetting  = null;
     public static final String GLOBAL_SHOW_MESSAGES_YES = "yes";
@@ -54,6 +55,22 @@ public class MFT_Configuration {
         GLOBAL_SHOW_MESSAGES_NO       
     }; 
 
+    // Global config: show messages, or not
+    private static SettableEnumValue globalFirstHandlerSetting  = null;
+    public static final String GLOBAL_FIRST_HANDLER_MIXER = "Mixer";
+    public static final String GLOBAL_FIRST_HANDLER_CHANNEL_STRIP = "Channel Strip";
+    public static final String GLOBAL_FIRST_HANDLER_EQ = "EQ";
+    public static final String GLOBAL_FIRST_HANDLER_DEVICE = "Device and Global Remote Controls";
+    public static final String GLOBAL_FIRST_HANDLER_GLOBAL_PARAMETERS = "Global Parameters";
+    public static final String GLOBAL_FIRST_HANDLER_USER = "User";
+    private final static String[] globalFirstHandlerStrings = {
+        GLOBAL_FIRST_HANDLER_MIXER,
+        GLOBAL_FIRST_HANDLER_CHANNEL_STRIP,
+        GLOBAL_FIRST_HANDLER_EQ,
+        GLOBAL_FIRST_HANDLER_DEVICE,
+        GLOBAL_FIRST_HANDLER_GLOBAL_PARAMETERS,
+        GLOBAL_FIRST_HANDLER_USER    
+    };
    
     // MIXER CONFIGURATION -----------------------------------------------------
     // Configuration for making the newly clicked tracks visible in the mixer and the arranger
@@ -111,13 +128,18 @@ public class MFT_Configuration {
         
         //Global Configurations
         MFT_Configuration.mixerMakeVisibleSetting = preferences.getEnumSetting( "Make tracks visible", 
-                                                                                "Global", 
+                                                                                "Mixer", 
                                                                                 mixerMakeVisibleSettingStrings, 
                                                                                 mixerMakeVisibleSettingStrings[0]);
          MFT_Configuration.globalShowMessagesSetting = preferences.getEnumSetting( "Show pop up notifications", 
                                                                                 "Global", 
                                                                                 globalShowMessagesStrings, 
                                                                                 globalShowMessagesStrings[0]);
+        
+        MFT_Configuration.globalFirstHandlerSetting = preferences.getEnumSetting( "First Mode", 
+                                                                                "Global", 
+                                                                                globalFirstHandlerStrings, 
+                                                                                globalFirstHandlerStrings[0]);
        
         
         MFT_Configuration.globalTurnFactor = preferences.getNumberSetting("Encoder turn speedup factor ", 
@@ -176,6 +198,21 @@ public class MFT_Configuration {
         return MFT_Configuration.globalShowMessagesSetting.get().equals(GLOBAL_SHOW_MESSAGES_YES);
     }
     
+    public static int getFirstMode()
+    {
+        if(globalFirstHandlerSetting == null) return MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1; //default, the mixer, on the first left button
+        
+        String firstMode = MFT_Configuration.globalFirstHandlerSetting.get();
+        if(firstMode.equals(GLOBAL_FIRST_HANDLER_MIXER)) return MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1;
+        else if(firstMode.equals(GLOBAL_FIRST_HANDLER_CHANNEL_STRIP)) return MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_1;
+        else if(firstMode.equals(GLOBAL_FIRST_HANDLER_EQ)) return MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_2;
+        else if(firstMode.equals(GLOBAL_FIRST_HANDLER_DEVICE)) return MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_2;
+        else if(firstMode.equals(GLOBAL_FIRST_HANDLER_GLOBAL_PARAMETERS)) return MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_3;
+        else if(firstMode.equals(GLOBAL_FIRST_HANDLER_USER)) return MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_3;
+        else return MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1; //default, the mixer, on the first left button
+    }
+
+    //------- MIXER ----  
     public static boolean isMixerClickAdnTurnFunctionPan(){
         return MFT_Configuration.mixerClickAndTurnFunctionSetting.get().equals(MIXER_CLICK_AND_TURN_FUNCTION_PAN);
     }

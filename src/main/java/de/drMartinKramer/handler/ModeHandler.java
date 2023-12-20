@@ -112,7 +112,7 @@ public class ModeHandler  extends AbstractHandler
 		return false;	    
 	}//end of handleMidi	
 
-	public void changeToMode(int buttonID){
+	public void changeToMode(int buttonID){		
 		handleModeChange(buttonID);
 	}	
 
@@ -159,6 +159,7 @@ public class ModeHandler  extends AbstractHandler
 	private void handleModeChange(int newMode, int newBank, String popUpMessage)
 	{
 		showPopupNotification(popUpMessage);
+
 		this.lastMode = this.mode;
 		this.mode = newMode;
 		changeMFT_Bank(newBank);

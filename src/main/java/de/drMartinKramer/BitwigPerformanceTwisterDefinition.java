@@ -25,11 +25,11 @@ import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
 import com.bitwig.extension.controller.ControllerExtensionDefinition;
 import com.bitwig.extension.controller.api.ControllerHost;
 
-public class MidiFighterTwisterExtensionExtensionDefinition extends ControllerExtensionDefinition
+public class BitwigPerformanceTwisterDefinition extends ControllerExtensionDefinition
 {
    private static final UUID DRIVER_ID = UUID.fromString("782c549e-52ca-44e5-8135-50fb6a8dfcf7");
    
-   public MidiFighterTwisterExtensionExtensionDefinition()
+   public BitwigPerformanceTwisterDefinition()
    {
    }
 
@@ -87,7 +87,15 @@ public class MidiFighterTwisterExtensionExtensionDefinition extends ControllerEx
       return 1;
    }
 
-   
+  @Override 
+  /**
+   * returns the URL to the readme file on github
+   */
+   public String getHelpFilePath()
+   {
+      return "https://github.com/Markram71/Bitwig-Performance-Twister/tree/main/docs";
+   }
+
    /** {@inheritDoc} */
    @Override
    public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
@@ -106,8 +114,8 @@ public class MidiFighterTwisterExtensionExtensionDefinition extends ControllerEx
    
    
    @Override
-   public MidiFighterTwisterExtensionExtension createInstance(final ControllerHost host)
+   public BitwigPerformanceTwister createInstance(final ControllerHost host)
    {
-      return new MidiFighterTwisterExtensionExtension(this, host);
+      return new BitwigPerformanceTwister(this, host);
    }
 }
