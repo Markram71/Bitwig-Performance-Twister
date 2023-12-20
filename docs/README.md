@@ -7,13 +7,13 @@ With this extension you will be able to use the midi controller
 ## Table of Contents <!-- omit in toc -->
 1. [Introduction](#introduction)
 1. [Overview of available features](#overview-of-the-available-features)
-1. [Implemented Banks](#implemented-banks)
-    1. [Bank 1 Tracks and Mixer](#bank-1-tracks-and-mixer)
-    1. [Bank 2 Channel Strip](#bank-2-channel-strip) 
-    1. [Bank 3 Device and Project-wide Remote Controls](#bank-3-device-and-project-wide-remote-controls) 
-    1. [Bank 4 EQ](#bank-4-eq)  
-    1. [Bank 5 Global Parameters](#bank-5-global-parameters) 
-    1. [Bank 6 User defined Controls](#bank-6-user-defined-controls) 
+1. [Implemented Modes](#implemented-modes)
+    1. [Mode 1 Mixer](#mode-1-mixer)
+    1. [Mode 2 Channel Strip](#mode-2-channel-strip) 
+    1. [Mode 3 Device and Project-wide Remote Controls](#mode-3-device-and-project-wide-remote-controls) 
+    1. [Mode 4 EQ](#mode-4-eq)  
+    1. [Mode 5 Global Parameters](#mode-5-global-parameters) 
+    1. [Mode 6 User defined Controls](#mode-6-user-defined-controls) 
        
 1. [Installation](#installation)
     1. [Setup of the Midi Fighter Twister](#setup-of-the-midi-fighter-twister)
@@ -36,9 +36,9 @@ on each mode, see further details below. You also have the possibility of a temp
 * **Long clicks:** By clicking and keeping the encoder pressed down for a short time, you can get access to a secondary action for some of the encoders
 * **Click & turn:** Click down an encoder button and turn the encoder while it's pressed down. This gives access to a secondary paramter which can be controlled with this same encoder.  
 
-## Implemented Banks
+## Implemented Modes
 
-### Mode 1 Tracks and Mixer
+### Mode 1 Mixer
 This bank or mode contains a basic mixer for 16 channels in Bitwig. Every encoder of the Midi Fighter Twister is associated to one track in Bitwig. 
 
 | Encoder | Turn (Twisting)      | Click & turn | Click           | Long Click          | RGB Light                   |
@@ -99,28 +99,31 @@ The control depends on the setting of the controller configuration. See [Control
 
 
 ### Mode 4 EQ
-This mode is there to help you twist and turn the prarameters of the Bitwig EQ+. In case there is an EQ+ installed in the device chain of the currently selected track, the encoders of the Midi Fighter Twister are automatically mapped to this EQ device. In case there is no EQ available you can easily create on by clicking on any encoder button. This installs a new EQ+ at the end of the device chain. 
+This mode is there to help you twist and turn the prarameters of the Bitwig EQ+. In case there is an EQ+ installed in the device chain of the currently selected track, the encoders of the Midi Fighter Twister are automatically mapped to this EQ device. In case there is no EQ available you can easily create a new EQ+ device by simply clicking on any encoder button. This installs the  new EQ+ at the end of the device chain. 
 
-| Encoder | Turn (Twisting)     | Click & turn | Click                 | Long Click          | RGB Light                 |
-|:-------:|---------------------|--------------|-----------------------|---------------------|---------------------------|
-|1        |gain for band 1      |tbd           |toggle band on/off     |toggle device on/off | Bitwig EQ color of band 1 |
-|2        |gain for band 2      |tbd           |toggle band on/off     |n/a                  | Bitwig EQ color of band 2 |
-|3        |gain for band 3      |tbd           |toggle band on/off     |n/a                  | Bitwig EQ color of band 3 |
-|4        |gain for band 4      |tbd           |toggle band on/off     |n/a                  | Bitwig EQ color of band 4 |
-|5        |frequency of bank 1  |tbd           |not implemented        |n/a                  | Bitwig EQ color of band 1 |
-|6        |frequency of bank 2  |tbd           |not implemented        |n/a                  | Bitwig EQ color of band 2 |
-|7        |frequency of bank 3  |tbd           |not implemented        |n/a                  | Bitwig EQ color of band 3 |
-|8        |frequency of bank 4  |tbd           |not implemented        |n/a                  | Bitwig EQ color of band 4 |
-|9        |Q valaue for band 1  |tbd           |not implemented        |n/a                  | Bitwig EQ color of band 1 |
-|10       |Q valaue for band 2  |tbd           |not implemented        |n/a                  | Bitwig EQ color of band 2 |
-|11       |Q valaue for band 3  |tbd           |not implemented        |n/a                  | Bitwig EQ color of band 3 |
-|12       |Q valaue for band 4  |tbd           |not implemented        |n/a                  | Bitwig EQ color of band 4 |
-|13       |EQ type for band 1   |tbd           |toggle band on/off (1) |n/a                  | Bitwig EQ color of band 1 |
-|14       |EQ type for band 2   |tbd           |toggle band on/off (1) |n/a                  | Bitwig EQ color of band 2 |
-|15       |EQ type for band 3   |tbd           |toggle band on/off (1) |n/a                  | Bitwig EQ color of band 3 |
-|16       |EQ type for band 4   |tbd           |toggle band on/off (1) |n/a                  | Bitwig EQ color of band 4 |
+| Encoder | Turn (Twisting)     | Click & turn | Click                     | Long Click           | RGB Light                 |
+|:-------:|---------------------|--------------|---------------------------|----------------------|---------------------------|
+|1        |gain for band 1      |n/a           |toggle band on/off         |toggle device on/off (1) | Bitwig EQ color of band 1 (2) |
+|2        |gain for band 2      |n/a           |toggle band on/off         |toggle window         | Bitwig EQ color of band 2 |
+|3        |gain for band 3      |n/a           |toggle band on/off         |n/a                   | Bitwig EQ color of band 3 |
+|4        |gain for band 4      |n/a           |toggle band on/off         |n/a                   | Bitwig EQ color of band 4 |
+|5        |frequency of bank 1  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 1 |
+|6        |frequency of bank 2  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 2 |
+|7        |frequency of bank 3  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 3 |
+|8        |frequency of bank 4  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 4 |
+|9        |Q valaue for band 1  |n/a           |reset Q to default         |n/a                   | Bitwig EQ color of band 1 |
+|10       |Q valaue for band 2  |n/a           |reset Q to default         |n/a                   | Bitwig EQ color of band 2 |
+|11       |Q valaue for band 3  |n/a           |reset Q to default         |n/a                   | Bitwig EQ color of band 3 |
+|12       |Q valaue for band 4  |n/a           |reset Q to default         |n/a                   | Bitwig EQ color of band 4 |
+|13       |EQ type for band 1   |n/a           |toggle band on/off (3)     |n/a                   | Bitwig EQ color of band 1 |
+|14       |EQ type for band 2   |n/a           |toggle band on/off (3)     |n/a                   | Bitwig EQ color of band 2 |
+|15       |EQ type for band 3   |n/a           |toggle band on/off (3)     |n/a                   | Bitwig EQ color of band 3 |
+|16       |EQ type for band 4   |n/a           |toggle band on/off (3)     |n/a                   | Bitwig EQ color of band 4 |
 
-* (1) A click on the encoder of the last row toggles the band on or off. This toggle switch is different to the toggle switch of the first row as it resets the band to the following useful band types: band 0: 24db low cut, band 1-2: bell curve, band 3: high shelf
+* (1) A long click on the first encoder toggles the EQ+ device on an off. 
+* (2) The color of the encoders in a column reflect (somehow closely) the color of the band in the EQ+ decive in bitwig. All encoders for a band (i.e. in a colum) have the same color. The colored led is switched off when the respective band is deactivated. You can still turn the parameters and see their value on the out ring though.
+* (3) A click on the encoder of the last row toggles the band on or off. This toggle switch is different to the toggle switch of the first row as it resets the band to the following useful band types: band 0: 24db low cut, band 1-2: bell curve, band 3: high shelf
+
 
 
 ### Mode 5 Global Parameters
