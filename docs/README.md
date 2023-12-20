@@ -21,6 +21,8 @@ With this extension you will be able to use the midi controller
     1. [Setup in Bitwig](#setup-in-bitwig)
 
 1. [Implementation Notes](#implementation-notes)
+2. [Acknowledgements](#acknowledgements)
+3. [License](#license)
 
 
 ## Introduction
@@ -154,7 +156,7 @@ The _Bitwig Performance Twister_ can be configured to suit to your needs. In ord
 ## Controller Configuration
 
 ## Implementation Notes
-* Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
+* **Modes and Banks:** Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
 
 ## Acknowledgements
 I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. 
