@@ -95,8 +95,7 @@ public class ChannelStripHandler extends AbstractHandler
 			final int remoteIndex = i;
 			this.trackRemoteControlsPage.getParameter(remoteIndex).markInterested();
 			this.trackRemoteControlsPage.getParameter(remoteIndex).exists().addValueObserver((exists)->reactToRemoteExists(remoteIndex, exists));	
-		}
-		println("ChannelStrip handler initialized"); 
+		}		
 	}//end of constructor
 	
 	

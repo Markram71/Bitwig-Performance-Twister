@@ -123,8 +123,7 @@ public class ModeHandler  extends AbstractHandler
 	 * @return if a bank transfer was successfully handled or not. 
 	 */
 	private boolean handleModeChange(int buttonID){
-	// Click on a button on the left or the right
-		println("Handle mode change: " + buttonID);
+	// Click on a button on the left or the right		
 		switch (buttonID) //data1 contains the button number, we use this to differentiate the different side buttons
 		{   
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1:

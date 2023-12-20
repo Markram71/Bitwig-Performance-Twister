@@ -83,10 +83,7 @@ public class DeviceHandler extends AbstractHandler
 			projectControlsPage.getParameter(i).value().addValueObserver((newValue)->reactToProjectParameterChange(myParameter, newValue));
 			//register callback for the existence of a device parameter
 			projectControlsPage.getParameter(myParameter).exists().addValueObserver((exists)->reactToProjectParameterExists(myParameter, exists));
-		}
-
-		
-		println("Device Handler created");
+		}		
     }//end of constructor
 	
 	/**
@@ -237,16 +234,16 @@ public class DeviceHandler extends AbstractHandler
 					return true;
 				//row 4-4: Device Control ----------
 	            case MFT_Hardware.MFT_BANK3_BUTTON_09:
-					//this.host.println("Encoder 9 clicked");	                
+					//no action right now	                
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_10:
-	            	//this.host.println("Encoder 10 clicked");	                 
+	            	//no action right now	                 
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_11:
-	            	//this.host.println("Encoder 11 clicked");	                
+	            	//no action right now	                
                     return true;
 	            case MFT_Hardware.MFT_BANK3_BUTTON_12:
-	            	//this.host.println("Encoder 12 clicked");	                
+	            	//no action right now	                
                     return true;                                                
 	            case MFT_Hardware.MFT_BANK3_BUTTON_13:
 	            	projectControlsPage.selectFirst();					       

@@ -90,7 +90,6 @@ public class AbstractCachingHandler extends AbstractHandler{
      * 
      */
     private void resetMFT_SurfaceAfterModeChange(){
-        println("Redraw surface after change");
         for(int i=0;i<MFT_Hardware.MFG_NUMBER_OF_ENCODERS;i++){
             setEncoderColor(MFT_Hardware.MFT_BANK1_BUTTON_01 +  i, this.encoderColorCache[i]);
             setEncoderRingValue(MFT_Hardware.MFT_BANK1_BUTTON_01 +  i, this.encoderRingCache[i]);            

@@ -16,120 +16,38 @@
  *
  */
 
-
 package de.drMartinKramer.handler;
 
 import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.Track;
-import com.bitwig.extension.controller.api.TrackBank;
+import com.bitwig.extension.controller.api.Transport;
 
-import de.drMartinKramer.MFT_Configuration;
-import de.drMartinKramer.hardware.*;
+import de.drMartinKramer.hardware.MFT_Hardware;
 import de.drMartinKramer.support.MFT_MidiMessage;
 
+public class GlobalParameterHandler extends AbstractCachingHandler{
 
-public class MixerHandler extends AbstractCachingHandler
-{
-	private TrackBank trackBank = null;
-	private int updateDelay = 0; //how often should the Bitwig mixer and arranger be updated?
-		
-	public MixerHandler (ControllerHost host)
-	{		
-		super(host);
-		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 0, 0);
-	       
-	    for (int i = 0; i < this.trackBank.getSizeOfBank (); i++)
-	    {
-	        Track track = this.trackBank.getItemAt (i);	
-	        track.pan().markInterested ();
-	        track.pan().setIndication (true);
-	          
-	        
-	        // VOLUME: Register an observer for each track's volume
-	        final int trackIndex = i; //the final is very important, otherwise we cannot lock the trackIndex for each track
-	        track.volume().markInterested ();
-	        track.volume().setIndication (true);
-	        track.volume().value().addValueObserver( (newValue)->this.reactToTrackVolumeChange(trackIndex,newValue) );
+    Transport transport = null;
+
+    public GlobalParameterHandler(ControllerHost host)
+    {
+        super(host);
+        this.transport = host.createTransport();
+
+        for(int i=0;i<16;i++)
+        {
             
-	        //COLOR
-	        track.color().markInterested();	
-            track.color().addValueObserver((colorRed,colorGreen,colorBlue)->this.reactToColorChange(trackIndex,colorRed,colorGreen,colorBlue) );			
-	    }
-	}// end of trackHandler Constructor
-	
-	/**
-	 * This is called as a reaction to a changed track volume in Bitwig. We send a message to the MFT to update the track volume on the encoder 	
-	 * @param index the number of the track on which the volume change occured, from 0 to 15
-	 * @param newValue the new value of of the track volume
-	 */
-    private void reactToTrackVolumeChange(int trackIndex, double newValue) {
-    	setEncoderRingValueCached(trackIndex,trackIndex,  (int) Math.round(newValue*127));
-    }
-    
-    /**
-     * This callback method is called when a color of a track in Bitwig is changed. We receive the trackIndex and the 
-     * color in form of an RGB value, as red, green, blue. 
-     * As a result we need to change the color in the device
-     * @param trackIndex The index of the track for which the color was changed. 
-     * @param red the amount of red in the color
-     * @param green the amount of green in the color
-     * @param blue the amount of blue in the color
-     */
-    private void reactToColorChange(int trackIndex, float red, float green, float blue) {
-    	int colorIndex = MFT_Colors.getClosestMFT_Color(red,green,blue);
-    	setEncoderColorCached(trackIndex, trackIndex,colorIndex);    	
-    }
-    
-    /**
-     * Method is called as a response to an encoder click MFT. 
-     * @param track which track is affected
-     * @param msg the incoming midi message from the MFT
-     */
-	private void updateMFT_Volume (Track track, MFT_MidiMessage msg)
-	{
-	    if(!msg.isButtonCurrentlyDown()){ //the button is currently not pressed
-			track.volume().inc ((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128); 
-			updateDelay++;
-			if(updateDelay > 20 && MFT_Configuration.mixerMakeVisible()){ //only every 20th time and only if we should update the view 
-				track.makeVisibleInArranger();
-				track.makeVisibleInMixer();
-				updateDelay=0;
-			}	
-		}else{
-			track.pan().inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);
-		}
-	}
-	
-	/**
-     * Method is called as a response to an encoder value change on the MFT. We update Bitwig by either increasing of decreasing its current value
-     * @param track which track is affected
-     * @param msg the incoming midi message from the MFT
-     */
-	private void clickedOnEncoder (int index, MFT_MidiMessage msg)
-	{
-	    Track myNewTrack = this.trackBank.getItemAt (index);
-	    if(msg.isLongClick()){
-			if(MFT_Configuration.isMixerLongButtonActionArm())
-				myNewTrack.arm().toggle();
-			else if(MFT_Configuration.isMixerLongButtonActionMute())
-				myNewTrack.mute().toggle();
-			else if(MFT_Configuration.isMixerLongButtonActionSolo())
-				myNewTrack.solo().toggle();
-		}else{ //short click
-			myNewTrack.selectInEditor();
-			myNewTrack.selectInMixer();
-	    	if(MFT_Configuration.mixerMakeVisible()){
-				myNewTrack.makeVisibleInMixer();
-	    		myNewTrack.makeVisibleInArranger();
-			}			
-		}
-	}
+            setEncoderColorCached(i, i, 19+i);
+            setEncoderRingValueCached(i, i, 50+i*2);
+        }
 
-	public boolean handleMidi (MFT_MidiMessage msg)
+        println("Global Parameter Handler initialized");
+    }   
+
+    public boolean handleMidi (MFT_MidiMessage msg)
 	{   
 		super.handleMidi(msg);//we first need to check for long clicks
 		//check for CC message on channel 2 (which is here 1 and button clicked which is indicated by value (data2) = 127)
-	    if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0)
+        if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0)
 	    {
 	        // Message came on Channel two (==1) -> CLICK ON THE ENCODER -> SELECT a TRACK *********
 	        switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
@@ -195,52 +113,52 @@ public class MixerHandler extends AbstractCachingHandler
 	            // We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
 	            //thus, data2-64 gives us either +1 or -1 and we can use this value to increment (or decrement) the volum
 	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-	                this.updateMFT_Volume(this.trackBank.getItemAt (0), msg);					
+	                turnedEncoder(0, msg);					
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_02:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (1), msg);
+	                turnedEncoder(1, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_03:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (2), msg);
+	                turnedEncoder(2, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_04:
-	                this.updateMFT_Volume(this.trackBank.getItemAt (3), msg);
+	                turnedEncoder(3, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_05:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (4), msg);
+	                turnedEncoder(4, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_06:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (5), msg);               
+	                turnedEncoder(5, msg);               
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_07:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (6), msg);
+	                turnedEncoder(6, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_08:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (7), msg);
+	                turnedEncoder(7, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_09:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (8), msg);
+	                turnedEncoder(8, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_10:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (9), msg);
+	                turnedEncoder(9, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_11:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (10),msg);
+	                turnedEncoder(10, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_12:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (11),msg);
+	                turnedEncoder(11, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_13:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (12),msg);
+	                turnedEncoder(12, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_14:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (13),msg);
+	                turnedEncoder(13, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_15:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (14),msg);
+	                turnedEncoder(14, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_16:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (15),msg);
+	                turnedEncoder(15, msg);
 	                return true;   
 	            default:
 	                return false; //false = no midi handled
@@ -249,6 +167,13 @@ public class MixerHandler extends AbstractCachingHandler
 	    return false; //we did not handle any incoming midi   
 	}	//end of handleMidi
 
-	
-	
+    private void clickedOnEncoder(int encoder, MFT_MidiMessage msg)
+    {
+        println("Clicked on Encoder " + encoder);
+    }
+
+    private void turnedEncoder(int encoder, MFT_MidiMessage msg)
+    {
+        println("Turned Encoder " + encoder + " to value " + msg.toString());
+    }
 }

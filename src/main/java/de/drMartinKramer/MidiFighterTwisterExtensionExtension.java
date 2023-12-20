@@ -31,6 +31,7 @@ import de.drMartinKramer.handler.AbstractHandler;
 import de.drMartinKramer.handler.ChannelStripHandler;
 import de.drMartinKramer.handler.DeviceHandler;
 import de.drMartinKramer.handler.EQ_Handler;
+import de.drMartinKramer.handler.GlobalParameterHandler;
 import de.drMartinKramer.handler.MixerHandler;
 import de.drMartinKramer.hardware.MFT_Hardware;
 import de.drMartinKramer.support.EncoderStateMap;
@@ -40,11 +41,15 @@ import de.drMartinKramer.support.MFT_MidiMessage;
 public class MidiFighterTwisterExtensionExtension extends ControllerExtension
 {
 	private ControllerHost host = null;
-	private ModeHandler modeHandler = null;
-	private MixerHandler trackHandler = null; //Bank 1
-	private ChannelStripHandler channelStripHandler = null; // Bank 2
-   private DeviceHandler deviceHandler = null; // Bank 3
-   private EQ_Handler eq_Handler = null; // Bank 4
+
+   /** A handler to handle the mode changes */
+   private ModeHandler modeHandler = null; 
+   //and the hanlder for the individual modes	
+	private MixerHandler trackHandler = null; 
+	private ChannelStripHandler channelStripHandler = null; 
+   private DeviceHandler deviceHandler = null; 
+   private EQ_Handler eq_Handler = null; 
+   private GlobalParameterHandler globalParameterHandler= null;
 	private MidiFighterTwisterExtensionExtensionDefinition definition = null;
    private MFT_Configuration configuration = null;
    private EncoderStateMap encoderStateMap = null; //a hashmap that stores the current state of the encoders  
@@ -88,6 +93,8 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
       handlerMap.put(ModeHandler.MFT_MODE_DEVICE, this.deviceHandler);
       this.eq_Handler = new EQ_Handler(host);      
       handlerMap.put(ModeHandler.MFT_MODE_EQ, this.eq_Handler);
+      this.globalParameterHandler = new GlobalParameterHandler(host);
+      handlerMap.put(ModeHandler.MFT_MODE_GLOBAL, this.globalParameterHandler);
       
       //finally we create the mode handler and inform it about the handlers      
       this.modeHandler = new ModeHandler(host, handlerMap);  
@@ -104,7 +111,7 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
    @Override
    public void exit()
    {
-      getHost().showPopupNotification("Midi Fighter Twister exited");
+      getHost().showPopupNotification("Bitwig Performance Twister exited");
    }
 
    @Override
@@ -154,7 +161,9 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
             channelStripHandler.handleMidi(mftMessage); 
          } else if (modeHandler.getMode() == ModeHandler.MFT_MODE_DEVICE){
             deviceHandler.handleMidi(mftMessage);
-         }      
+         } else if (modeHandler.getMode() == ModeHandler.MFT_MODE_GLOBAL){
+            globalParameterHandler.handleMidi(mftMessage);
+         }
       }catch(Exception e) {
 		   host.errorln("Something went wrong after the MFT sent a Midi message. The script could not handle this message correctly. ");
 		   host.errorln("Exception thrown: " + e.getLocalizedMessage());
