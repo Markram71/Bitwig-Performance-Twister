@@ -26,6 +26,7 @@ import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.DeviceMatcher;
+import com.bitwig.extension.controller.api.InsertionPoint;
 import com.bitwig.extension.controller.api.Parameter;
 import com.bitwig.extension.controller.api.SpecificBitwigDevice;
 
@@ -37,6 +38,7 @@ public class EQ_Handler  extends AbstractCachingHandler
 {
 
     private final String BITWIG_EQ_PLUS_DEVICE_ID =  "e4815188-ba6f-4d14-bcfc-2dcb8f778ccb"; 
+    private CursorTrack cursorTrack = null;
     private Device eqPlusDevice = null;
     SpecificBitwigDevice bitwigEQPlusDevice = null;
     Parameter[] gainParameter = null;
@@ -59,7 +61,7 @@ public class EQ_Handler  extends AbstractCachingHandler
 
     public EQ_Handler(ControllerHost host) {
         super(host);
-        CursorTrack cursorTrack = host.createCursorTrack(0, 0);
+        this.cursorTrack = host.createCursorTrack(0, 0);
         DeviceBank eqPlusFilterDeviceBank = cursorTrack.createDeviceBank(1);
         UUID eqUUID = UUID.fromString(BITWIG_EQ_PLUS_DEVICE_ID);
         DeviceMatcher eqPlusFilterDeviceMatcher = host.createBitwigDeviceMatcher(eqUUID);
@@ -94,7 +96,6 @@ public class EQ_Handler  extends AbstractCachingHandler
 
     
     private void reactToGainChange(int column, double newValue) {
-        println("Gain Change: " + column + "to " + newValue);
         final int newIntValue = (int)Math.round(newValue * 127.0);
         setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01 +  column,column, newIntValue);
         
@@ -111,14 +112,13 @@ public class EQ_Handler  extends AbstractCachingHandler
     }
 
     private void reactToTypeChange(int column, double newValue) {
-        println("Type Change: " + column + "to " + newValue);
         final int newIntValue = (int)Math.round(newValue * 127.0);
         setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_13 +  column,12+column,  newIntValue);
         setBandColor(column);    //also set the color of the encoder
     }   
 
     private void reactToEQ_Exists(boolean exists) {
-        println("EQ Exists: " + exists);
+        //currently no action required here
     }    
 
     private void setBandColor(int column, double frequency)
@@ -129,8 +129,8 @@ public class EQ_Handler  extends AbstractCachingHandler
         else{
             newColor = (int)Math.round(COLOR_FREQ_MIN + frequency*(COLOR_FREQ_MAX-COLOR_FREQ_MIN));
         } 
-        println("Set Band Color for band "+ column + ":" + bandType+  " to " + newColor   );
-
+        
+        //we want to set the band color for a whole column, thus four similar statements
         setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01 +  column, column, newColor);
         setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_05 +  column, 4+column, newColor);
         setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_09 +  column, 8+column, newColor);
@@ -141,6 +141,16 @@ public class EQ_Handler  extends AbstractCachingHandler
         setBandColor(column, frequencyParameter[column].value().get());
     }
 
+    /**
+     * Method create a new EQ device on the current channel in case there has been no EQ already
+     */
+    private void createNewEQDevice() 
+    {
+        InsertionPoint endOfDeviceChainInsertionPoint = this.cursorTrack.endOfDeviceChainInsertionPoint();
+        endOfDeviceChainInsertionPoint.insertBitwigDevice(UUID.fromString(BITWIG_EQ_PLUS_DEVICE_ID));
+        
+    }
+
     @Override
     public boolean handleMidi (MFT_MidiMessage msg)
 	{   
@@ -148,23 +158,28 @@ public class EQ_Handler  extends AbstractCachingHandler
 		
         //then let's check if we actually have an EQ (or nor)
         if(!this.eqPlusDevice.exists().get()){
-            println("No EQ device exists");
-            return false;
-            //we might want to create on.... //todo for later
+            //no EQ device exists, thus we need to create one
+            if(msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0) createNewEQDevice();
+            return true; //then we leave           
         }
 
         //at this point we know we have an active EQ device
         //check for CC message on channel 2 (which is here 1 and button clicked which is indicated by value (data2) = 127)
 	    if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0)
 	    {
-	        // Message came on Channel two (==1) -> CLICK ON THE ENCODER 
+	        
+            // Message came on Channel two (==1) -> CLICK ON THE ENCODER 
 	        switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
 	        {   
 	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-	                toggleEQ_on_off(0);	                
+                    if(msg.isLongClick()) { //long click -> toggle the device window open/closed
+                        eqPlusDevice.isEnabled().toggle();
+                    }else toggleEQ_on_off(0);	//short click                
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_02:
-	            	toggleEQ_on_off(1);
+	            	if(msg.isLongClick()) { //long click -> toggle the device window open/closed
+                        eqPlusDevice.isWindowOpen().toggle();
+                    }else toggleEQ_on_off(1);	//short click
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_03:
 	            	toggleEQ_on_off(2);
@@ -172,29 +187,29 @@ public class EQ_Handler  extends AbstractCachingHandler
 	            case MFT_Hardware.MFT_BANK1_BUTTON_04:
 	            	toggleEQ_on_off(3);	                
 	                return true;     
-	            case MFT_Hardware.MFT_BANK1_BUTTON_05:
-	            	clickedOnEncoder(4, msg);	                
+	            case MFT_Hardware.MFT_BANK1_BUTTON_05:	            		
+                    frequencyParameter[0].reset();                
 	                return true;   
 	            case MFT_Hardware.MFT_BANK1_BUTTON_06:
-	            	clickedOnEncoder(5, msg);                
+	            	frequencyParameter[1].reset();                
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_07:
-	            	clickedOnEncoder(6, msg);                
+	            	frequencyParameter[2].reset();               
 	                return true;  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_08:
-	            	clickedOnEncoder(7, msg);	                
+	            	frequencyParameter[3].reset();                
 	                return true; 
 	            case MFT_Hardware.MFT_BANK1_BUTTON_09:
-	            	clickedOnEncoder(8, msg);
+	            	qParameter[0].reset();
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_10:
-	            	clickedOnEncoder(9, msg);
+	            	qParameter[1].reset();
 	                return true;  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_11:
-	            	clickedOnEncoder(10, msg);
+	            	qParameter[2].reset();
 	                return true;  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_12:
-	            	clickedOnEncoder(11, msg);
+	            	qParameter[3].reset();
 	                return true;                                                  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_13:
 	            	toggleEQType(0);
@@ -274,10 +289,6 @@ public class EQ_Handler  extends AbstractCachingHandler
 	    return false; //we did not handle any incoming midi   
 	}	//end of handleMidi
 
-    private void clickedOnEncoder(int encoderNr, MFT_MidiMessage msg)
-    {
-        println("Clicked on encoder: " + encoderNr + "..." + msg.toString());
-    }
 
     private void changeGain(int column, MFT_MidiMessage msg)
     {

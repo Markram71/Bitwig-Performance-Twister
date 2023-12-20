@@ -24,6 +24,7 @@ import java.util.HashMap;
 import com.bitwig.extension.api.util.midi.ShortMidiMessage;
 import com.bitwig.extension.callback.ShortMidiMessageReceivedCallback;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.NoteInput;
 import com.bitwig.extension.controller.ControllerExtension;
 
 import de.drMartinKramer.handler.ModeHandler;
@@ -68,7 +69,9 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
    
    public void init() 
    {
-      final ControllerHost host = getHost();   
+      final ControllerHost host = getHost(); 
+      
+      NoteInput noteInput = host.getMidiInPort(0).createNoteInput("Midi Fighter Twister", "B4????", "B6????");
       
       host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
       this.configuration = new MFT_Configuration(host);
@@ -90,7 +93,7 @@ public class MidiFighterTwisterExtensionExtension extends ControllerExtension
       this.modeHandler.changeToMode(MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1); //Change to mixer mode
       
       // For now just show a pop up notification for verification that it is running.
-      host.showPopupNotification("Midi Fighter Twister initialized, Version " + definition.getVersion());     
+      host.showPopupNotification("Bitwig Performance Twister initialized, Version " + definition.getVersion());     
    } //end of init
 
    public MFT_Configuration getConfiguration() {
