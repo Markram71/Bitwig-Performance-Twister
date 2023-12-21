@@ -15,11 +15,14 @@ With this extension you will be able to use the midi controller
     1. [Mode 5 Global Parameters](#mode-5-global-parameters) 
     1. [Mode 6 User defined Controls](#mode-6-user-defined-controls) 
        
+1. [Configuration](#configuration)
 1. [Installation](#installation)
     1. [Setup of the Midi Fighter Twister](#setup-of-the-midi-fighter-twister)
     1. [Setup in Bitwig](#setup-in-bitwig)
 
 1. [Implementation Notes](#implementation-notes)
+2. [Acknowledgements](#acknowledgements)
+3. [License](#license)
 
 
 ## Introduction
@@ -27,12 +30,15 @@ With this extension you will be able to use the midi controller
 lorem ipsum
 
 ## Overview of the available features 
-Bitwig performance Twister offers the following features 
+Bitwig performance Twister offers the following features: 
 
-* **Modes:** The Bitwig Performance Twister offers six different modes for the 16 encoders of the midi controller. Each mode can be accessed by clicking on one of the buttons on the side.
-  The encoders for the Midi Figher Twister then behave differently
-on each mode, see further details below. You also have the possibility of a temporary mode switch. For that press on the side button for the bank you temporaririly want to switch to and hold the side button pressed. You can turn and click on the encoders of the newly selected mode. Once you release the side button, you immediately return to the previous mode. You can use this, for instance to quickly adjust the volume of a track in the mixer and directly return a device control. 
-
+* **Modes:** The Bitwig Performance Twister offers six different modes for the 16 encoders of the midi controller. Each mode can be accessed by clicking on one of the buttons on the side. The encoders for the Midi Figher Twister then behave differently on each mode. You also have the possibility of a temporary mode switch. For that press on the side button for the mode you temporaririly want to switch to and hold the side button pressed. You can turn or click on the encoders of the newly selected mode. Once you release the side button, you immediately return to the previous mode. You can use this, for instance to quickly adjust the volume of a track in the mixer and directly return a device control. _Bitwig Performance Twister_ has the following modes: 
+    * **Mixer Mode**: A mixer for 16 tracks. You can select tracks, change volume, a secondary parameter and mute, solo or arm.
+    * **Channel Strip Mode**: In this mode you have access to many different parameter of a single track. You can also easily change the currently selected track
+    * **Device Mode**: This gives you access to the devices and global remote controls.
+    * **EQ**: Quickly createa an EQ+ devices and access four of its bands
+    * **Global Parameters**: Access some global Bitwig functions and have access to transport controls
+    * **User Mode**: Use the Midi Fighter Twister in its basic form, without and automatically mapped encoders  
 * **Long clicks:** By clicking and keeping the encoder pressed down for a short time, you can get access to a secondary action for some of the encoders
 * **Click & turn:** Click down an encoder button and turn the encoder while it's pressed down. This gives access to a secondary paramter which can be controlled with this same encoder.  
 
@@ -130,6 +136,22 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 
 ### Mode 6 User defined controls
 
+## Configuration
+The _Bitwig Performance Twister_ can be configured to suit to your needs. In order to change the configuration click on the Bitwig Icon on the top of the Bitwig screen, then change to _configuration_ and there choose _controller_ on the left side. The following configuration items are avaialable: 
+* **_Global_**
+    * **Encoder turn speedup factor**: This is a factor that influence how fast the encoder change values in Bitwig. A factor >1 speeds up the value change, a factor <1 slows down the speed of change.
+  
+    *   **Encoder turn speedup factor when clicked down** This is a speedup factor which is applied when the encoder is clicked down and turned at the same time. This factor can be used to increase the speed of change, e.g. when using a secondary parameter in the mixer mode.
+   *    **Show pop up notification**: Should the script show pop of notification of what is happening or not (e.g. when changing modes)
+   *    **Long click duration in milliseconds** The time it takes for a long click to be noticed. The parameter is in milliseconds. Adapt this to you personal liking.
+   *    **First mode**: Here you specify which will be the first mode once the Midi Fighter Twister is initialized. You can choose from all six available modes.    
+* **_Mixer mode_**
+    * **Make tracks visible**: When you select a track or change the volume of a track, should Bitwig also bring this track into the foreground (or not). This parameter only has an effect if you have many tracks and some are hidden.
+    * **Long click action** In the mixer you can use a long click to fire up an action on the track associated to the encoder. You can toggle *solo* for the track, toggle *record arm*, or toggle *mute*.
+    *    **Click&Turn function**: In the mixer you have the possibility to control a secondary parameter with each encoder (remember, the first function is to change the volume). Here you can decide which function you want to control. You can either change the _panning_ or change the _send_ level to the first FX track or change the level of the first _remote control_ of the track. This is a great tool during performances.
+* **_Channel Strip Mode_**
+    * **Channel Strip Encoder #4 function**: This lets you control the Bitwig parameter which is changed when you turn the fourth encoder on the first row in the channel strip mode. You can choose _master volume_, crossfader_, or _cue volume_.           
+
 ## Installation
 
 ### Setup of the Midi Fighter Twister
@@ -139,11 +161,11 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 ## Controller Configuration
 
 ## Implementation Notes
-* Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
+* **Modes and Banks:** Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
 
 ## Acknowledgements
 I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. 
 
 
 ## License
-This Bitwig extension is alvailable under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3. 
+This Bitwig extension is alvailable under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, see the license text [here](../LICENSE). 
