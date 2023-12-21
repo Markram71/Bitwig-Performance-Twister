@@ -30,12 +30,15 @@ With this extension you will be able to use the midi controller
 lorem ipsum
 
 ## Overview of the available features 
-Bitwig performance Twister offers the following features 
+Bitwig performance Twister offers the following features: 
 
-* **Modes:** The Bitwig Performance Twister offers six different modes for the 16 encoders of the midi controller. Each mode can be accessed by clicking on one of the buttons on the side.
-  The encoders for the Midi Figher Twister then behave differently
-on each mode, see further details below. You also have the possibility of a temporary mode switch. For that press on the side button for the bank you temporaririly want to switch to and hold the side button pressed. You can turn and click on the encoders of the newly selected mode. Once you release the side button, you immediately return to the previous mode. You can use this, for instance to quickly adjust the volume of a track in the mixer and directly return a device control. 
-
+* **Modes:** The Bitwig Performance Twister offers six different modes for the 16 encoders of the midi controller. Each mode can be accessed by clicking on one of the buttons on the side. The encoders for the Midi Figher Twister then behave differently on each mode. You also have the possibility of a temporary mode switch. For that press on the side button for the mode you temporaririly want to switch to and hold the side button pressed. You can turn or click on the encoders of the newly selected mode. Once you release the side button, you immediately return to the previous mode. You can use this, for instance to quickly adjust the volume of a track in the mixer and directly return a device control. _Bitwig Performance Twister_ has the following modes: 
+    * **Mixer Mode**: A mixer for 16 tracks. You can select tracks, change volume, a secondary parameter and mute, solo or arm.
+    * **Channel Strip Mode**: In this mode you have access to many different parameter of a single track. You can also easily change the currently selected track
+    * **Device Mode**: This gives you access to the devices and global remote controls.
+    * **EQ**: Quickly createa an EQ+ devices and access four of its bands
+    * **Global Parameters**: Access some global Bitwig functions and have access to transport controls
+    * **User Mode**: Use the Midi Fighter Twister in its basic form, without and automatically mapped encoders  
 * **Long clicks:** By clicking and keeping the encoder pressed down for a short time, you can get access to a secondary action for some of the encoders
 * **Click & turn:** Click down an encoder button and turn the encoder while it's pressed down. This gives access to a secondary paramter which can be controlled with this same encoder.  
 
