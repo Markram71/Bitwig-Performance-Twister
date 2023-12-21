@@ -145,7 +145,7 @@ The _Bitwig Performance Twister_ can be configured to suit to your needs. In ord
 * **_Mixer mode_**
     * **Make tracks visible**: When you select a track or change the volume of a track, should Bitwig also bring this track into the foreground (or not). This parameter only has an effect if you have many tracks and some are hidden.
     * **Long click action** In the mixer you can use a long click to fire up an action on the track associated to the encoder. You can toggle *solo* for the track, toggle *record arm*, or toggle *mute*.
-    *    **Click&Turn function**: In the mixer you have the possibility to control a secondary parameter with each encoder (remember, the first fucntion is to change the volume). Here you can decide which function you want to control. You can either change the _panning_ or change the _send_ level to the first FX track or change the level of the first _remote control_ of the track. This is a great tool during performances.
+    *    **Click&Turn function**: In the mixer you have the possibility to control a secondary parameter with each encoder (remember, the first function is to change the volume). Here you can decide which function you want to control. You can either change the _panning_ or change the _send_ level to the first FX track or change the level of the first _remote control_ of the track. This is a great tool during performances.
 * **_Channel Strip Mode_**
     * **Channel Strip Encoder #4 function**: This lets you control the Bitwig parameter which is changed when you turn the fourth encoder on the first row in the channel strip mode. You can choose _master volume_, crossfader_, or _cue volume_.           
 
@@ -165,4 +165,4 @@ I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi con
 
 
 ## License
-This Bitwig extension is alvailable under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3. 
+This Bitwig extension is alvailable under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, see the license text [here](../LICENSE). 
