@@ -156,8 +156,31 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 
 
 ### Mode 5 Global Parameters
+This mode allows you to control many actions of the Bitwig transport section and global parameter like master volume, cue volume, cross fader setting, etc. You can also use it to quickly change the appearance of the Bitwig window, e.g. by toggling the inspector on the left side. Note: all encoders have function assign to clicking it, but not all encoders react to turning. 
+
+| Encoder | Turn (Twisting)     | Click & turn | Click                          | Long Click           | RGB Light                    |
+|:-------:|---------------------|--------------|--------------------------------|----------------------|------------------------------|
+|1        |start cursor (coarse)|              |start/pause                     |                      | green if play, off otherwise |
+|2        |start cursorn (fine) |              |stop                            |toggle window         | off                          |
+|3        |cross fader          |              |toggle record                   |                      | red if record enable         |
+|4        |master volumen       |              |toggle arranger loop            |                      | blue if arranger loop enabled|
+|5        |                     |              |toggle fill (used by operators) |                      | off                          |
+|6        |                     |              |toggle midi overdub             |                      | off                          |
+|7        |cue volume           |              |toggle metronom                 |                      | off                          |
+|8        |tempo (normal)       |tempo (fine)  |tap tempo                       |                      | off                          |
+|9        |selected track       |              |previous project                |                      | off                          |
+|10       |                     |              |next project                    |                      | off                          |
+|11       |                     |              |activate audio                  |                      | off                          |
+|12       |                     |              |n/a                             |                      | off                          |
+|13       |                     |              |toggle inspector                |toggle device view    | off                          |
+|14       |                     |              |change to arranger view         |toggle mixer view     | off                          |
+|15       |                     |              |change to mix view              |toggle note editor    | off                          |
+|16       |                     |              |change to edit view             |toggle full screen    | off                          |
+
+
 
 ### Mode 6 User defined controls
+This mode simply allows to bypass the controller script and allows you to use it for your own Midi Learn mapping. When accessing the mode 6 the Midi Figther Twister is set internally to bank four. You can also configure the CC message and colors in the `Midifighter Utility`. Please keep the midi channels to five and six, respectively.  
 
 ## Configuration
 The _Bitwig Performance Twister_ can be configured to suit to your needs. In order to change the configuration click on the Bitwig Icon on the top of the Bitwig screen, then change to _configuration_ and there choose _controller_ on the left side. 
@@ -198,11 +221,10 @@ The installation of _Bitwig Performance Twister_ is straight forward. It require
 ![Screenshot of the add controller dialog in Bitwig](./resources/add_controller_BPT2.png)
 
 
-## Controller Configuration
-
-## Implementation Notes
+## Implementation Notes 
 * **Modes and Banks:** Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
-* Unfortunately, the color palette of the LED lights below the encoders of the Midi Fighter is limited. _Bitwig Performance Twister_ uses the approximation of [Twister Sister](...) by Dan Smith.  
+* Unfortunately, the color palette of the LED lights below the encoders of the Midi Fighter is limited. _Bitwig Performance Twister_ uses the approximation of [Twister Sister](...) by Dan Smith.
+* Unfortunately I could not test this script on Windows or Linux. Please help to test it and make it available to these communities, as well. 
 
 ## Acknowledgements
 I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. 
