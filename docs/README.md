@@ -228,7 +228,8 @@ The installation of _Bitwig Performance Twister_ is straight forward. It require
 * Unfortunately I could not test this script on Windows or Linux. Please help to test it and make it available to these communities, as well. 
 
 ## Known Bugs
-* The secondary click&turn function for send to fx1 and track remote #1 is not yet implemented. This will shortly follow. 
+* The secondary click&turn function for send to fx1 and track remote #1 is not yet implemented. This will shortly follow.
+* In the `MidiFighter Utility`tool, the check boxes, e.g. for the side buttons, don't seem to work corretly. The check box `Bank Side Buttons`under `Global Settings` needs to be de-activated and then the MFT needs to be flushed with this value. After flushing the check mark disappears, even if it had been checked before. It's important that is not activated. In this case the side buttons always send the same CC messages. And this is what we want.
 
 ## Acknowledgements
 I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. 
