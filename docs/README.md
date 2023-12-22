@@ -19,9 +19,6 @@ With this extension you will be able to use the midi controller
        
 1. [Configuration](#configuration)
 1. [Installation](#installation)
-    1. [Setup of the Midi Fighter Twister](#setup-of-the-midi-fighter-twister)
-    1. [Setup in Bitwig](#setup-in-bitwig)
-
 1. [Implementation Notes](#implementation-notes)
 2. [Acknowledgements](#acknowledgements)
 3. [License](#license)
@@ -163,7 +160,11 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 ### Mode 6 User defined controls
 
 ## Configuration
-The _Bitwig Performance Twister_ can be configured to suit to your needs. In order to change the configuration click on the Bitwig Icon on the top of the Bitwig screen, then change to _configuration_ and there choose _controller_ on the left side. The following configuration items are avaialable: 
+The _Bitwig Performance Twister_ can be configured to suit to your needs. In order to change the configuration click on the Bitwig Icon on the top of the Bitwig screen, then change to _configuration_ and there choose _controller_ on the left side. 
+
+![Screenshot of the add controller dialog in Bitwig](./resources/configure_BPT.png)
+
+The following configuration items are avaialable: 
 * **_Global_**
     * **Encoder turn speedup factor**: This is a factor that influence how fast the encoder change values in Bitwig. A factor >1 speeds up the value change, a factor <1 slows down the speed of change.
   
@@ -179,10 +180,23 @@ The _Bitwig Performance Twister_ can be configured to suit to your needs. In ord
     * **Channel Strip Encoder #4 function**: This lets you control the Bitwig parameter which is changed when you turn the fourth encoder on the first row in the channel strip mode. You can choose _master volume_, crossfader_, or _cue volume_.           
 
 ## Installation
+The installation of _Bitwig Performance Twister_ is straight forward. It requires basically four steps: 1. download and unpack the zip file of the latest release, 2. update the Midi Fighter Twister with the configuration provided in the zip file , 3. place the Bitwig extension into the correct Bitwig folder and 4. configure the controller . Here's the installation step by step: 
+1. Download the zip file from here and upack to whereever you like it
+2. Open `Midifighter Utility` application that comes with the Midi Fighter Twister (optionally and a good idea, you might need/want to update to the latest firmware by using `Tools -> Load Factory Firmware -> Midi Fighter Twister 4 (02 Oct 2019)`
+3. Load the configuration into the `Midifigther Utility` with `File -> Import Settings...`. Then upload the configuration into the midi controller with a click on `SEND TO MIDIGFIGHTER`.
+4. Copy `BitwigPerformanceTwister.bwextension` to the following location:
 
-### Setup of the Midi Fighter Twister
+    - Windows: `%USERPROFILE%/Documents/Bitwig Studio/Extensions`
+    - Mac:     `~/Documents/Bitwig Studio/Extensions`
+    - Linux:   `~/Bitwig Studio/Extensions` 
 
-### Setup in Bitwig
+5. Open Bitwig, go to the dashboard, click on `Configuration -> Controller`. Click on `+ Add controller`
+6. Select `DJ Techtools` on the left side and select `Midi Fighter Twister` on the right, see screenshot below
+![Screenshot of the add controller dialog in Bitwig](./resources/add_controller_BPT.png)
+
+7. Select the input and output midi connection by choosing `Midi Fighter Twister`from the dropdown box, see screenshot below
+![Screenshot of the add controller dialog in Bitwig](./resources/add_controller_BPT2.png)
+
 
 ## Controller Configuration
 
@@ -195,8 +209,8 @@ I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi con
 
 
 ## License
-2023 copyright Dr. Martin Kramer
-This Bitwig extension is alvailable under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, see the license text [here](../LICENSE). 
+* (c) 2023 copyright Dr. Martin Kramer
+* This Bitwig extension is alvailable under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, see the license text [here](../LICENSE). 
 
 
 ## Dependencies
