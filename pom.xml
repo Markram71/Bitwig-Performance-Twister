@@ -6,7 +6,7 @@
 	<artifactId>BitwigPerformanceTwister</artifactId>
 	<packaging>jar</packaging>
 	<name>Bitwig Performance Twister</name>
-	<version>0.3</version>
+	<version>1.0</version>
 	
 	<licenses>
 			<license>
