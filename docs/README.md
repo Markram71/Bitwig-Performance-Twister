@@ -195,9 +195,10 @@ I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi con
 
 
 ## License
+2023 copyright Dr. Martin Kramer
 This Bitwig extension is alvailable under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, see the license text [here](../LICENSE). 
 
-##Copyright
+
 ## Dependencies
 _Bitwig Performance Twister_ uses the following libraries 
 * [Twister Sister](https://github.com/dozius/TwisterSister/tree/main), Copyright 2021 Dan Smith
