@@ -43,6 +43,8 @@ Bitwig performance Twister offers the following features:
 * **Click & turn:** Click down an encoder button and turn the encoder while it's pressed down. This gives access to a secondary paramter which can be controlled with this same encoder.  
 
 ## Implemented Modes
+The following sections explain the mapping of encoders and the side buttons. For that, the following chart shows us where to find the encoders and side buttons. It comes from the Midi Fighter Twister manual: 
+![A chart of the Midit Fighter Twister with three button on each side, starting with button 1 on the top. This midi controller has 16 encoders which are order in four columns and four rows.](./resources/MFT_layout.png)
 
 ### Mode 1 Mixer
 This bank or mode contains a basic mixer for 16 channels in Bitwig. Every encoder of the Midi Fighter Twister is associated to one track in Bitwig. 
@@ -169,3 +171,7 @@ I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi con
 
 ## License
 This Bitwig extension is alvailable under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, see the license text [here](../LICENSE). 
+
+## Dependencies
+_Bitwig Performance Twister_ uses the following libraries 
+* [Twister Sister](https://github.com/dozius/TwisterSister/tree/main), Copyright 2021 Dan Smith
