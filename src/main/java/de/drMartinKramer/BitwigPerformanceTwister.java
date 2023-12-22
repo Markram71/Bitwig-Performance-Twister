@@ -33,7 +33,6 @@ import de.drMartinKramer.handler.DeviceHandler;
 import de.drMartinKramer.handler.EQ_Handler;
 import de.drMartinKramer.handler.GlobalParameterHandler;
 import de.drMartinKramer.handler.MixerHandler;
-import de.drMartinKramer.hardware.MFT_Hardware;
 import de.drMartinKramer.support.EncoderStateMap;
 import de.drMartinKramer.support.MFT_MidiMessage;
 
@@ -50,15 +49,13 @@ public class BitwigPerformanceTwister extends ControllerExtension
    private DeviceHandler deviceHandler = null; 
    private EQ_Handler eq_Handler = null; 
    private GlobalParameterHandler globalParameterHandler= null;
-	private BitwigPerformanceTwisterDefinition definition = null;
+	private EncoderStateMap encoderStateMap = null; //a hashmap that stores the current state of the encoders  
+   @SuppressWarnings("unused") //We just need to construct it once, but then we access it via static methods
    private MFT_Configuration configuration = null;
-   private EncoderStateMap encoderStateMap = null; //a hashmap that stores the current state of the encoders  
-
 	
    protected BitwigPerformanceTwister(final BitwigPerformanceTwisterDefinition definition, final ControllerHost host)
    {
       super(definition, host);
-      this.definition = definition;
       this.host = host; 
       this.encoderStateMap = new EncoderStateMap();
    }
@@ -74,13 +71,13 @@ public class BitwigPerformanceTwister extends ControllerExtension
    public void init() 
    {
       final ControllerHost host = getHost(); 
+      this.configuration = new MFT_Configuration(host);
       
       //create a note input: this will make the MFT messages visible in Bitwig, with it's on input port. We can also filter there only for MFT bank 4
       //The CC messages on Bank 4 are sent on channel 5 and 6 
       host.getMidiInPort(0).createNoteInput("Midi Fighter Twister", "B4????", "B6????");
       
       host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
-      this.configuration = new MFT_Configuration(host);
       
       // First, create a HashMap of Handlers in which we can store all the handlers
       final HashMap<Integer, AbstractHandler> handlerMap = new HashMap<>();

@@ -115,11 +115,7 @@ public class AbstractHandler {
         sendMidi(0xB0, encoder, value);
         
     }
-
     
-
-
-
     /**
      * Handle incoming midi message from the MFT
      * @param msg
