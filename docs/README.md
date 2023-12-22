@@ -20,8 +20,9 @@ With this extension you will be able to use the midi controller
 1. [Configuration](#configuration)
 1. [Installation](#installation)
 1. [Implementation Notes](#implementation-notes)
-2. [Acknowledgements](#acknowledgements)
-3. [License](#license)
+2. [Known Bugs](#known-bugs)
+3. [Acknowledgements](#acknowledgements)
+4. [License](#license)
 
 
 ## Introduction
@@ -225,6 +226,9 @@ The installation of _Bitwig Performance Twister_ is straight forward. It require
 * **Modes and Banks:** Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
 * Unfortunately, the color palette of the LED lights below the encoders of the Midi Fighter is limited. _Bitwig Performance Twister_ uses the approximation of [Twister Sister](...) by Dan Smith.
 * Unfortunately I could not test this script on Windows or Linux. Please help to test it and make it available to these communities, as well. 
+
+## Known Bugs
+* The secondary click&turn function for send to fx1 and track remote #1 is not yet implemented. This will shortly follow. 
 
 ## Acknowledgements
 I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. 
