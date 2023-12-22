@@ -2,10 +2,9 @@
 # Bitwig Performance Twister (Bitwig Extesnsion) 
  Bitwig Extension to use the midi controller "Midi Fighter Twister" with the DAW Bitwig. 
 
-Directly download the latest release: 
-[![Download](https://img.shields.io/github/downloads/dozius/TwisterSister/total.svg)](https://github.com/markram71/Bitwig-Performance-Twister/releases/latest)
+Directly download the latest release: [download zip file](https://github.com/markram71/Bitwig-Performance-Twister/releases/latest)
 
-Please see the user documentation with installation instructions here [here](docs/README.md).
+Please read the [user documentation ](docs/README.md) with the installation instructions.
 
 
 ## Compiling
