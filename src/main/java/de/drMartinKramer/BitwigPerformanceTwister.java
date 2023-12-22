@@ -78,7 +78,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
       host.getMidiInPort(0).createNoteInput("Midi Fighter Twister", "B4????", "B6????");
       
       host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
-      
+   
       // First, create a HashMap of Handlers in which we can store all the handlers
       final HashMap<Integer, AbstractHandler> handlerMap = new HashMap<>();
       //then, let's create all the handlers and add them to the handlerMap
@@ -94,7 +94,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
       handlerMap.put(ModeHandler.MFT_MODE_GLOBAL, this.globalParameterHandler);
       
       //finally we create the mode handler and inform it about the handlers      
-      this.modeHandler = new ModeHandler(host, handlerMap);  
+      this.modeHandler = new ModeHandler(host, handlerMap);   
            
       //we schedule the initial startup of the MFT and give is some time to initialize itself
       host.scheduleTask((Runnable)()->scheduledInitialStartup(), 1500);

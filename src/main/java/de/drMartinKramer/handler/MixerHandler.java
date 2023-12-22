@@ -20,6 +20,8 @@
 package de.drMartinKramer.handler;
 
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.Parameter;
+import com.bitwig.extension.controller.api.RemoteControlsPage;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 
@@ -32,18 +34,19 @@ public class MixerHandler extends AbstractCachingHandler
 {
 	private TrackBank trackBank = null;
 	private int updateDelay = 0; //how often should the Bitwig mixer and arranger be updated?
+	RemoteControlsPage[] remoteControlsPage = null;
 		
 	public MixerHandler (ControllerHost host)
 	{		
 		super(host);
-		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 0, 0);
-	       
+		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 1, 0);
+	    this.remoteControlsPage = new RemoteControlsPage[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];  
+
 	    for (int i = 0; i < this.trackBank.getSizeOfBank (); i++)
 	    {
 	        Track track = this.trackBank.getItemAt (i);	
 	        track.pan().markInterested ();
-	        track.pan().setIndication (true);
-	          
+	        track.pan().setIndication (true);	          
 	        
 	        // VOLUME: Register an observer for each track's volume
 	        final int trackIndex = i; //the final is very important, otherwise we cannot lock the trackIndex for each track
@@ -51,7 +54,10 @@ public class MixerHandler extends AbstractCachingHandler
 	        track.volume().setIndication (true);
 	        track.volume().value().addValueObserver( (newValue)->this.reactToTrackVolumeChange(trackIndex,newValue) );
             
-	        //COLOR
+			//Get access to one send and one remote parameter for click&turn		
+			this.remoteControlsPage[i] =  track.createCursorRemoteControlsPage(1);
+
+			//COLOR
 	        track.color().markInterested();	
             track.color().addValueObserver((colorRed,colorGreen,colorBlue)->this.reactToColorChange(trackIndex,colorRed,colorGreen,colorBlue) );			
 	    }
@@ -85,8 +91,9 @@ public class MixerHandler extends AbstractCachingHandler
      * @param track which track is affected
      * @param msg the incoming midi message from the MFT
      */
-	private void updateMFT_Volume (Track track, MFT_MidiMessage msg)
+	private void updateTrackParameterAfterTurn (int encoderNr, MFT_MidiMessage msg)
 	{
+		Track track = this.trackBank.getItemAt (encoderNr);
 	    if(!msg.isButtonCurrentlyDown()){ //the button is currently not pressed
 			track.volume().inc ((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128); 
 			updateDelay++;
@@ -96,7 +103,14 @@ public class MixerHandler extends AbstractCachingHandler
 				updateDelay=0;
 			}	
 		}else{
-			track.pan().inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);
+			if(MFT_Configuration.isMixerClickAdnTurnFunctionPan()){
+				track.pan().inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);
+			}else if(MFT_Configuration.isMixerClickAdnTurnFunctionSend1()){	
+				track.sendBank().getItemAt(0).value().inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);				
+			}else if(MFT_Configuration.isMixerClickAdnTurnFunctionTrackRemote1()){
+				Parameter parameter = remoteControlsPage[encoderNr].getParameter(0);
+				if(parameter!=null)parameter.inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);
+			}
 		}
 	}
 	
@@ -195,52 +209,52 @@ public class MixerHandler extends AbstractCachingHandler
 	            // We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
 	            //thus, data2-64 gives us either +1 or -1 and we can use this value to increment (or decrement) the volum
 	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-	                this.updateMFT_Volume(this.trackBank.getItemAt (0), msg);					
+	                this.updateTrackParameterAfterTurn(0, msg);					
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_02:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (1), msg);
+	                this.updateTrackParameterAfterTurn(1, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_03:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (2), msg);
+	                this.updateTrackParameterAfterTurn(2, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_04:
-	                this.updateMFT_Volume(this.trackBank.getItemAt (3), msg);
+	                this.updateTrackParameterAfterTurn(3, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_05:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (4), msg);
+	                this.updateTrackParameterAfterTurn(4, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_06:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (5), msg);               
+	                this.updateTrackParameterAfterTurn(5, msg);               
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_07:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (6), msg);
+	                this.updateTrackParameterAfterTurn(6, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_08:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (7), msg);
+	                this.updateTrackParameterAfterTurn(7, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_09:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (8), msg);
+	                this.updateTrackParameterAfterTurn(8, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_10:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (9), msg);
+	                this.updateTrackParameterAfterTurn(9, msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_11:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (10),msg);
+	                this.updateTrackParameterAfterTurn(10,msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_12:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (11),msg);
+	                this.updateTrackParameterAfterTurn(11,msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_13:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (12),msg);
+	                this.updateTrackParameterAfterTurn(12,msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_14:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (13),msg);
+	                this.updateTrackParameterAfterTurn(13,msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_15:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (14),msg);
+	                this.updateTrackParameterAfterTurn(14,msg);
 	                return true;
 	            case MFT_Hardware.MFT_BANK1_BUTTON_16:                
-	                this.updateMFT_Volume(this.trackBank.getItemAt (15),msg);
+	                this.updateTrackParameterAfterTurn(15,msg);
 	                return true;   
 	            default:
 	                return false; //false = no midi handled
