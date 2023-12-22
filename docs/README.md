@@ -6,7 +6,9 @@ With this extension you will be able to use the midi controller
 
 ## Table of Contents <!-- omit in toc -->
 1. [Introduction](#introduction)
+    1. [Use cases](#use-cases)
 1. [Overview of available features](#overview-of-the-available-features)
+2. [What is not included](#what-is-not-included)
 1. [Implemented Modes](#implemented-modes)
     1. [Mode 1 Mixer](#mode-1-mixer)
     1. [Mode 2 Channel Strip](#mode-2-channel-strip) 
@@ -26,8 +28,19 @@ With this extension you will be able to use the midi controller
 
 
 ## Introduction
+Welcome to the _Bitwig Performance Twister_. I have built this controller script to be able to use the **Midi Fighter Twister** from DJ Tech Tools for my own performance needs. Although there are already controller extensions available for Bitwig, the did not fit my workflow or performance needs. When making design decision I kept the following principle in mind: 
+* focus on the functionality needed most often (pareto principle)
+* Don't try to make it complete
+* have control elements always in the same place to allow for better _muscle memory_, e.g. don't scroll through modes, but have a dedicated button for each mode 
 
-lorem ipsum
+### Use cases
+I see mostly the following use cases
+* quickly switch between instruments and adjust volumes of the instruments (which are sitting in different tracks) in a live situation; do that for more than four or eight instruments (tracks)
+* have a channel strip with access to the most commonly used elements for a track, use Bitwig's new track remote controls
+* use the encoders to tweak device parameters
+* make use of Bitwig's new project remote controls
+* quickly add an EQ to a track and control four bands
+* allow to use the Midi Fighter Twister also for Midi learn  
 
 ## Overview of the available features 
 Bitwig performance Twister offers the following features: 
@@ -41,6 +54,17 @@ Bitwig performance Twister offers the following features:
     * **User Mode**: Use the Midi Fighter Twister in its basic form, without and automatically mapped encoders  
 * **Long clicks:** By clicking and keeping the encoder pressed down for a short time, you can get access to a secondary action for some of the encoders
 * **Click & turn:** Click down an encoder button and turn the encoder while it's pressed down. This gives access to a secondary paramter which can be controlled with this same encoder.  
+
+## What is not included
+Although _Bitwig Performance Twister_ offers a lot of features the following are currently **not** included (among others): 
+* arpeggiator
+* zooming
+* browsing for new devices
+* adding tracks, devices, or clips
+* quantization
+* editing notes
+* deletion of elements like tracks, devices, clips or notes
+
 
 ## Implemented Modes
 The following sections explain the mapping of encoders and the side buttons. For that, the following chart shows us where to find the encoders and side buttons. It comes from the Midi Fighter Twister manual: 
@@ -164,14 +188,18 @@ The _Bitwig Performance Twister_ can be configured to suit to your needs. In ord
 
 ## Implementation Notes
 * **Modes and Banks:** Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
+* Unfortunately, the color palette of the LED lights below the encoders of the Midi Fighter is limited. _Bitwig Performance Twister_ uses the approximation of [Twister Sister](...) by Dan Smith.  
 
 ## Acknowledgements
 I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. 
 
 
 ## License
+2023 copyright Dr. Martin Kramer
 This Bitwig extension is alvailable under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, see the license text [here](../LICENSE). 
+
 
 ## Dependencies
 _Bitwig Performance Twister_ uses the following libraries 
 * [Twister Sister](https://github.com/dozius/TwisterSister/tree/main), Copyright 2021 Dan Smith
+
