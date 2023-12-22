@@ -97,7 +97,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
       this.modeHandler = new ModeHandler(host, handlerMap);  
            
       //we schedule the initial startup of the MFT and give is some time to initialize itself
-      host.scheduleTask((Runnable)()->scheduledInitialStartup(), 2500);
+      host.scheduleTask((Runnable)()->scheduledInitialStartup(), 1500);
 
    } //end of init
 
