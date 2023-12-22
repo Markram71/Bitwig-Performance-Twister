@@ -12,8 +12,11 @@ Please see the user documentation with installation instructions here [here](doc
 
 ### Requirements
 
-- [OpenJDK 17.x](https://adoptopenjdk.net/releases.html?variant=openjdk17)
-- [Maven >= 3.1.0](https://maven.apache.org/)
+* JDK 17
+* Bitwig Studio Version 5.1
+* Bitwig Controller API 18
+* Maven 3.9.5 
+
 
 ### Build and install
 
