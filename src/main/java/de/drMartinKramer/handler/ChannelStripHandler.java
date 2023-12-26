@@ -219,156 +219,148 @@ public class ChannelStripHandler extends AbstractHandler
 		setEncoderColor(MFT_Hardware.MFT_BANK2_BUTTON_04, isFillModeActive ? 127 : 0);
 	}
 	
-	public boolean handleMidi (MFT_MidiMessage msg)
+	@Override
+	public boolean handleButtonClick(MFT_MidiMessage msg)
 	{
-		super.handleMidi(msg); //check for long clicks
-		//first the buttons
-		//check for CC message on channel 2 (which is here 1 and button clicked which is indicated by value (data2) = 127)
-	    if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0)
-	    {
-	        // Message came on Channel two (==1) -> CLICK ON THE ENCODER 
-	        switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
-	        {
-	            
-	            case MFT_Hardware.MFT_BANK2_BUTTON_01:	    
-					if(msg.isLongClick()){ //pin on long clicks
-						this.isPinned = !this.isPinned; //let's change the pinned status and also tell Bitwig about it...
-	                	this.cursorTrack.isPinned().set(this.isPinned);
-					} else {
-            			this.isArmed = !this.isArmed; //toggle the arm flag
-	            		this.cursorTrack.arm().set(isArmed); //and write the flag back
-					}  
-					return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_02:
-	            	this.isSolo = !this.isSolo; //toggle the flag
-	            	this.cursorTrack.solo().set(isSolo); //and write the flag back
-	                return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_03:
-	            	this.isMuted = !this.isMuted; //toggle the flag
-	            	this.cursorTrack.mute().set(isMuted); //and write the flag back
-	                return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_04:
-					//let's toggle the fill mode, so that we can start and stop the fills
-					transport.isFillModeActive().toggle();
-	                return true;     
-				//2. row: Sends ----------
-	            case MFT_Hardware.MFT_BANK2_BUTTON_05:
-	            	this.cursorTrack.sendBank().getItemAt(0).isEnabled().toggle();	                
-	                return true;   
-	            case MFT_Hardware.MFT_BANK2_BUTTON_06:
-	            	this.cursorTrack.sendBank().getItemAt(1).isEnabled().toggle();
-	                return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_07:
-	            	this.cursorTrack.sendBank().getItemAt(2).isEnabled().toggle();
-	                return true;  
-	            case MFT_Hardware.MFT_BANK2_BUTTON_08:
-	            	this.cursorTrack.sendBank().getItemAt(3).isEnabled().toggle();
-	                return true; 
-				//3. row: Track Remotes ----------
-	            case MFT_Hardware.MFT_BANK2_BUTTON_09:
-					this.trackRemoteControlsPage.getParameter(0).reset();
-	            	return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_10:
-	            	this.trackRemoteControlsPage.getParameter(1).reset();return true;  
-	            case MFT_Hardware.MFT_BANK2_BUTTON_11:
-	            	this.trackRemoteControlsPage.getParameter(2).reset();
-	                return true;  
-	            case MFT_Hardware.MFT_BANK2_BUTTON_12:
-	            	this.trackRemoteControlsPage.getParameter(3).reset();
-	                return true;                                                  
-	            case MFT_Hardware.MFT_BANK2_BUTTON_13:
-	            	this.trackRemoteControlsPage.getParameter(4).reset();
-	                return true;  
-	            case MFT_Hardware.MFT_BANK2_BUTTON_14:
-	            	this.trackRemoteControlsPage.getParameter(5).reset();
-	                return true;  
-	            case MFT_Hardware.MFT_BANK2_BUTTON_15:
-	            	this.trackRemoteControlsPage.getParameter(6).reset();
-	                return true;  
-	            case MFT_Hardware.MFT_BANK2_BUTTON_16:
-	            	this.trackRemoteControlsPage.getParameter(7).reset();
-	                return true;  
-	            default:	                
-	                return false;
-	        }
-	    } else if (msg.isControlChange()  && msg.getChannel()==0)
-	    {
-	        // Message sent on channel 1 (==1) -> TURNED THE ENCODER *********
-	        //this here is the case when we turn the encoder, i.e. a CC message on channel 1 (which is 0 here)
-	        switch (msg.getData1()) 
-	        {
-				//1: Select Track
-	            case MFT_Hardware.MFT_BANK2_BUTTON_01:
-	            	//The first encoder is turned, this should move the currently selected track up or down
-	            	// We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
-		            //in order to slow down the button, let's not move with any message, but only every few
-	            	if(this.isPinned)return true; //in case the cursor track is pinned, we do nothing here
-	            	if(this.moveTrackDelay++ > 4) {
-		            	if(msg.getData2()>=64) cursorTrack.selectNext();
-		            	else cursorTrack.selectPrevious();
-		            	this.moveTrackDelay = 0; //reset the delay
-	            	}
-	                return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_02:  
-	            	//this encoder is used to set the volume of the currently selected track
-	            	this.cursorTrack.volume().inc (msg.getData2()-64, 128); 
-					return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_03:     
-	            	//we use the third encoder to change the panning
-	            	this.cursorTrack.pan().inc (msg.getData2()-64, 128); 
-	            	return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_04:
-					if(MFT_Configuration.isChannelStripEncoder4_MasterVolume()){
-						masterTrack.volume().inc(msg.getData2()-64, 128);
-					}else if (MFT_Configuration.isChannelStripEncoder4_Crossfader()){
-						transport.crossfade().inc(msg.getData2()-64, 128);						
-					}else if(MFT_Configuration.isChannelStripEncoder4_CueVolume()){
-						project.cueVolume().inc(msg.getData2()-64, 128);
-					}
-					return true;
-				//2. row: Sends
-	            case MFT_Hardware.MFT_BANK2_BUTTON_05: //let's change the send of this track, and the same for the next four tracks              
-	            	this.cursorTrack.sendBank().getItemAt(0).inc(msg.getData2()-64, 128);
-	                return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_06:                
-	            	this.cursorTrack.sendBank().getItemAt(1).inc(msg.getData2()-64, 128);
-	                return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_07:                
-	            	this.cursorTrack.sendBank().getItemAt(2).inc(msg.getData2()-64, 128);
-	                return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_08:                
-	            	this.cursorTrack.sendBank().getItemAt(3).inc(msg.getData2()-64, 128);
-	                return true;
-	            //3. row: Track Remotes ----------
-				case MFT_Hardware.MFT_BANK2_BUTTON_09:  
-					this.trackRemoteControlsPage.getParameter(0).inc(msg.getData2()-64, 128);
-					return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_10:                
-	            	this.trackRemoteControlsPage.getParameter(1).inc(msg.getData2()-64, 128);					
-	                return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_11:                
-	            	this.trackRemoteControlsPage.getParameter(2).inc(msg.getData2()-64, 128);					
-	                return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_12:                
-	            	this.trackRemoteControlsPage.getParameter(3).inc(msg.getData2()-64, 128);
-					return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_13:                
-	            	this.trackRemoteControlsPage.getParameter(4).inc(msg.getData2()-64, 128);
-					return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_14:                
-	            	this.trackRemoteControlsPage.getParameter(5).inc(msg.getData2()-64, 128);
-					return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_15:                
-	            	this.trackRemoteControlsPage.getParameter(6).inc(msg.getData2()-64, 128);
-					return true;
-	            case MFT_Hardware.MFT_BANK2_BUTTON_16:                
-	            	this.trackRemoteControlsPage.getParameter(7).inc(msg.getData2()-64, 128);					
-	                return true;   
-	            default:
-	                return false; //false = no midi handled here
-	        }
-	    }		
-		return false; // in this case we did not handle any midi message
+		switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
+	    {	
+			case MFT_Hardware.MFT_BANK2_BUTTON_01:	    
+				if(msg.isLongClick()){ //pin on long clicks
+					this.isPinned = !this.isPinned; //let's change the pinned status and also tell Bitwig about it...
+					this.cursorTrack.isPinned().set(this.isPinned);
+				} else {
+					this.isArmed = !this.isArmed; //toggle the arm flag
+					this.cursorTrack.arm().set(isArmed); //and write the flag back
+				}  
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_02:
+				this.isSolo = !this.isSolo; //toggle the flag
+				this.cursorTrack.solo().set(isSolo); //and write the flag back
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_03:
+				this.isMuted = !this.isMuted; //toggle the flag
+				this.cursorTrack.mute().set(isMuted); //and write the flag back
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_04:
+				//let's toggle the fill mode, so that we can start and stop the fills
+				transport.isFillModeActive().toggle();
+				return true;     
+			//2. row: Sends ----------
+			case MFT_Hardware.MFT_BANK2_BUTTON_05:
+				this.cursorTrack.sendBank().getItemAt(0).isEnabled().toggle();	                
+				return true;   
+			case MFT_Hardware.MFT_BANK2_BUTTON_06:
+				this.cursorTrack.sendBank().getItemAt(1).isEnabled().toggle();
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_07:
+				this.cursorTrack.sendBank().getItemAt(2).isEnabled().toggle();
+				return true;  
+			case MFT_Hardware.MFT_BANK2_BUTTON_08:
+				this.cursorTrack.sendBank().getItemAt(3).isEnabled().toggle();
+				return true; 
+			//3. row: Track Remotes ----------
+			case MFT_Hardware.MFT_BANK2_BUTTON_09:
+				this.trackRemoteControlsPage.getParameter(0).reset();
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_10:
+				this.trackRemoteControlsPage.getParameter(1).reset();return true;  
+			case MFT_Hardware.MFT_BANK2_BUTTON_11:
+				this.trackRemoteControlsPage.getParameter(2).reset();
+				return true;  
+			case MFT_Hardware.MFT_BANK2_BUTTON_12:
+				this.trackRemoteControlsPage.getParameter(3).reset();
+				return true;                                                  
+			case MFT_Hardware.MFT_BANK2_BUTTON_13:
+				this.trackRemoteControlsPage.getParameter(4).reset();
+				return true;  
+			case MFT_Hardware.MFT_BANK2_BUTTON_14:
+				this.trackRemoteControlsPage.getParameter(5).reset();
+				return true;  
+			case MFT_Hardware.MFT_BANK2_BUTTON_15:
+				this.trackRemoteControlsPage.getParameter(6).reset();
+				return true;  
+			case MFT_Hardware.MFT_BANK2_BUTTON_16:
+				this.trackRemoteControlsPage.getParameter(7).reset();
+				return true;  
+			default:	                
+				return false;
+		}
 	}
-	
-}
+	    
+	@Override
+	public boolean handleEncoderTurn(MFT_MidiMessage msg)
+	{
+		switch (msg.getData1()) 
+		{
+			//1: Select Track
+			case MFT_Hardware.MFT_BANK2_BUTTON_01:
+				//The first encoder is turned, this should move the currently selected track up or down
+				// We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
+				//in order to slow down the button, let's not move with any message, but only every few
+				if(this.isPinned)return true; //in case the cursor track is pinned, we do nothing here
+				if(this.moveTrackDelay++ > 4) {
+					if(msg.getData2()>=64) cursorTrack.selectNext();
+					else cursorTrack.selectPrevious();
+					this.moveTrackDelay = 0; //reset the delay
+				}
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_02:  
+				//this encoder is used to set the volume of the currently selected track
+				this.cursorTrack.volume().inc (msg.getData2()-64, 128); 
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_03:     
+				//we use the third encoder to change the panning
+				this.cursorTrack.pan().inc (msg.getData2()-64, 128); 
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_04:
+				if(MFT_Configuration.isChannelStripEncoder4_MasterVolume()){
+					masterTrack.volume().inc(msg.getData2()-64, 128);
+				}else if (MFT_Configuration.isChannelStripEncoder4_Crossfader()){
+					transport.crossfade().inc(msg.getData2()-64, 128);						
+				}else if(MFT_Configuration.isChannelStripEncoder4_CueVolume()){
+					project.cueVolume().inc(msg.getData2()-64, 128);
+				}
+				return true;
+			//2. row: Sends
+			case MFT_Hardware.MFT_BANK2_BUTTON_05: //let's change the send of this track, and the same for the next four tracks              
+				this.cursorTrack.sendBank().getItemAt(0).inc(msg.getData2()-64, 128);
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_06:                
+				this.cursorTrack.sendBank().getItemAt(1).inc(msg.getData2()-64, 128);
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_07:                
+				this.cursorTrack.sendBank().getItemAt(2).inc(msg.getData2()-64, 128);
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_08:                
+				this.cursorTrack.sendBank().getItemAt(3).inc(msg.getData2()-64, 128);
+				return true;
+			//3. row: Track Remotes ----------
+			case MFT_Hardware.MFT_BANK2_BUTTON_09:  
+				this.trackRemoteControlsPage.getParameter(0).inc(msg.getData2()-64, 128);
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_10:                
+				this.trackRemoteControlsPage.getParameter(1).inc(msg.getData2()-64, 128);					
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_11:                
+				this.trackRemoteControlsPage.getParameter(2).inc(msg.getData2()-64, 128);					
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_12:                
+				this.trackRemoteControlsPage.getParameter(3).inc(msg.getData2()-64, 128);
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_13:                
+				this.trackRemoteControlsPage.getParameter(4).inc(msg.getData2()-64, 128);
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_14:                
+				this.trackRemoteControlsPage.getParameter(5).inc(msg.getData2()-64, 128);
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_15:                
+				this.trackRemoteControlsPage.getParameter(6).inc(msg.getData2()-64, 128);
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_16:                
+				this.trackRemoteControlsPage.getParameter(7).inc(msg.getData2()-64, 128);					
+				return true;   
+			default:
+				return false; //false = no midi handled here
+		} //switch
+	}	//handle encoder turn		
+} //class

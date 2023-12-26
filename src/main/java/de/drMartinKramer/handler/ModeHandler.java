@@ -87,6 +87,7 @@ public class ModeHandler  extends AbstractHandler
 	 * @param The incoming Midi message
 	 * @return true if the Midi message was handled by the bank handler, false if no bank midi message was sent. 
 	 */
+	@Override
 	public boolean handleMidi (MFT_MidiMessage msg){
 	   //check for CC message on channel 4 (which is here 3 and left/right button clicked which is indicated by value (data2) = 127)
 	    int sideButtonID = msg.getData1();	 

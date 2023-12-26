@@ -122,9 +122,6 @@ public class AbstractHandler {
         assert (value >= 0 && value <= 30) : "Brightness value is not between 0 and 30";
         sendMidi(0xB2, encoder, MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + value);        
     }
-
-
-
     
 
     /**
@@ -139,13 +136,33 @@ public class AbstractHandler {
     
     /**
      * Handle incoming midi message from the MFT
+     * @param msg the enriched midi message
+     * @return true if the message was handled, false otherwise
+     */
+    public boolean handleMidi (MFT_MidiMessage msg){
+        if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0)return handleButtonClick(msg);
+	    else if (msg.isControlChange()  && msg.getChannel()==0) return handleEncoderTurn(msg);
+        return false; //we did not handle any incoming midi        
+    }
+    
+    /**
+     * Should be overwritten by the concrete handler
+     */
+    public boolean handleEncoderTurn(MFT_MidiMessage msg){
+        return false;
+    }
+
+    /**
+     * Should be overwritten by the concrete handler
      * @param msg
      * @return
      */
-    public boolean handleMidi (MFT_MidiMessage msg){
+    public boolean handleButtonClick(MFT_MidiMessage msg){
         return false;
-    }
-    
+    }   
+
+ 
+
 
     /**
      * Convienince method to send a global command to the MFT. 

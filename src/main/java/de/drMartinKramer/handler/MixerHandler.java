@@ -158,128 +158,123 @@ public class MixerHandler extends AbstractCachingHandler
 		}
 	}
 
-	public boolean handleMidi (MFT_MidiMessage msg)
+	@Override
+	public boolean handleButtonClick (MFT_MidiMessage msg)
 	{   
-		super.handleMidi(msg);//we first need to check for long clicks
-		//check for CC message on channel 2 (which is here 1 and button clicked which is indicated by value (data2) = 127)
-	    if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0)
+		switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
+		{
+			case MFT_Hardware.MFT_BANK1_BUTTON_01:
+				clickedOnEncoder(0, msg);	                
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_02:
+				clickedOnEncoder(1, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_03:
+				clickedOnEncoder(2, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_04:
+				clickedOnEncoder(3, msg);	                
+				return true;     
+			case MFT_Hardware.MFT_BANK1_BUTTON_05:
+				clickedOnEncoder(4, msg);	                
+				return true;   
+			case MFT_Hardware.MFT_BANK1_BUTTON_06:
+				clickedOnEncoder(5, msg);                
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_07:
+				clickedOnEncoder(6, msg);                
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_08:
+				clickedOnEncoder(7, msg);	                
+				return true; 
+			case MFT_Hardware.MFT_BANK1_BUTTON_09:
+				clickedOnEncoder(8, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_10:
+				clickedOnEncoder(9, msg);
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_11:
+				clickedOnEncoder(10, msg);
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_12:
+				clickedOnEncoder(11, msg);
+				return true;                                                  
+			case MFT_Hardware.MFT_BANK1_BUTTON_13:
+				clickedOnEncoder(12, msg);
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_14:
+				clickedOnEncoder(13, msg);
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_15:
+				clickedOnEncoder(14, msg);
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_16:
+				clickedOnEncoder(15, msg);
+				return true;  
+			default:	                
+				return false; //no midi handled here
+		}
+	} //handle button click 
+		
+	/**
+	 * Handle the encoder turn message from the MFT
+	 */
+	@Override
+	public boolean handleEncoderTurn (MFT_MidiMessage msg)
+	{
+		switch (msg.getData1()) 
 	    {
-	        // Message came on Channel two (==1) -> CLICK ON THE ENCODER -> SELECT a TRACK *********
-	        switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
-	        {
-	            
-	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-	                clickedOnEncoder(0, msg);	                
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_02:
-	            	clickedOnEncoder(1, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_03:
-	            	clickedOnEncoder(2, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_04:
-	            	clickedOnEncoder(3, msg);	                
-	                return true;     
-	            case MFT_Hardware.MFT_BANK1_BUTTON_05:
-	            	clickedOnEncoder(4, msg);	                
-	                return true;   
-	            case MFT_Hardware.MFT_BANK1_BUTTON_06:
-	            	clickedOnEncoder(5, msg);                
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_07:
-	            	clickedOnEncoder(6, msg);                
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_08:
-	            	clickedOnEncoder(7, msg);	                
-	                return true; 
-	            case MFT_Hardware.MFT_BANK1_BUTTON_09:
-	            	clickedOnEncoder(8, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_10:
-	            	clickedOnEncoder(9, msg);
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_11:
-	            	clickedOnEncoder(10, msg);
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_12:
-	            	clickedOnEncoder(11, msg);
-	                return true;                                                  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_13:
-	            	clickedOnEncoder(12, msg);
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_14:
-	            	clickedOnEncoder(13, msg);
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_15:
-	            	clickedOnEncoder(14, msg);
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_16:
-	            	clickedOnEncoder(15, msg);
-	                return true;  
-	            default:	                
-	                return false; //no midi handled here
-	        }
-	    } else if (msg.isControlChange()  && msg.getChannel()==0)
-	    {
-	        // Message sent on channel 1 (==1) -> TURNED THE ENCODER *********
-	        //this here is the case when we turn the encoder, i.e. a CC message on channel 1 (which is 0 here)
-	        switch (msg.getData1()) 
-	        {
-	            // We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
-	            //thus, data2-64 gives us either +1 or -1 and we can use this value to increment (or decrement) the volum
-	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-	                this.updateTrackParameterAfterTurn(0, msg);					
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_02:                
-	                this.updateTrackParameterAfterTurn(1, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_03:                
-	                this.updateTrackParameterAfterTurn(2, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_04:
-	                this.updateTrackParameterAfterTurn(3, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_05:                
-	                this.updateTrackParameterAfterTurn(4, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_06:                
-	                this.updateTrackParameterAfterTurn(5, msg);               
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_07:                
-	                this.updateTrackParameterAfterTurn(6, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_08:                
-	                this.updateTrackParameterAfterTurn(7, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_09:                
-	                this.updateTrackParameterAfterTurn(8, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_10:                
-	                this.updateTrackParameterAfterTurn(9, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_11:                
-	                this.updateTrackParameterAfterTurn(10,msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_12:                
-	                this.updateTrackParameterAfterTurn(11,msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_13:                
-	                this.updateTrackParameterAfterTurn(12,msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_14:                
-	                this.updateTrackParameterAfterTurn(13,msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_15:                
-	                this.updateTrackParameterAfterTurn(14,msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_16:                
-	                this.updateTrackParameterAfterTurn(15,msg);
-	                return true;   
-	            default:
-	                return false; //false = no midi handled
-	        }
-	    }
-	    return false; //we did not handle any incoming midi   
-	}	//end of handleMidi
+			case MFT_Hardware.MFT_BANK1_BUTTON_01:
+				this.updateTrackParameterAfterTurn(0, msg);					
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_02:                
+				this.updateTrackParameterAfterTurn(1, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_03:                
+				this.updateTrackParameterAfterTurn(2, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_04:
+				this.updateTrackParameterAfterTurn(3, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_05:                
+				this.updateTrackParameterAfterTurn(4, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_06:                
+				this.updateTrackParameterAfterTurn(5, msg);               
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_07:                
+				this.updateTrackParameterAfterTurn(6, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_08:                
+				this.updateTrackParameterAfterTurn(7, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_09:                
+				this.updateTrackParameterAfterTurn(8, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_10:                
+				this.updateTrackParameterAfterTurn(9, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_11:                
+				this.updateTrackParameterAfterTurn(10,msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_12:                
+				this.updateTrackParameterAfterTurn(11,msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_13:                
+				this.updateTrackParameterAfterTurn(12,msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_14:                
+				this.updateTrackParameterAfterTurn(13,msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_15:                
+				this.updateTrackParameterAfterTurn(14,msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_16:                
+				this.updateTrackParameterAfterTurn(15,msg);
+				return true;   
+			default:
+				return false; //false = no midi handled
+		}	
+	}	//end of handle encoder turn
 
 } //of class

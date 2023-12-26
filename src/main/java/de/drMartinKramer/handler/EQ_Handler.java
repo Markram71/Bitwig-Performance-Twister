@@ -152,142 +152,134 @@ public class EQ_Handler  extends AbstractCachingHandler
     }
 
     @Override
-    public boolean handleMidi (MFT_MidiMessage msg)
-	{   
-		super.handleMidi(msg);//we first need to check for long clicks
-		
-        //then let's check if we actually have an EQ (or nor)
+    public boolean handleButtonClick(MFT_MidiMessage msg){
+        //first let's check if we actually have an EQ (or nor)
         if(!this.eqPlusDevice.exists().get()){
             //no EQ device exists, thus we need to create one
             if(msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0) createNewEQDevice();
             return true; //then we leave           
         }
 
-        //at this point we know we have an active EQ device
-        //check for CC message on channel 2 (which is here 1 and button clicked which is indicated by value (data2) = 127)
-	    if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0)
-	    {
-	        
-            // Message came on Channel two (==1) -> CLICK ON THE ENCODER 
-	        switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
-	        {   
-	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-                    if(msg.isLongClick()) { //long click -> toggle the device window open/closed
-                        eqPlusDevice.isEnabled().toggle();
-                    }else toggleEQ_on_off(0);	//short click                
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_02:
-	            	if(msg.isLongClick()) { //long click -> toggle the device window open/closed
-                        eqPlusDevice.isWindowOpen().toggle();
-                    }else toggleEQ_on_off(1);	//short click
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_03:
-	            	toggleEQ_on_off(2);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_04:
-	            	toggleEQ_on_off(3);	                
-	                return true;     
-	            case MFT_Hardware.MFT_BANK1_BUTTON_05:	            		
-                    frequencyParameter[0].reset();                
-	                return true;   
-	            case MFT_Hardware.MFT_BANK1_BUTTON_06:
-	            	frequencyParameter[1].reset();                
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_07:
-	            	frequencyParameter[2].reset();               
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_08:
-	            	frequencyParameter[3].reset();                
-	                return true; 
-	            case MFT_Hardware.MFT_BANK1_BUTTON_09:
-	            	qParameter[0].reset();
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_10:
-	            	qParameter[1].reset();
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_11:
-	            	qParameter[2].reset();
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_12:
-	            	qParameter[3].reset();
-	                return true;                                                  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_13:
-	            	toggleEQType(0);
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_14:
-	            	toggleEQType(1);
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_15:
-	            	toggleEQType(2);
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_16:
-	            	toggleEQType(3);
-	                return true;  
-	            default:	                
-	                return false; //no midi handled here
-	        }
-	    } else if (msg.isControlChange()  && msg.getChannel()==0)
-	    {
-	        // Message sent on channel 1 (==1) -> TURNED THE ENCODER *********
-	        //this here is the case when we turn the encoder, i.e. a CC message on channel 1 (which is 0 here)
-	        switch (msg.getData1()) 
-	        {
-	            // We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
-	            //thus, data2-64 gives us either +1 or -1 and we can use this value to increment (or decrement) the volum
-	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-	                changeGain(0, msg);					
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_02:                
-	                changeGain(1, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_03:                
-	                changeGain(2, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_04:
-	                changeGain(3, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_05:                
-	                changeFrequency(0, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_06:                
-	                changeFrequency(1, msg);               
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_07:                
-	                changeFrequency(2, msg); 
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_08:                
-	                changeFrequency(3, msg); 
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_09:                
-	                changeQ(0, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_10:                
-	                changeQ(1, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_11:                
-	                changeQ(2, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_12:                
-	                changeQ(3, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_13:                
-	                changeType(0, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_14:                
-	                changeType(1, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_15:                
-	                changeType(2, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_16:                
-	                changeType(3, msg);
-	                return true;   
-	            default:
-	                return false; //false = no midi handled
-	        }
-	    }
-	    return false; //we did not handle any incoming midi   
-	}	//end of handleMidi
+        //here we have an EQ device, thus we can handle the button click
+        switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
+        {   
+            case MFT_Hardware.MFT_BANK1_BUTTON_01:
+                if(msg.isLongClick()) { //long click -> toggle the device window open/closed
+                    eqPlusDevice.isEnabled().toggle();
+                }else toggleEQ_on_off(0);	//short click                
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_02:
+                if(msg.isLongClick()) { //long click -> toggle the device window open/closed
+                    eqPlusDevice.isWindowOpen().toggle();
+                }else toggleEQ_on_off(1);	//short click
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_03:
+                toggleEQ_on_off(2);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_04:
+                toggleEQ_on_off(3);	                
+                return true;     
+            case MFT_Hardware.MFT_BANK1_BUTTON_05:	            		
+                frequencyParameter[0].reset();                
+                return true;   
+            case MFT_Hardware.MFT_BANK1_BUTTON_06:
+                frequencyParameter[1].reset();                
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_07:
+                frequencyParameter[2].reset();               
+                return true;  
+            case MFT_Hardware.MFT_BANK1_BUTTON_08:
+                frequencyParameter[3].reset();                
+                return true; 
+            case MFT_Hardware.MFT_BANK1_BUTTON_09:
+                qParameter[0].reset();
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_10:
+                qParameter[1].reset();
+                return true;  
+            case MFT_Hardware.MFT_BANK1_BUTTON_11:
+                qParameter[2].reset();
+                return true;  
+            case MFT_Hardware.MFT_BANK1_BUTTON_12:
+                qParameter[3].reset();
+                return true;                                                  
+            case MFT_Hardware.MFT_BANK1_BUTTON_13:
+                toggleEQType(0);
+                return true;  
+            case MFT_Hardware.MFT_BANK1_BUTTON_14:
+                toggleEQType(1);
+                return true;  
+            case MFT_Hardware.MFT_BANK1_BUTTON_15:
+                toggleEQType(2);
+                return true;  
+            case MFT_Hardware.MFT_BANK1_BUTTON_16:
+                toggleEQType(3);
+                return true;  
+            default:	                
+                return false; //no midi handled here
+        } //switch
+    } //handleButtonClick
+
+
+    @Override
+    public boolean handleEncoderTurn (MFT_MidiMessage msg)
+	{   
+        switch (msg.getData1()) 
+        {
+            // We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
+            //thus, data2-64 gives us either +1 or -1 and we can use this value to increment (or decrement) the volum
+            case MFT_Hardware.MFT_BANK1_BUTTON_01:
+                changeGain(0, msg);					
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_02:                
+                changeGain(1, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_03:                
+                changeGain(2, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_04:
+                changeGain(3, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_05:                
+                changeFrequency(0, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_06:                
+                changeFrequency(1, msg);               
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_07:                
+                changeFrequency(2, msg); 
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_08:                
+                changeFrequency(3, msg); 
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_09:                
+                changeQ(0, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_10:                
+                changeQ(1, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_11:                
+                changeQ(2, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_12:                
+                changeQ(3, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_13:                
+                changeType(0, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_14:                
+                changeType(1, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_15:                
+                changeType(2, msg);
+                return true;
+            case MFT_Hardware.MFT_BANK1_BUTTON_16:                
+                changeType(3, msg);
+                return true;   
+            default:
+                return false; //false = no midi handled
+        }
+    }//end of handleEncoder turn
 
 
     private void changeGain(int column, MFT_MidiMessage msg)

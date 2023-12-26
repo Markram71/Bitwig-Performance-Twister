@@ -134,8 +134,6 @@ public class DeviceHandler extends AbstractHandler
 		}
     }
 
-
-
 	/**
 	 * Callback function that is called whenever the name of the device changes. 
 	 * We use this callback to show a popup notification with the name of the device. 
@@ -146,8 +144,7 @@ public class DeviceHandler extends AbstractHandler
 		if(deviceButtonClicked){
 			deviceButtonClicked = false;
 			showPopupNotification("Active Device: " + cursorDevice.name().get());
-		}
-			
+		}	
     }	
 
 	/**
@@ -163,7 +160,6 @@ public class DeviceHandler extends AbstractHandler
 		}
 	}
 
-
 	/**
 	 * Callback function that is called whenever the parameter page of a project-wide remote controls is changed (e.g. by click on the button) 
 	 * We use this callback to show a popup notification with the name of new parameter page. 
@@ -177,154 +173,144 @@ public class DeviceHandler extends AbstractHandler
 		}
 	}
 
-
-	public boolean handleMidi (MFT_MidiMessage msg)
-	{
-        super.handleMidi(msg); 
-		
-		//first the buttons
-		//check for CC message on channel 2 (which is here 1 and button clicked which is indicated by value (data2) = 127)
-	    if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0)
-	    {
-		 
-			// Message came on Channel two (==1) -> CLICK ON THE ENCODER 
-	        switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
-	        {	            
-	            //Row 1-2: Device Controls ----------
-                //first encoder button: toggle the device on/off
-				
-				case MFT_Hardware.MFT_BANK3_BUTTON_01:	 
-					if(msg.isLongClick()) { //long click -> toggle the device window open/closed
-						this.cursorDevice.isEnabled().toggle();						
-					}else { //short click
-						this.cursorDevice.selectFirst();
-						deviceButtonClicked = true;
-					}return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_02:
-                    this.cursorDevice.selectPrevious();  
+	@Override
+	public boolean handleButtonClick(MFT_MidiMessage msg) 
+	{			 
+		switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
+		{	            
+			//Row 1-2: Device Controls ----------
+			//first encoder button: toggle the device on/off			
+			case MFT_Hardware.MFT_BANK3_BUTTON_01:	 
+				if(msg.isLongClick()) { //long click -> toggle the device window open/closed
+					this.cursorDevice.isEnabled().toggle();						
+				}else { //short click
+					this.cursorDevice.selectFirst();
 					deviceButtonClicked = true;
-					return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_03:
-					this.cursorDevice.selectNext();  
-					deviceButtonClicked = true;                  
-					return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_04:
-					this.cursorDevice.selectLast();  
-					deviceButtonClicked = true;	            	                
-					return true;  
-				case MFT_Hardware.MFT_BANK3_BUTTON_05:
-					if(msg.isLongClick()) { //long click -> toggle the device window open/closed
-						this.cursorDevice.isWindowOpen().toggle(); //toggle the device window open/closed
-					}else { //short click
-						myDeviceParameterPage.selectFirst(); //select the first parameter page 
-						parameterPageButtonClicked = true;
-					}
-					return true; 
-	            case MFT_Hardware.MFT_BANK3_BUTTON_06:
-	            	myDeviceParameterPage.selectPreviousPage(false); //select the previous parameter page, do not wrap around						                
-                    parameterPageButtonClicked = true;
-					return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_07:	            	
-					myDeviceParameterPage.selectNextPage(false);					       
-                    parameterPageButtonClicked = true;
-					return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_08:	            	
-					myDeviceParameterPage.selectLast();					       
-                    parameterPageButtonClicked = true;
-					return true;
-				//row 4-4: Device Control ----------
-	            case MFT_Hardware.MFT_BANK3_BUTTON_09:
-					//no action right now	                
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_10:
-	            	//no action right now	                 
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_11:
-	            	//no action right now	                
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_12:
-	            	//no action right now	                
-                    return true;                                                
-	            case MFT_Hardware.MFT_BANK3_BUTTON_13:
-	            	projectControlsPage.selectFirst();					       
-                    this.projectParameterPageClicked = true;	                
-                    return true; 
-	            case MFT_Hardware.MFT_BANK3_BUTTON_14:
-	            	projectControlsPage.selectPreviousPage(false);				       
-                    this.projectParameterPageClicked = true;                
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_15:
-	            	projectControlsPage.selectNextPage(false);				       
-                    this.projectParameterPageClicked = true;            	                
-                    return true; 
-	            case MFT_Hardware.MFT_BANK3_BUTTON_16:
-	            	projectControlsPage.selectLast();					       
-                    this.projectParameterPageClicked = true;	                
-                    return true;  
-	            default:
-	                return false;
-	        }
-	    } else if (msg.isControlChange()  && msg.getChannel()==0)
-	    {
-	        // Message sent on channel 1 (==1) -> TURNED THE ENCODER *********
-	        //this here is the case when we turn the encoder, i.e. a CC message on channel 1 (which is 0 here)
-	        switch (msg.getData1()) 
-	        {
-				//1: Select Track
-	            case MFT_Hardware.MFT_BANK3_BUTTON_01:
-	            	myDeviceParameterPage.getParameter(0).inc(msg.getData2()-64, 128);             
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_02:  
-	            	myDeviceParameterPage.getParameter(1).inc(msg.getData2()-64, 128);             
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_03:     
-	            	myDeviceParameterPage.getParameter(2).inc(msg.getData2()-64, 128);           
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_04:
-					myDeviceParameterPage.getParameter(3).inc(msg.getData2()-64, 128);            
-                    return true;				
-	            case MFT_Hardware.MFT_BANK3_BUTTON_05:             
-	            	myDeviceParameterPage.getParameter(4).inc(msg.getData2()-64, 128);             
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_06:                
-	            	myDeviceParameterPage.getParameter(5).inc(msg.getData2()-64, 128);             
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_07:                
-	            	myDeviceParameterPage.getParameter(6).inc(msg.getData2()-64, 128);              
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_08:                
-	            	myDeviceParameterPage.getParameter(7).inc(msg.getData2()-64, 128);             
-                    return true;
-	            //Row 3-4 Global Remote Controls
-				case MFT_Hardware.MFT_BANK3_BUTTON_09:  
-					projectControlsPage.getParameter(0).inc(msg.getData2()-64, 128);             	 
-					return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_10:                
-	            	projectControlsPage.getParameter(1).inc(msg.getData2()-64, 128); 	
-					return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_11:                
-	            	projectControlsPage.getParameter(2).inc(msg.getData2()-64, 128); 	                
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_12:                
-	            	projectControlsPage.getParameter(3).inc(msg.getData2()-64, 128);                 
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_13:                
-	            	projectControlsPage.getParameter(4).inc(msg.getData2()-64, 128); 	                
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_14:                
-	            	projectControlsPage.getParameter(5).inc(msg.getData2()-64, 128); 	                
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_15:                
-	            	projectControlsPage.getParameter(6).inc(msg.getData2()-64, 128);                 
-                    return true;
-	            case MFT_Hardware.MFT_BANK3_BUTTON_16:                
-	            	projectControlsPage.getParameter(7).inc(msg.getData2()-64, 128);                 
-                    return true;
-	            default:
-	                return false; //false = no midi handled here
-	        }
-	    }		
-		return false; // in this case we did not handle any midi message
-	}
+				}return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_02:
+				this.cursorDevice.selectPrevious();  
+				deviceButtonClicked = true;
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_03:
+				this.cursorDevice.selectNext();  
+				deviceButtonClicked = true;                  
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_04:
+				this.cursorDevice.selectLast();  
+				deviceButtonClicked = true;	            	                
+				return true;  
+			case MFT_Hardware.MFT_BANK3_BUTTON_05:
+				if(msg.isLongClick()) { //long click -> toggle the device window open/closed
+					this.cursorDevice.isWindowOpen().toggle(); //toggle the device window open/closed
+				}else { //short click
+					myDeviceParameterPage.selectFirst(); //select the first parameter page 
+					parameterPageButtonClicked = true;
+				}
+				return true; 
+			case MFT_Hardware.MFT_BANK3_BUTTON_06:
+				myDeviceParameterPage.selectPreviousPage(false); //select the previous parameter page, do not wrap around						                
+				parameterPageButtonClicked = true;
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_07:	            	
+				myDeviceParameterPage.selectNextPage(false);					       
+				parameterPageButtonClicked = true;
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_08:	            	
+				myDeviceParameterPage.selectLast();					       
+				parameterPageButtonClicked = true;
+				return true;
+			//row 4-4: Device Control ----------
+			case MFT_Hardware.MFT_BANK3_BUTTON_09:
+				//no action right now	                
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_10:
+				//no action right now	                 
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_11:
+				//no action right now	                
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_12:
+				//no action right now	                
+				return true;                                                
+			case MFT_Hardware.MFT_BANK3_BUTTON_13:
+				projectControlsPage.selectFirst();					       
+				this.projectParameterPageClicked = true;	                
+				return true; 
+			case MFT_Hardware.MFT_BANK3_BUTTON_14:
+				projectControlsPage.selectPreviousPage(false);				       
+				this.projectParameterPageClicked = true;                
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_15:
+				projectControlsPage.selectNextPage(false);				       
+				this.projectParameterPageClicked = true;            	                
+				return true; 
+			case MFT_Hardware.MFT_BANK3_BUTTON_16:
+				projectControlsPage.selectLast();					       
+				this.projectParameterPageClicked = true;	                
+				return true;  
+			default:
+				return false;
+		}
+	} 
+	
+	@Override
+	public boolean handleEncoderTurn(MFT_MidiMessage msg) 
+	{
+		switch (msg.getData1()) 
+		{
+			//1: Select Track
+			case MFT_Hardware.MFT_BANK3_BUTTON_01:
+				myDeviceParameterPage.getParameter(0).inc(msg.getData2()-64, 128);             
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_02:  
+				myDeviceParameterPage.getParameter(1).inc(msg.getData2()-64, 128);             
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_03:     
+				myDeviceParameterPage.getParameter(2).inc(msg.getData2()-64, 128);           
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_04:
+				myDeviceParameterPage.getParameter(3).inc(msg.getData2()-64, 128);            
+				return true;				
+			case MFT_Hardware.MFT_BANK3_BUTTON_05:             
+				myDeviceParameterPage.getParameter(4).inc(msg.getData2()-64, 128);             
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_06:                
+				myDeviceParameterPage.getParameter(5).inc(msg.getData2()-64, 128);             
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_07:                
+				myDeviceParameterPage.getParameter(6).inc(msg.getData2()-64, 128);              
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_08:                
+				myDeviceParameterPage.getParameter(7).inc(msg.getData2()-64, 128);             
+				return true;
+			//Row 3-4 Global Remote Controls
+			case MFT_Hardware.MFT_BANK3_BUTTON_09:  
+				projectControlsPage.getParameter(0).inc(msg.getData2()-64, 128);             	 
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_10:                
+				projectControlsPage.getParameter(1).inc(msg.getData2()-64, 128); 	
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_11:                
+				projectControlsPage.getParameter(2).inc(msg.getData2()-64, 128); 	                
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_12:                
+				projectControlsPage.getParameter(3).inc(msg.getData2()-64, 128);                 
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_13:                
+				projectControlsPage.getParameter(4).inc(msg.getData2()-64, 128); 	                
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_14:                
+				projectControlsPage.getParameter(5).inc(msg.getData2()-64, 128); 	                
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_15:                
+				projectControlsPage.getParameter(6).inc(msg.getData2()-64, 128);                 
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_16:                
+				projectControlsPage.getParameter(7).inc(msg.getData2()-64, 128);                 
+				return true;
+			default:
+				return false; //false = no midi handled here
+		} // end of switch	
+	} //handle encoder turn
 	
 }
