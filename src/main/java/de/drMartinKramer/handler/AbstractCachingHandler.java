@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License along with Twister
  * Sister. If not, see <https://www.gnu.org/licenses/>.
  *
- */
+ */ 
 
 package de.drMartinKramer.handler;
 
-import com.bitwig.extension.controller.api.ControllerHost;
-
+import com.bitwig.extension.controller.api.ControllerHost; 
 import de.drMartinKramer.hardware.MFT_Hardware;
 
 /**

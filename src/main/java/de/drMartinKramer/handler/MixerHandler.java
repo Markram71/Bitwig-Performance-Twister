@@ -37,8 +37,7 @@ public class MixerHandler extends AbstractCachingHandler
 	private static final int ENCODER_BRIGHTNESS_LOW = 8; //dim light of the LED 
 	private static final int ENCODER_BRIGHTNESS_HIGH = 30; //Highest brightness of the MFT encoder LED light
 
-
-	RemoteControlsPage[] remoteControlsPage = null;
+	private RemoteControlsPage[] remoteControlsPage = null;
 		
 	public MixerHandler (ControllerHost host)
 	{		

@@ -23,10 +23,9 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.MidiOut;
 import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Transport;
-
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.MFT_Hardware;
-import de.drMartinKramer.support.MFT_MidiMessage;
+import de.drMartinKramer.support.MFT_MidiMessage; 
 
 public class AbstractHandler {
 
@@ -34,7 +33,6 @@ public class AbstractHandler {
     protected Transport transport = null; 
     private MidiOut outPort = null; //let's make this private to channel all midi messages through the methods defined in this handler
     protected Project project = null; //get access to the project in Bitwig
-    
     protected boolean isActive = false; //is this handler currently active or not    
 
     

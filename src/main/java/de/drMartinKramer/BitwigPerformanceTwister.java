@@ -19,7 +19,7 @@
 
 package de.drMartinKramer;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 
 import com.bitwig.extension.api.util.midi.ShortMidiMessage;
 import com.bitwig.extension.callback.ShortMidiMessageReceivedCallback;
