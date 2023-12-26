@@ -25,6 +25,7 @@ import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Transport;
 
 import de.drMartinKramer.MFT_Configuration;
+import de.drMartinKramer.hardware.MFT_Hardware;
 import de.drMartinKramer.support.MFT_MidiMessage;
 
 public class AbstractHandler {
@@ -103,6 +104,28 @@ public class AbstractHandler {
     protected void setEncoderColor(int encoder, int color){
         sendMidi(0xB1, encoder, color);
     }
+    
+    /**
+     * Sends a midi value on the special channel 3 which is used to change the brightness of the encoder
+     * or change to a special effect
+     * @param encoder the encoder ID
+     * @param value which special value should be set, e.g. 17 for low brightness, see the MFT manual
+     */
+    protected void setEncoderSpecialColor(int encoder, int value){
+        sendMidi(0xB2, encoder, value);
+    }
+
+    /**
+     * Stes the encoder brightness
+     * @param encoder ID of the encoder (0-127)
+     * @param value from 0 (very low brightness) to 30 (highest brightness)
+     */
+    protected void setEncoderBrightness(int encoder, int value){
+        assert (value >= 0 && value <= 30) : "Brightness value is not between 0 and 30";
+        sendMidi(0xB2, encoder, MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + value);        
+    }
+
+
 
     
 

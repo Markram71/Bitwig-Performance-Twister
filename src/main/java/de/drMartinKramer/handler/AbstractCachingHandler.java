@@ -33,6 +33,7 @@ public class AbstractCachingHandler extends AbstractHandler{
     
     /** A cache for the color of the encoder */
     private int[] encoderColorCache = new int[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
+    private int[] encoderColorBrightnessCache = new int[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
     /** A cache for the ring status  */
     private int[] encoderRingCache = new int[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
 
@@ -40,6 +41,11 @@ public class AbstractCachingHandler extends AbstractHandler{
     AbstractCachingHandler(ControllerHost host)
     {
         super(host);
+
+        //Let's initialize the brightness cache to the highest brightness
+        for(int i=0;i<MFT_Hardware.MFG_NUMBER_OF_ENCODERS;i++){
+            this.encoderColorBrightnessCache[i] = MFT_Hardware.MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS;
+        }
     }
 
     
@@ -64,6 +70,17 @@ public class AbstractCachingHandler extends AbstractHandler{
     protected void setEncoderColorCached(int encoderID, int encoderNumber,int color){
         if(isActive)sendMidi(0xB1, encoderID, color);
         this.encoderColorCache[encoderNumber] = color; //update the cache even when the handler is not active
+    }
+
+    /**
+     * Sets the encoder brightness and caches the brighness so that we can easily restore it
+     * @param encoder the Midi CC number of the encoder
+     * @param encoderNumber the number of the encoder (0-15)
+     * @param value brightness (0-30)
+     */
+    protected void setEncoderColorBrightnessCached(int encoderID, int encoderNumber,int brightness){
+        if(isActive)setEncoderSpecialColor(encoderNumber, MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE+brightness);
+        this.encoderColorBrightnessCache[encoderNumber] = brightness; //update the cache even when the handler is not active
     }
 
     /**
@@ -92,9 +109,9 @@ public class AbstractCachingHandler extends AbstractHandler{
     private void resetMFT_SurfaceAfterModeChange(){
         for(int i=0;i<MFT_Hardware.MFG_NUMBER_OF_ENCODERS;i++){
             setEncoderColor(MFT_Hardware.MFT_BANK1_BUTTON_01 +  i, this.encoderColorCache[i]);
-            setEncoderRingValue(MFT_Hardware.MFT_BANK1_BUTTON_01 +  i, this.encoderRingCache[i]);            
-        }
- 
+            setEncoderRingValue(MFT_Hardware.MFT_BANK1_BUTTON_01 +  i, this.encoderRingCache[i]);  
+            setEncoderBrightness(MFT_Hardware.MFT_BANK1_BUTTON_01+i, this.encoderColorBrightnessCache[i]);          
+        } 
     }
 
     

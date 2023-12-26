@@ -179,13 +179,23 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 	            	else this.application.setPanelLayout(Application.PANEL_LAYOUT_ARRANGE);
 	                return true;  
 	            case MFT_Hardware.MFT_BANK1_BUTTON_15:
-	            	if(msg.isLongClick()) this.application.toggleNoteEditor();
+					sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 47);
+	            	sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 127);
+					return true;
+					/* 
+					if(msg.isLongClick()) this.application.toggleNoteEditor();
 	            	else this.application.setPanelLayout(Application.PANEL_LAYOUT_MIX);
 	                return true;  
+					*/
 	            case MFT_Hardware.MFT_BANK1_BUTTON_16:
-	            	if(msg.isLongClick()) this.application.toggleFullScreen() ;
-					else this.application.setPanelLayout(Application.PANEL_LAYOUT_EDIT);
+					sendMidi(0xB1, MFT_Hardware.MFT_BANK1_BUTTON_13, 02);
+	            	sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 19);
+					return true;
+					/* 
+					if(msg.isLongClick()) this.application.toggleFullScreen() ;
+					else this.application.setPanelLayout(Application.PANEL_LAYOUT_EDIT);					
 	                return true;  
+					*/
 	            default:	                
 	                return false; //no midi handled here
 	        }

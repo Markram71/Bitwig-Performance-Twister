@@ -24,7 +24,6 @@ import com.bitwig.extension.controller.api.Parameter;
 import com.bitwig.extension.controller.api.RemoteControlsPage;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
-
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
 import de.drMartinKramer.support.MFT_MidiMessage;
@@ -34,15 +33,21 @@ public class MixerHandler extends AbstractCachingHandler
 {
 	private TrackBank trackBank = null;
 	private int updateDelay = 0; //how often should the Bitwig mixer and arranger be updated?
+
+	private static final int ENCODER_BRIGHTNESS_LOW = 8; //dim light of the LED 
+	private static final int ENCODER_BRIGHTNESS_HIGH = 30; //Highest brightness of the MFT encoder LED light
+
+
 	RemoteControlsPage[] remoteControlsPage = null;
 		
 	public MixerHandler (ControllerHost host)
 	{		
 		super(host);
+		
 		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 1, 0);
 	    this.remoteControlsPage = new RemoteControlsPage[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];  
-
-	    for (int i = 0; i < this.trackBank.getSizeOfBank (); i++)
+		
+		for (int i = 0; i < this.trackBank.getSizeOfBank (); i++)
 	    {
 	        Track track = this.trackBank.getItemAt (i);	
 	        track.pan().markInterested ();
@@ -59,10 +64,14 @@ public class MixerHandler extends AbstractCachingHandler
 
 			//COLOR
 	        track.color().markInterested();	
-            track.color().addValueObserver((colorRed,colorGreen,colorBlue)->this.reactToColorChange(trackIndex,colorRed,colorGreen,colorBlue) );			
-	    }
+            track.color().addValueObserver((colorRed,colorGreen,colorBlue)->this.reactToColorChange(trackIndex,colorRed,colorGreen,colorBlue) );
+			
+			track.addIsSelectedInMixerObserver(isActive->reactToIsSelected(trackIndex, isActive));
+		}
 	}// end of trackHandler Constructor
 	
+
+
 	/**
 	 * This is called as a reaction to a changed track volume in Bitwig. We send a message to the MFT to update the track volume on the encoder 	
 	 * @param index the number of the track on which the volume change occured, from 0 to 15
@@ -85,6 +94,17 @@ public class MixerHandler extends AbstractCachingHandler
     	int colorIndex = MFT_Colors.getClosestMFT_Color(red,green,blue);
     	setEncoderColorCached(trackIndex, trackIndex,colorIndex);    	
     }
+
+	/**
+	 * Callback method that is called when a track is selected or not. We then change the 
+	 * brightness of the encoder light to indicate the selection state
+	 * @param trackIndex which track (or encoder) is affected 
+	 * @param isSelected is the track/encoder selected or not
+	 */
+	private void reactToIsSelected(int trackIndex, boolean isSelected){
+		//set the encoder brightness to high (if selected) or low (if not selected)
+		setEncoderColorBrightnessCached(trackIndex, trackIndex, isSelected ? ENCODER_BRIGHTNESS_HIGH : ENCODER_BRIGHTNESS_LOW);
+	}
     
     /**
      * Method is called as a response to an encoder click MFT. 
@@ -263,6 +283,4 @@ public class MixerHandler extends AbstractCachingHandler
 	    return false; //we did not handle any incoming midi   
 	}	//end of handleMidi
 
-	
-	
-}
+} //of class

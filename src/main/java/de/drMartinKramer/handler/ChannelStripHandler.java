@@ -89,7 +89,6 @@ public class ChannelStripHandler extends AbstractHandler
 		transport.crossfade().value().addValueObserver((newValue) -> reactToCrossfadeValueChange(newValue));
 		project.cueVolume().value().addValueObserver((newValue) -> reactToCueVolumeChange(newValue));
 		
-
 		this.trackRemoteControlsPage =  this.cursorTrack.createCursorRemoteControlsPage(8);
 		for (int i=0;i<8;i++) {
 			final int remoteIndex = i;

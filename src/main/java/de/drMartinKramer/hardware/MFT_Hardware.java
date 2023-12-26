@@ -31,7 +31,14 @@ public class MFT_Hardware
 	public static final int MFT_BUTTON_CLICK_MIDI_CHANNEL = 1;
 	/** On which Midi channel does the MFT send encoder turn messages (channel 0-15) */
 	public static final int MFT_ENCODER_TURN_MIDI_CHANNEL = 0;
+	
+	/** The speciial color color CC channel message, i.e. CC on channel 3 (1-16) */
+	public static final int MFT_SPECIAL_ENCODER_COLOR_MESSAGE = 0xB2; //
+	public static final int MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE = 17; //
+	public static final int MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS = 29; //
+
 	//Bank1: The CC number for each of the  encoders in this bank
+
 	public static final int MFT_BANK1_BUTTON_01 = 0x00; 
 	public static final int MFT_BANK1_BUTTON_02 = 0x01; 
 	public static final int MFT_BANK1_BUTTON_03 = 0x02; 
