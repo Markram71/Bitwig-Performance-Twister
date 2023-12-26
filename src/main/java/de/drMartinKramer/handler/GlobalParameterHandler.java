@@ -120,159 +120,147 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 		setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_03,2, valueAsInt);
 	}
 
-	// ----------
-	/**
-	 * Handle incoming messages from the MFT
-	 */
-    public boolean handleMidi (MFT_MidiMessage msg)
-	{   
-		super.handleMidi(msg);//we first need to check for long clicks
-		//check for CC message on channel 2 (which is here 1 and button clicked which is indicated by value (data2) = 127)
-        if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0)
-	    {
-	        // Message came on Channel two (==1) -> CLICK ON THE ENCODER -> SELECT a TRACK *********
-	        switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
-	        {
-	            
-	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-	                this.transport.play();	                
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_02:
-	            	this.transport.stop();
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_03:
-	            	this.transport.record();
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_04:
-	            	this.transport.isArrangerLoopEnabled().toggle();	                
-	                return true;     
-	            case MFT_Hardware.MFT_BANK1_BUTTON_05:
-	            	this.transport.isFillModeActive().toggle();	                
-	                return true;   
-	            case MFT_Hardware.MFT_BANK1_BUTTON_06:
-	            	this.transport.isArrangerOverdubEnabled().toggle();      
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_07:
-	            	this.transport.isMetronomeEnabled().toggle();          
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_08:
-	            	this.transport.tapTempo();	                
-	                return true; 
-	            case MFT_Hardware.MFT_BANK1_BUTTON_09:
-	            	this.application.previousProject();
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_10:
-	            	this.application.nextProject();
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_11:
-					this.application.activateEngine();					
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_12:
-	            	//nothing happening here
-	                return true;                                                  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_13:
-					if(msg.isLongClick()) this.application.toggleDevices();
-	            	else this.application.toggleInspector();
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_14:
-	            	if(msg.isLongClick()) this.application.toggleMixer();
-	            	else this.application.setPanelLayout(Application.PANEL_LAYOUT_ARRANGE);
-	                return true;  
-	            case MFT_Hardware.MFT_BANK1_BUTTON_15:
-					sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 47);
-	            	sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 127);
-					return true;
-					/* 
-					if(msg.isLongClick()) this.application.toggleNoteEditor();
-	            	else this.application.setPanelLayout(Application.PANEL_LAYOUT_MIX);
-	                return true;  
-					*/
-	            case MFT_Hardware.MFT_BANK1_BUTTON_16:
-					sendMidi(0xB1, MFT_Hardware.MFT_BANK1_BUTTON_13, 02);
-	            	sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 19);
-					return true;
-					/* 
-					if(msg.isLongClick()) this.application.toggleFullScreen() ;
-					else this.application.setPanelLayout(Application.PANEL_LAYOUT_EDIT);					
-	                return true;  
-					*/
-	            default:	                
-	                return false; //no midi handled here
-	        }
-	    } else if (msg.isControlChange()  && msg.getChannel()==0)
-	    {
-	        // Message sent on channel 1 (==0) -> TURNED THE ENCODER *********
-	        //this here is the case when we turn the encoder, i.e. a CC message on channel 1 (which is 0 here)
-	        switch (msg.getData1()) 
-	        {
-	            // We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
-	            //thus, data2-64 gives us either +1 or -1 and we can use this value to increment (or decrement) the volum
-	            case MFT_Hardware.MFT_BANK1_BUTTON_01:
-	                this.transport.playStartPosition().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor());					
-	                
-					return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_02: 
-					this.transport.playStartPosition().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor()*0.1);					
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_03:                
-	                this.transport.crossfade().value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_04:
-	                this.masterTrack.volume().value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_05:                
-	                turnedEncoder(4, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_06:                
-	                turnedEncoder(5, msg);               
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_07: 
-					this.project.cueVolume().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 127);               
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_08:    
-                    if(msg.isButtonCurrentlyDown()){
-                        //click&turn                        
-                        this.transport.tempo().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 10000);
-                    } else {                        
-                        this.transport.tempo().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 1000);
-                    }return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_09:                
-					if(this.moveTrackDelay++ > 4) {
-						if(msg.getData2()>=64) cursorTrack.selectNext();
-						else cursorTrack.selectPrevious();
-						this.moveTrackDelay = 0; //reset the delay
-					}
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_10:                
-	                turnedEncoder(10, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_11:                
-	                turnedEncoder(12, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_12:                
-	                turnedEncoder(13, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_13:                
-	                turnedEncoder(13, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_14:                
-	                turnedEncoder(14, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_15:                
-	                turnedEncoder(15, msg);
-	                return true;
-	            case MFT_Hardware.MFT_BANK1_BUTTON_16:                
-	                turnedEncoder(16, msg);
-	                return true;   
-	            default:
-	                return false; //false = no midi handled
-	        }
-	    }
-	    return false; //we did not handle any incoming midi   
-	}	//end of handleMidi
+	public boolean handleButtonClick(MFT_MidiMessage msg)
+	{
+		
+	switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
+	{	
+		case MFT_Hardware.MFT_BANK1_BUTTON_01:
+			this.transport.play();	                
+			return true;
+		case MFT_Hardware.MFT_BANK1_BUTTON_02:
+			this.transport.stop();
+			return true;
+		case MFT_Hardware.MFT_BANK1_BUTTON_03:
+			this.transport.record();
+			return true;
+		case MFT_Hardware.MFT_BANK1_BUTTON_04:
+			this.transport.isArrangerLoopEnabled().toggle();	                
+			return true;     
+		case MFT_Hardware.MFT_BANK1_BUTTON_05:
+			this.transport.isFillModeActive().toggle();	                
+			return true;   
+		case MFT_Hardware.MFT_BANK1_BUTTON_06:
+			this.transport.isArrangerOverdubEnabled().toggle();      
+			return true;
+		case MFT_Hardware.MFT_BANK1_BUTTON_07:
+			this.transport.isMetronomeEnabled().toggle();          
+			return true;  
+		case MFT_Hardware.MFT_BANK1_BUTTON_08:
+			this.transport.tapTempo();	                
+			return true; 
+		case MFT_Hardware.MFT_BANK1_BUTTON_09:
+			this.application.previousProject();
+			return true;
+		case MFT_Hardware.MFT_BANK1_BUTTON_10:
+			this.application.nextProject();
+			return true;  
+		case MFT_Hardware.MFT_BANK1_BUTTON_11:
+			this.application.activateEngine();					
+			return true;  
+		case MFT_Hardware.MFT_BANK1_BUTTON_12:
+			//nothing happening here
+			return true;                                                  
+		case MFT_Hardware.MFT_BANK1_BUTTON_13:
+			if(msg.isLongClick()) this.application.toggleDevices();
+			else this.application.toggleInspector();
+			return true;  
+		case MFT_Hardware.MFT_BANK1_BUTTON_14:
+			if(msg.isLongClick()) this.application.toggleMixer();
+			else this.application.setPanelLayout(Application.PANEL_LAYOUT_ARRANGE);
+			return true;  
+		case MFT_Hardware.MFT_BANK1_BUTTON_15:
+			sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 47);
+			sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 127);
+			return true;
+			/* 
+			if(msg.isLongClick()) this.application.toggleNoteEditor();
+			else this.application.setPanelLayout(Application.PANEL_LAYOUT_MIX);
+			return true;  
+			*/
+		case MFT_Hardware.MFT_BANK1_BUTTON_16:
+			sendMidi(0xB1, MFT_Hardware.MFT_BANK1_BUTTON_13, 02);
+			sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 19);
+			return true;
+			/* 
+			if(msg.isLongClick()) this.application.toggleFullScreen() ;
+			else this.application.setPanelLayout(Application.PANEL_LAYOUT_EDIT);					
+			return true;  
+			*/
+		default:	                
+			return false; //no midi handled here
+		}//switch
+	} //end of handleButtonClick
 
-    
 
+	public boolean handleEncoderTurn(MFT_MidiMessage msg)
+	{
+		switch (msg.getData1()) 
+		{
+			// We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
+			//thus, data2-64 gives us either +1 or -1 and we can use this value to increment (or decrement) the volum
+			case MFT_Hardware.MFT_BANK1_BUTTON_01:
+				this.transport.playStartPosition().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor());					
+				
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_02: 
+				this.transport.playStartPosition().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor()*0.1);					
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_03:                
+				this.transport.crossfade().value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_04:
+				this.masterTrack.volume().value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_05:                
+				turnedEncoder(4, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_06:                
+				turnedEncoder(5, msg);               
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_07: 
+				this.project.cueVolume().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 127);               
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_08:    
+				if(msg.isButtonCurrentlyDown()){
+					//click&turn                        
+					this.transport.tempo().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 10000);
+				} else {                        
+					this.transport.tempo().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 1000);
+				}return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_09:                
+				if(this.moveTrackDelay++ > 4) {
+					if(msg.getData2()>=64) cursorTrack.selectNext();
+					else cursorTrack.selectPrevious();
+					this.moveTrackDelay = 0; //reset the delay
+				}
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_10:                
+				turnedEncoder(10, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_11:                
+				turnedEncoder(12, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_12:                
+				turnedEncoder(13, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_13:                
+				turnedEncoder(13, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_14:                
+				turnedEncoder(14, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_15:                
+				turnedEncoder(15, msg);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_16:                
+				turnedEncoder(16, msg);
+				return true;   
+			default:
+				return false; //false = no midi handled
+		}
+	} //end of handleEncoderTurn
+	 
     private void turnedEncoder(int encoder, MFT_MidiMessage msg)
     {
         //println("Turned Encoder " + encoder + " to value " + msg.toString());
