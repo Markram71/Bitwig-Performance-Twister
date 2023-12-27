@@ -22,6 +22,7 @@ package de.drMartinKramer.handler;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.Parameter;
 import com.bitwig.extension.controller.api.RemoteControlsPage;
+import com.bitwig.extension.controller.api.SceneBank;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 import de.drMartinKramer.MFT_Configuration;
@@ -32,6 +33,7 @@ import de.drMartinKramer.support.MFT_MidiMessage;
 public class MixerHandler extends AbstractCachingHandler
 {
 	private TrackBank trackBank = null;
+	private SceneBank sceneBank = null;
 	private int updateDelay = 0; //how often should the Bitwig mixer and arranger be updated?
 
 	
@@ -42,7 +44,8 @@ public class MixerHandler extends AbstractCachingHandler
 		super(host);
 		
 		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 1, 0);
-	    this.remoteControlsPage = new RemoteControlsPage[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];  
+	    this.remoteControlsPage = new RemoteControlsPage[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
+		this.sceneBank = host.createSceneBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS-2); //-1 for the shift button and another one for the stop button on Encoder 15  
 		
 		for (int i = 0; i < this.trackBank.getSizeOfBank (); i++)
 	    {
@@ -142,7 +145,14 @@ public class MixerHandler extends AbstractCachingHandler
 	private void clickedOnEncoder (int index, MFT_MidiMessage msg)
 	{
 	    Track myNewTrack = this.trackBank.getItemAt (index);
-	    if(msg.isLongClick()){
+		if(isShiftConsumed()&&msg.isShiftButton())return; //shift is consumed, so we do not need to do anything
+		if(isShiftPressed())
+		{
+			if(msg.getData1()==MFT_Hardware.MFT_BANK1_BUTTON_15)transport.stop();
+			else this.sceneBank.launchScene(index);		
+			return;
+		}
+		if(msg.isLongClick()){
 			if(MFT_Configuration.isMixerLongButtonActionArm())
 				myNewTrack.arm().toggle();
 			else if(MFT_Configuration.isMixerLongButtonActionMute())

@@ -92,4 +92,26 @@ public class MFT_MidiMessage {
     public int getChannel(){
         return this.msg.getChannel();
     }
+
+    //******* SHIFT BUTTON methods */
+
+    /**
+     * returns true if this message is triggered by a click on a potential shift button
+     * @return true if the 16th encoder is clicked or released 
+     */
+    public boolean isShiftButton(){
+        if(isButtonClickMessage()) {
+            final int encoderId = this.getData1();
+            if(encoderId == MFT_Hardware.MFT_BANK1_BUTTON_16 ||
+                encoderId == MFT_Hardware.MFT_BANK2_BUTTON_16 ||
+                encoderId == MFT_Hardware.MFT_BANK3_BUTTON_16 ||
+                encoderId == MFT_Hardware.MFT_BANK4_BUTTON_16)
+                {
+                    return true;
+                }              
+        }
+        return false;
+    }
+
+
 }

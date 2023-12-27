@@ -78,7 +78,6 @@ public class AbstractCachingHandler extends AbstractHandler{
      * @param value brightness (0-30)
      */
     protected void setEncoderSpecialFXCached(int encoderID, int encoderNumber,int fxID){
-        println("Special FX: " + encoderID + " : "+ fxID);
         if(isActive)setEncoderSpecialColor(encoderNumber, fxID);
         this.encoderSpecialFXCache[encoderNumber] = fxID; //update the cache even when the handler is not active
     }

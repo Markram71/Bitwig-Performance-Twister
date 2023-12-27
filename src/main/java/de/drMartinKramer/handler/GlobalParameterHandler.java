@@ -37,6 +37,11 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 	Application application = null;
 	/** We need to slow down the selection of the next/previous track by some delay. This here is the counter */
 	private int moveTrackDelay = 0;
+	/** delay the send of next patch messages */
+	private int nextPatchDelay = 0;
+	private int arrangerWindowDelay = 0;
+	/** delay for changing the zoom level */
+	private int zoomDelay = 0;
 
     public GlobalParameterHandler(ControllerHost host)
     {
@@ -82,14 +87,12 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 			setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,0,  50);			
 			//and have it flash in quarter notes (when the MFT receives midi clock)
 			setEncoderSpecialFXCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 0, 6);
-						          
 		}else 
 		{	
 			//turn off the first button
 			setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,0,  0); 
 			//and reset the special FX, i.e. blinking of the LED  			
-			setEncoderSpecialFXCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 0, 0);			
-
+			setEncoderSpecialFXCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 0, 0);	
 		}
     }
     private void reactToIsRecordEnabled(boolean isEnabled){
@@ -247,17 +250,29 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 			case MFT_Hardware.MFT_BANK1_BUTTON_12:                
 				turnedEncoder(13, msg);
 				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_13:                
-				turnedEncoder(13, msg);
+			case MFT_Hardware.MFT_BANK1_BUTTON_13:  
+				if(zoomDelay++>4){
+					zoomDelay = 0;
+					if(msg.getData2()>64) application.zoomIn();
+					else application.zoomOut();
+				}
 				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_14:                
+			case MFT_Hardware.MFT_BANK1_BUTTON_14:  
+				if(arrangerWindowDelay++>4){
+					arrangerWindowDelay = 0;
+					//this.application.
+				}
 				turnedEncoder(14, msg);
 				return true;
 			case MFT_Hardware.MFT_BANK1_BUTTON_15:                
 				turnedEncoder(15, msg);
 				return true;
 			case MFT_Hardware.MFT_BANK1_BUTTON_16:                
-				turnedEncoder(16, msg);
+				if(nextPatchDelay++>4){
+					nextPatchDelay = 0;
+					if(msg.getData2()>64) sendMidi(0xB0, 98, 127);
+					else sendMidi(0xB0, 99, 127);
+				}
 				return true;   
 			default:
 				return false; //false = no midi handled

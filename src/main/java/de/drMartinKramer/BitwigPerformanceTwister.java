@@ -79,9 +79,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
       host.getMidiInPort(0).createNoteInput("Midi Fighter Twister", "B4????", "B6????");
       
       host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
-   
-      host.getMidiOutPort(0).
-
+     
       // First, create a HashMap of Handlers in which we can store all the handlers
       final HashMap<Integer, AbstractHandler> handlerMap = new HashMap<>();
       //then, let's create all the handlers and add them to the handlerMap
@@ -149,7 +147,6 @@ public class BitwigPerformanceTwister extends ControllerExtension
    /** Called when we receive short MIDI message on port 0. */
    private void onMidi0(ShortMidiMessage msg) 
    {
-	   
 	   try {
          //an important first step is to add context to the midi message, e.g. let us know that an encoder was clicked shortly before
          MFT_MidiMessage mftMessage = parseMidiMessage(msg);
