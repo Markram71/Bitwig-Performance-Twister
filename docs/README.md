@@ -159,27 +159,28 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 ### Mode 5 Global Parameters
 This mode allows you to control many actions of the Bitwig transport section and global parameter like master volume, cue volume, cross fader setting, etc. You can also use it to quickly change the appearance of the Bitwig window, e.g. by toggling the inspector on the left side. Note: all encoders have function assign to clicking it, but not all encoders react to turning. 
 
-| Encoder | Turn (Twisting)     | Click & turn | Click                          | Long Click           | RGB Light                    |
-|:-------:|---------------------|--------------|--------------------------------|----------------------|------------------------------|
-|1        |start cursor (coarse)|              |start/pause                     |                      | green if play, off otherwise |
-|2        |start cursorn (fine) |              |stop                            |toggle window         | off                          |
-|3        |cross fader          |              |toggle record                   |                      | red if record enable         |
-|4        |master volumen       |              |toggle arranger loop            |                      | blue if arranger loop enabled|
-|5        |                     |              |toggle fill (used by operators) |                      | off                          |
-|6        |                     |              |toggle midi overdub             |                      | off                          |
-|7        |cue volume           |              |toggle metronom                 |                      | off                          |
-|8        |tempo (normal)       |tempo (fine)  |tap tempo                       |                      | off                          |
-|9        |selected track       |              |previous project                |                      | off                          |
-|10       |                     |              |next project                    |                      | off                          |
-|11       |                     |              |activate audio                  |                      | off                          |
-|12       |                     |              |n/a                             |                      | off                          |
-|13       |zoom in and out      |              |toggle inspector                |toggle device view    | off                          |
-|14       |                     |              |change to arranger view         |toggle mixer view     | off                          |
-|15       |                     |              |change to mix view              |toggle note editor    | off                          |
-|16       |next/previous patch  |              |change to edit view             |toggle full screen    | off                          |
+| Encoder | Turn (Twisting)      | Click & turn | Click                          | Long Click           | RGB Light                       |
+|:-------:|----------------------|--------------|--------------------------------|----------------------|---------------------------------|
+|1        |start cursor (coarse) |              |start/pause                     |                      | green if play, off otherwise (1)|
+|2        |start cursorn (fine)  |              |stop                            |toggle window         | off                             |
+|3        |cross fader           |              |toggle record                   |                      | red if record enable            |
+|4        |master volumen        |              |toggle arranger loop            |                      | blue if arranger loop enabled   |
+|5        |                      |              |toggle fill (used by operators) |                      | off                             |
+|6        |                      |              |toggle midi overdub             |                      | off                             |
+|7        |cue volume            |              |toggle metronom                 |                      | off                             |
+|8        |tempo (normal)        |tempo (fine)  |tap tempo                       |                      | off                             |
+|9        |selected track        |              |previous project                |                      | off                             |
+|10       |                      |              |next project                    |                      | off                             |
+|11       |                      |              |activate audio                  |                      | off                             |
+|12       |                      |              |n/a                             |                      | off                             |
+|13       |zoom in and out       |              |toggle inspector                |toggle device view    | off                             |
+|14       |                      |              |change to arranger view         |toggle mixer view     | off                             |
+|15       |                      |              |change to mix view              |toggle note editor    | off                             |
+|16       |next/previous patch(2)|              |change to edit view             |toggle full screen    | off                             |
 
 #### Notes
-When turning encoder 16 you can generate two different CC messages which can be used to to map to a _next patch_ and _previous patch_ button on your (VST) device. As an example, I have matched this to the Omnisphere next/previous patch buttons. With that I can easily scoll through patches using one encoder of the Midi Fighter Twister.   
+* (1) When Bitwig is playing the first encoder turns green and flashes in the rhythm of quarter notes. In order to allow for this feature to work correctly you need to send midi clock to the Midi Fighter Twister. You can do that by adding a track and installing a Bitwig _HW INSTRUMENT_ in the device chain. On the HW INSTRUMENT you need to select the Midi Fighter Twister as Midi Out and enable Midi Clock. 
+* (2) When turning encoder 16 you can generate two different CC messages which can be used to to map to a _next patch_ and _previous patch_ button on your (VST) device. As an example, I have matched this to the Omnisphere next/previous patch buttons. With that I can easily scoll through patches using one encoder of the Midi Fighter Twister.   
 
 
 ### Mode 6 User defined controls
