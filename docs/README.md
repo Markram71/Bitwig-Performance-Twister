@@ -173,11 +173,13 @@ This mode allows you to control many actions of the Bitwig transport section and
 |10       |                     |              |next project                    |                      | off                          |
 |11       |                     |              |activate audio                  |                      | off                          |
 |12       |                     |              |n/a                             |                      | off                          |
-|13       |                     |              |toggle inspector                |toggle device view    | off                          |
+|13       |zoom in and out      |              |toggle inspector                |toggle device view    | off                          |
 |14       |                     |              |change to arranger view         |toggle mixer view     | off                          |
 |15       |                     |              |change to mix view              |toggle note editor    | off                          |
-|16       |                     |              |change to edit view             |toggle full screen    | off                          |
+|16       |next/previous patch  |              |change to edit view             |toggle full screen    | off                          |
 
+#### Notes
+When turning encoder 16 you can generate two different CC messages which can be used to to map to a _next patch_ and _previous patch_ button on your (VST) device. As an example, I have matched this to the Omnisphere next/previous patch buttons. With that I can easily scoll through patches using one encoder of the Midi Fighter Twister.   
 
 
 ### Mode 6 User defined controls
