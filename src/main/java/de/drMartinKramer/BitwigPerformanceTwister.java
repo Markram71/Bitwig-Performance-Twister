@@ -50,6 +50,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
    private EQ_Handler eq_Handler = null; 
    private GlobalParameterHandler globalParameterHandler= null;
 	private EncoderStateMap encoderStateMap = null; //a hashmap that stores the current state of the encoders  
+   
    @SuppressWarnings("unused") //We just need to construct it once, but then we access it via static methods
    private MFT_Configuration configuration = null;
 	
@@ -79,6 +80,8 @@ public class BitwigPerformanceTwister extends ControllerExtension
       
       host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
    
+      host.getMidiOutPort(0).
+
       // First, create a HashMap of Handlers in which we can store all the handlers
       final HashMap<Integer, AbstractHandler> handlerMap = new HashMap<>();
       //then, let's create all the handlers and add them to the handlerMap

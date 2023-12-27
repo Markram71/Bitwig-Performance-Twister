@@ -76,8 +76,21 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 
     private void reactToIsPlaying(boolean isPlaying)
     {
-        if(isPlaying)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,0,  50);            
-        else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,0,  0);  
+        if(isPlaying)
+		{
+			//set the first button to green
+			setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,0,  50);			
+			//and have it flash in quarter notes (when the MFT receives midi clock)
+			setEncoderSpecialFXCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 0, 6);
+						          
+		}else 
+		{	
+			//turn off the first button
+			setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,0,  0); 
+			//and reset the special FX, i.e. blinking of the LED  			
+			setEncoderSpecialFXCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 0, 0);			
+
+		}
     }
     private void reactToIsRecordEnabled(boolean isEnabled){
         if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_03,2,  80);            
@@ -170,23 +183,13 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 			else this.application.setPanelLayout(Application.PANEL_LAYOUT_ARRANGE);
 			return true;  
 		case MFT_Hardware.MFT_BANK1_BUTTON_15:
-			sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 47);
-			sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 127);
-			return true;
-			/* 
 			if(msg.isLongClick()) this.application.toggleNoteEditor();
 			else this.application.setPanelLayout(Application.PANEL_LAYOUT_MIX);
-			return true;  
-			*/
+			return true; 			
 		case MFT_Hardware.MFT_BANK1_BUTTON_16:
-			sendMidi(0xB1, MFT_Hardware.MFT_BANK1_BUTTON_13, 02);
-			sendMidi(0xB2, MFT_Hardware.MFT_BANK1_BUTTON_13, 19);
-			return true;
-			/* 
 			if(msg.isLongClick()) this.application.toggleFullScreen() ;
 			else this.application.setPanelLayout(Application.PANEL_LAYOUT_EDIT);					
-			return true;  
-			*/
+			return true;  		
 		default:	                
 			return false; //no midi handled here
 		}//switch

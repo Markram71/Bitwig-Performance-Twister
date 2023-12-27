@@ -32,7 +32,7 @@ public class AbstractCachingHandler extends AbstractHandler{
     
     /** A cache for the color of the encoder */
     private int[] encoderColorCache = new int[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
-    private int[] encoderColorBrightnessCache = new int[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
+    private int[] encoderSpecialFXCache = new int[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
     /** A cache for the ring status  */
     private int[] encoderRingCache = new int[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
 
@@ -43,7 +43,7 @@ public class AbstractCachingHandler extends AbstractHandler{
 
         //Let's initialize the brightness cache to the highest brightness
         for(int i=0;i<MFT_Hardware.MFG_NUMBER_OF_ENCODERS;i++){
-            this.encoderColorBrightnessCache[i] = MFT_Hardware.MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS;
+            this.encoderSpecialFXCache[i] = MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS ;
         }
     }
 
@@ -77,9 +77,10 @@ public class AbstractCachingHandler extends AbstractHandler{
      * @param encoderNumber the number of the encoder (0-15)
      * @param value brightness (0-30)
      */
-    protected void setEncoderColorBrightnessCached(int encoderID, int encoderNumber,int brightness){
-        if(isActive)setEncoderSpecialColor(encoderNumber, MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE+brightness);
-        this.encoderColorBrightnessCache[encoderNumber] = brightness; //update the cache even when the handler is not active
+    protected void setEncoderSpecialFXCached(int encoderID, int encoderNumber,int fxID){
+        println("Special FX: " + encoderID + " : "+ fxID);
+        if(isActive)setEncoderSpecialColor(encoderNumber, fxID);
+        this.encoderSpecialFXCache[encoderNumber] = fxID; //update the cache even when the handler is not active
     }
 
     /**
@@ -109,7 +110,7 @@ public class AbstractCachingHandler extends AbstractHandler{
         for(int i=0;i<MFT_Hardware.MFG_NUMBER_OF_ENCODERS;i++){
             setEncoderColor(MFT_Hardware.MFT_BANK1_BUTTON_01 +  i, this.encoderColorCache[i]);
             setEncoderRingValue(MFT_Hardware.MFT_BANK1_BUTTON_01 +  i, this.encoderRingCache[i]);  
-            setEncoderBrightness(MFT_Hardware.MFT_BANK1_BUTTON_01+i, this.encoderColorBrightnessCache[i]);          
+            setEncoderSpecialFXCached(MFT_Hardware.MFT_BANK1_BUTTON_01 + i, i,this.encoderSpecialFXCache[i]);          
         } 
     }
 

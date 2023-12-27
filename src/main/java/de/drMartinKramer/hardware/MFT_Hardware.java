@@ -35,7 +35,9 @@ public class MFT_Hardware
 	/** The speciial color color CC channel message, i.e. CC on channel 3 (1-16) */
 	public static final int MFT_SPECIAL_ENCODER_COLOR_MESSAGE = 0xB2; //
 	public static final int MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE = 17; //
-	public static final int MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS = 29; //
+	public static final int MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS = 30; //
+	public static final int MFT_SPECIAL_ENCODER_LOW_BRIGHTNESS = 8; //dim light of the LED 
+	
 
 	//Bank1: The CC number for each of the  encoders in this bank
 

@@ -34,9 +34,7 @@ public class MixerHandler extends AbstractCachingHandler
 	private TrackBank trackBank = null;
 	private int updateDelay = 0; //how often should the Bitwig mixer and arranger be updated?
 
-	private static final int ENCODER_BRIGHTNESS_LOW = 8; //dim light of the LED 
-	private static final int ENCODER_BRIGHTNESS_HIGH = 30; //Highest brightness of the MFT encoder LED light
-
+	
 	private RemoteControlsPage[] remoteControlsPage = null;
 		
 	public MixerHandler (ControllerHost host)
@@ -102,7 +100,10 @@ public class MixerHandler extends AbstractCachingHandler
 	 */
 	private void reactToIsSelected(int trackIndex, boolean isSelected){
 		//set the encoder brightness to high (if selected) or low (if not selected)
-		setEncoderColorBrightnessCached(trackIndex, trackIndex, isSelected ? ENCODER_BRIGHTNESS_HIGH : ENCODER_BRIGHTNESS_LOW);
+		setEncoderSpecialFXCached(trackIndex, trackIndex, 
+			isSelected ? 
+				MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS : 
+				MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_LOW_BRIGHTNESS);
 	}
     
     /**
