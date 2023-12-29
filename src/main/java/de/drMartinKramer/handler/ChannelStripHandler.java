@@ -19,7 +19,9 @@
 package de.drMartinKramer.handler;
 
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.CueMarkerBank;
 import com.bitwig.extension.controller.api.RemoteControlsPage;
+import com.bitwig.extension.controller.api.SceneBank;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.MasterTrack;
 
@@ -40,12 +42,14 @@ public class ChannelStripHandler extends AbstractHandler
 	private MasterTrack masterTrack = null;
 	private RemoteControlsPage trackRemoteControlsPage = null;
 	private static final int COLOR_PINK = 100; 
+
+	//for shift clicks we need access to the sceneBank or a cue marker bank
+	private SceneBank sceneBank = null;
+	private CueMarkerBank cueMarkerBank = null;
 	
 	public  ChannelStripHandler(ControllerHost host) 
 	{
 		super(host);
-		
-		
 		//the cursorTrack will help us to have access to the 
 		this.cursorTrack = host.createCursorTrack ("CHANNEL_STRIP_CURSOR_TRACK", "MFT Channel Strip Cursor Track", SIZE_OF_SEND_BANK, 0, true);
 		this.cursorTrack.solo ().markInterested ();
@@ -95,6 +99,12 @@ public class ChannelStripHandler extends AbstractHandler
 			this.trackRemoteControlsPage.getParameter(remoteIndex).markInterested();
 			this.trackRemoteControlsPage.getParameter(remoteIndex).exists().addValueObserver((exists)->reactToRemoteExists(remoteIndex, exists));	
 		}		
+
+		//for shift clicks we need access to the sceneBank or a cue marker bank
+		this.sceneBank = host.createSceneBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS-2); //-1 for the shift button and another one for the stop button on Encoder 15  
+		//we need a cue marker bank to be able to jump to the cue markers
+		this.cueMarkerBank = host.createArranger().createCueMarkerBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS-2); 
+		
 	}//end of constructor
 	
 	
@@ -222,6 +232,21 @@ public class ChannelStripHandler extends AbstractHandler
 	@Override
 	public boolean handleButtonClick(MFT_MidiMessage msg)
 	{
+		//first handle the shift clicks
+		if(isShiftConsumed()&&msg.isShiftButton())return true; //shift is consumed, so we do not need to do anything
+		if(isShiftPressed())
+		{
+			if(msg.getData1()==MFT_Hardware.MFT_BANK2_BUTTON_15)transport.stop();
+			else 
+			{
+				int index = msg.getData1()-MFT_Hardware.MFT_BANK2_BUTTON_01;
+				if(MFT_Configuration.isChannelStripShiftClickActionScene()) this.sceneBank.launchScene(index);
+				if(MFT_Configuration.isChannelStripShiftClickActionCueMarker()) this.cueMarkerBank.getItemAt(index).launch(true);				
+			}
+			return true;
+		}
+
+		//now the normal clicks
 		switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
 	    {	
 			case MFT_Hardware.MFT_BANK2_BUTTON_01:	    

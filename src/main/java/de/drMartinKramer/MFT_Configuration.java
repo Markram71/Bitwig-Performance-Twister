@@ -93,16 +93,6 @@ public class MFT_Configuration {
         MIXER_LONG_BUTTON_ACTION_MUTE       
     };     
     
-    // Button 4 im Mixer: Master volume
-    private static SettableEnumValue channelStripEncoder4Setting  = null;
-    public static final String CHANNEL_STRIP_ENCODER_4_MASTERVOLUME = "Master volume";
-    public static final String CHANNEL_STRIP_ENCODER_4_CROSSFADER = "Crossfader";
-    public static final String CHANNEL_STRIP_ENCODER_4_CUE_VOLUME = "Cue volume";    
-    private final static String[] channelStripEncoder4SettingStrings = {
-        CHANNEL_STRIP_ENCODER_4_MASTERVOLUME,
-        CHANNEL_STRIP_ENCODER_4_CROSSFADER, 
-        CHANNEL_STRIP_ENCODER_4_CUE_VOLUME      
-    };
 
     // Configuration for the click and turn function in the mixer
     private static SettableEnumValue mixerClickAndTurnFunctionSetting  = null;
@@ -115,6 +105,41 @@ public class MFT_Configuration {
         MIXER_CLICK_AND_TURN_FUNCTION_SEND1,    
         MIXER_CLICK_AND_TURN_FUNCTION_TRACK_REMOTE1
     }; 
+
+    // Configuration for the shift click in the mixer
+    static SettableEnumValue mixerShiftClickActionSetting  = null;
+    public static final String MIXER_SHIFT_CLICK_ACTION_SCENE  = "Scene";
+    public static final String MIXER_SHIFT_CLICK_ACTION_CUE_MARKER  = "Cue Marker";
+    
+    private final static String[] mixerShiftClickActionStrings = {
+        MIXER_SHIFT_CLICK_ACTION_SCENE, 
+        MIXER_SHIFT_CLICK_ACTION_CUE_MARKER
+    }; 
+
+
+    //----------CHANNEL STRIP ----------------------------------------------------------
+
+    // Button 4 im Channel Strip: Master volume or cross fader of cue volumen
+    private static SettableEnumValue channelStripEncoder4Setting  = null;
+    public static final String CHANNEL_STRIP_ENCODER_4_MASTERVOLUME = "Master volume";
+    public static final String CHANNEL_STRIP_ENCODER_4_CROSSFADER = "Crossfader";
+    public static final String CHANNEL_STRIP_ENCODER_4_CUE_VOLUME = "Cue volume";    
+    private final static String[] channelStripEncoder4SettingStrings = {
+        CHANNEL_STRIP_ENCODER_4_MASTERVOLUME,
+        CHANNEL_STRIP_ENCODER_4_CROSSFADER, 
+        CHANNEL_STRIP_ENCODER_4_CUE_VOLUME      
+    };
+
+    // Configuration for the shift click in the mixer
+    static SettableEnumValue channelStripShiftClickActionSetting  = null;
+    public static final String CHANNEL_STRIP_SHIFT_CLICK_ACTION_SCENE  = "Scene";
+    public static final String CHANNEL_STRIP_SHIFT_CLICK_ACTION_CUE_MARKER  = "Cue Marker";
+    
+    private final static String[] channelStripShiftClickActionStrings = {
+        CHANNEL_STRIP_SHIFT_CLICK_ACTION_SCENE, 
+        CHANNEL_STRIP_SHIFT_CLICK_ACTION_CUE_MARKER
+    }; 
+
 
 
     /**
@@ -160,6 +185,11 @@ public class MFT_Configuration {
                                                                                 "Mixer", 
                                                                                 mixerClickAndTurnFunctionStrings, 
                                                                                 mixerClickAndTurnFunctionStrings[2]);
+        MFT_Configuration.mixerShiftClickActionSetting = preferences.getEnumSetting( "Shift click action", 
+                                                                                "Mixer", 
+                                                                                mixerShiftClickActionStrings, 
+                                                                                mixerShiftClickActionStrings[0]);
+       
        
         MFT_Configuration.globalLongClickMillis = preferences.getNumberSetting("Long click duration in milliseconds", 
                                                                                 "Global", 0, 
@@ -170,6 +200,12 @@ public class MFT_Configuration {
 
         //Channel Strip Configurations
         MFT_Configuration.channelStripEncoder4Setting = preferences.getEnumSetting("Channel strip Encoder #4 function", "Channel Strip", channelStripEncoder4SettingStrings, channelStripEncoder4SettingStrings[0]);
+    
+        MFT_Configuration.channelStripShiftClickActionSetting = preferences.getEnumSetting( "Shift click action", 
+                                                                                "Channel Strip", 
+                                                                                channelStripShiftClickActionStrings, 
+                                                                                channelStripShiftClickActionStrings[1]);
+    
     }  //end of constructor
 
     // GLBOAL FUNCTIONS --------------------------------------------------------
@@ -222,6 +258,14 @@ public class MFT_Configuration {
     public static boolean isMixerClickAdnTurnFunctionTrackRemote1(){
         return MFT_Configuration.mixerClickAndTurnFunctionSetting.get().equals(MIXER_CLICK_AND_TURN_FUNCTION_TRACK_REMOTE1);
     }
+    public static boolean isMixerShiftClickActionScene(){
+        return MFT_Configuration.mixerShiftClickActionSetting.get().equals(MIXER_SHIFT_CLICK_ACTION_SCENE);
+    }
+    public static boolean isMixerShiftClickActionCueMarker(){
+        return MFT_Configuration.mixerShiftClickActionSetting.get().equals(MIXER_SHIFT_CLICK_ACTION_CUE_MARKER);
+    }
+    
+    //------- CHANNEL STRIP --------------
 
     //Channel Strip Encoder 4
     public static boolean isChannelStripEncoder4_MasterVolume(){
@@ -233,6 +277,14 @@ public class MFT_Configuration {
     public static boolean isChannelStripEncoder4_CueVolume(){
         return MFT_Configuration.channelStripEncoder4Setting.get().equals(CHANNEL_STRIP_ENCODER_4_CUE_VOLUME);
     }
+
+    public static boolean isChannelStripShiftClickActionScene(){
+        return MFT_Configuration.channelStripShiftClickActionSetting.get().equals(CHANNEL_STRIP_SHIFT_CLICK_ACTION_SCENE);
+    }
+    public static boolean isChannelStripShiftClickActionCueMarker(){
+        return MFT_Configuration.channelStripShiftClickActionSetting.get().equals(CHANNEL_STRIP_SHIFT_CLICK_ACTION_CUE_MARKER);
+    }
+
 
     /**
      * A factor to increase or decrease the turning speed in normal case when the encoder is not clicked down.

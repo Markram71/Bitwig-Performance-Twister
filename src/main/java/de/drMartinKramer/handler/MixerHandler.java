@@ -20,6 +20,7 @@
 package de.drMartinKramer.handler;
 
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.CueMarkerBank;
 import com.bitwig.extension.controller.api.Parameter;
 import com.bitwig.extension.controller.api.RemoteControlsPage;
 import com.bitwig.extension.controller.api.SceneBank;
@@ -34,6 +35,7 @@ public class MixerHandler extends AbstractCachingHandler
 {
 	private TrackBank trackBank = null;
 	private SceneBank sceneBank = null;
+	private CueMarkerBank cueMarkerBank = null;
 	private int updateDelay = 0; //how often should the Bitwig mixer and arranger be updated?
 
 	
@@ -46,6 +48,8 @@ public class MixerHandler extends AbstractCachingHandler
 		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 1, 0);
 	    this.remoteControlsPage = new RemoteControlsPage[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
 		this.sceneBank = host.createSceneBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS-2); //-1 for the shift button and another one for the stop button on Encoder 15  
+		//we need a cue marker bank to be able to jump to the cue markers
+		this.cueMarkerBank = host.createArranger().createCueMarkerBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS-2); 
 		
 		for (int i = 0; i < this.trackBank.getSizeOfBank (); i++)
 	    {
@@ -149,7 +153,11 @@ public class MixerHandler extends AbstractCachingHandler
 		if(isShiftPressed())
 		{
 			if(msg.getData1()==MFT_Hardware.MFT_BANK1_BUTTON_15)transport.stop();
-			else this.sceneBank.launchScene(index);		
+			else 
+			{
+				if(MFT_Configuration.isMixerShiftClickActionScene()) this.sceneBank.launchScene(index);
+				if(MFT_Configuration.isMixerShiftClickActionCueMarker()) this.cueMarkerBank.getItemAt(index).launch(true);				
+			}
 			return;
 		}
 		if(msg.isLongClick()){
