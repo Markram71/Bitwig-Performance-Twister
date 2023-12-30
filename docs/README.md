@@ -92,22 +92,23 @@ pin a controller to a certain track (or device, see below). This can be done wit
 Midi Fighter Twister is pinned to the currently selected track, the first encoder turn green and you cannot change the selected
 track with encoder 1 any more. 
 
-| Encoder | Turn (Twisting)              | Click & turn | Click             | Long Click   | Shift Click     | RGB Light                   |
+| Encoder | Turn (Twisting)              | Click & turn | Click             | Long Click   | Shift Click (2) | RGB Light                   |
 |:-------:|------------------------------|--------------|-------------------|--------------|-----------------|--------------|
 |1        |select a track                |tbd           |toggle arm         |pin the track | scene or marker | green if track is selected  |
-|2        |volume of selected track      |tbd           |toggle solo        |n/a           |                 | yellow if track is soloed   |
-|3        |panning selected track        |tbd           |toggle mute        |n/a           |                 | orange if track is muted    |
-|4        |volume: master,cue, x-fader(1)|tbd           |toggle fill (2)    |n/a           |                 | tbd                         |
-|5-8      |send to fx channel 1-4        |tbd           |toggle send enabled|n/a           |                 | blue, dark blue if send disabled|
-|9-14     |track remote control 1-8      |tbd           |toggle send enabled|n/a           |                 | color on Bitwig parameter page|
+|2        |volume of selected track      |tbd           |toggle solo        |n/a           | scene or marker | yellow if track is soloed   |
+|3        |panning selected track        |tbd           |toggle mute        |n/a           | scene or marker | orange if track is muted    |
+|4        |volume: master,cue, x-fader(1)|tbd           |toggle fill (2)    |n/a           | scene or marker | tbd                         |
+|5-8      |send to fx channel 1-4        |tbd           |toggle send enabled|n/a           | scene or marker | blue, dark blue if send disabled|
+|9-14     |track remote control 1-8      |tbd           |toggle send enabled|n/a           | scene or marker | color on Bitwig parameter page|
 |15       |track remote control 15b      |tbd           |toggle send enabled|n/a           | stop            | color on Bitwig parameter page|
 |16       |track remote control 16       |tbd           |toggle send enabled|n/a           | Shift button    | color on Bitwig parameter page|
 
-
-(1) Encoder #4 on this bank can be configured to control the
-* master volume 
-* cue volume
-* crossfader volume  
+#### Notes
+* (1) Encoder #4 on this bank can be configured to control the...
+	* master volume 
+	* cue volume
+	* crossfader volume  
+* (2) see mixer mode for shift click
 
 The control depends on the setting of the controller configuration. See [Controller Configuration](#controller-configuration).
 
