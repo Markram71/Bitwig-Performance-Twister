@@ -181,8 +181,8 @@ This mode allows you to control many actions of the Bitwig transport section and
 |8        |tempo (normal)        |tempo (fine)       |tap tempo                       |                      | off                             |
 |9        |selected track        |                   |previous project                |                      | off                             |
 |10       |                      |                   |next project                    |                      | off                             |
-|11       |                      |                   |activate audio                  |                      | off                             |
-|12       |program change        |prgrm chnge (fast) |n/a                             |                      | off                             |
+|11       |Bank, LSB (3)         |Bank, MSB          |activate audio                  |                      | off                             |
+|12       |program change (3)    |prgrm chnge (fast) |n/a                             |                      | off                             |
 |13       |zoom in and out       |                   |toggle inspector                |toggle device view    | off                             |
 |14       |                      |                   |change to arranger view         |toggle mixer view     | off                             |
 |15       |                      |                   |change to mix view              |toggle note editor    | off                             |
@@ -191,7 +191,7 @@ This mode allows you to control many actions of the Bitwig transport section and
 #### Notes
 * (1) When Bitwig is playing the first encoder turns green and flashes in the rhythm of quarter notes. In order to allow for this feature to work correctly you need to send midi clock to the Midi Fighter Twister. You can do that by adding a track and installing a Bitwig _HW INSTRUMENT_ in the device chain. On the HW INSTRUMENT you need to select the Midi Fighter Twister as Midi Out and enable Midi Clock. 
 * (2) When turning encoder 16 you can generate two different CC messages which can be used to to map to a _next patch_ and _previous patch_ button on your (VST) device. As an example, I have matched this to the Omnisphere next/previous patch buttons. With that I can easily scoll through patches using one encoder of the Midi Fighter Twister.   
-
+* (3) Program change message can be triggered when turning encoder 12. They are sent on channel 1 for the currently selected track. On encoder 11 bank messages can be sent. Both LSB and MSB are available (you need to press down for changing the MSB). In the configuration you can set if the bank message should be sent before a program change message. 
 
 ### Mode 6 User defined controls
 This mode simply allows to bypass the controller script and allows you to use it for your own Midi Learn mapping. When accessing the mode 6 the Midi Figther Twister is set internally to bank four. You can also configure the CC message and colors in the `Midifighter Utility`. Please keep the midi channels to five and six, respectively.  
@@ -215,6 +215,8 @@ The following configuration items are avaialable:
     *    **Click&Turn function**: In the mixer you have the possibility to control a secondary parameter with each encoder (remember, the first function is to change the volume). Here you can decide which function you want to control. You can either change the _panning_ or change the _send_ level to the first FX track or change the level of the first _remote control_ of the track. This is a great tool during performances.
 * **_Channel Strip Mode_**
     * **Channel Strip Encoder #4 function**: This lets you control the Bitwig parameter which is changed when you turn the fourth encoder on the first row in the channel strip mode. You can choose _master volume_, crossfader_, or _cue volume_.           
+* **_Global Parameters Mode_**
+	* **Send bank messages before program change**: Encoder 12 lets you send program change messages. With encoder 11 you can specify the MSB and LSB of the bank message. In case "yes" is selected a bank message is sent before each program change message.  
 
 ## Installation
 The installation of _Bitwig Performance Twister_ is straight forward. It requires basically four steps: 1. download and unpack the zip file of the latest release, 2. update the Midi Fighter Twister with the configuration provided in the zip file , 3. place the Bitwig extension into the correct Bitwig folder and 4. configure the controller . Here's the installation step by step: 
