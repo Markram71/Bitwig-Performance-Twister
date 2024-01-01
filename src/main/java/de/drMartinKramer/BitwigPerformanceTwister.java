@@ -121,6 +121,14 @@ public class BitwigPerformanceTwister extends ControllerExtension
       // currently nothing to do here.
    }
 
+   /**
+    * Important and a bit complex method in order to create a new MFT-specific Midi message that 
+    * takes the current state of the encoder into account. I.e. it could be that a prior message
+    * would invalida a current click message. In that specific case it could be that the encoder was 
+    * held down and the encoder was turned. 
+    * @param msg the Midi message from the MFT
+    * @return a MFT-specific midi message that contains further information on the context
+    */
    private MFT_MidiMessage parseMidiMessage(ShortMidiMessage msg) {
       MFT_MidiMessage mftMessage = new MFT_MidiMessage(msg); 
       if(mftMessage.isButtonClickMessage()){ //button click message
