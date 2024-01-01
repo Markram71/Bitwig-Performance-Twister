@@ -76,7 +76,6 @@ public class BitwigPerformanceTwister extends ControllerExtension
       
       //create a note input: this will make the MFT messages visible in Bitwig, with it's on input port. We can also filter there only for MFT bank 4
       //The CC messages on Bank 4 are sent on channel 5 and 6 
-      host.getMidiInPort(0).createNoteInput("Midi Fighter Twister", "B4????", "B6????");
       
       host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
      

@@ -43,6 +43,12 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 	/** delay for changing the zoom level */
 	private int zoomDelay = 0;
 
+	private int bankSelectDelay = 0;
+	private int programChangeDelay = 0;
+	private int programChangeValue = 0;
+	private int bankSelectMSB = 0;
+	private int bankSelectLSB = 0;
+
     public GlobalParameterHandler(ControllerHost host)
     {
         super(host);
@@ -206,8 +212,7 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 			// We receive relative values from the MFT, either 65 (if turned clockwise) or 63 if turned counterclockwise
 			//thus, data2-64 gives us either +1 or -1 and we can use this value to increment (or decrement) the volum
 			case MFT_Hardware.MFT_BANK1_BUTTON_01:
-				this.transport.playStartPosition().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor());					
-				
+				this.transport.playStartPosition().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor());	
 				return true;
 			case MFT_Hardware.MFT_BANK1_BUTTON_02: 
 				this.transport.playStartPosition().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor()*0.1);					
@@ -244,11 +249,56 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 			case MFT_Hardware.MFT_BANK1_BUTTON_10:                
 				turnedEncoder(10, msg);
 				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_11:                
+			case MFT_Hardware.MFT_BANK1_BUTTON_11:
+				//send program change message
 				turnedEncoder(12, msg);
+				//todo hier geht's weiter
+				if(msg.isButtonCurrentlyDown()){ //Click turn: MSB
+					if(bankSelectDelay++>4){
+						bankSelectDelay = 0;
+						if(msg.getData2()>64) bankSelectMSB++;
+						else bankSelectMSB--;
+						if(bankSelectMSB<0) bankSelectMSB = 0;
+						if(bankSelectMSB>127) bankSelectMSB = 127;
+						sendMidiToBitwig(0xB0, 0, bankSelectMSB);	
+						setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_11, 10, bankSelectMSB);					
+						showPopupNotification("Bank Select MSB: " + bankSelectMSB);
+					}	 
+					
+				} else {       //normal turn: LSB
+					if(bankSelectDelay++>4){
+						bankSelectDelay = 0;
+						if(msg.getData2()>64) bankSelectLSB++;
+						else bankSelectLSB--;
+						if(bankSelectLSB<0) bankSelectLSB = 0;
+						if(bankSelectLSB>127) bankSelectLSB = 127;
+						sendMidiToBitwig(0xB0, 32, bankSelectLSB);
+						setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_11, 10, bankSelectLSB);
+						showPopupNotification("Bank Select LSB: " + bankSelectLSB);
+					}
+				}                   
+					
 				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_12:                
-				turnedEncoder(13, msg);
+			case MFT_Hardware.MFT_BANK1_BUTTON_12:   
+				//send program change message
+				int changeSpeedup = msg.isButtonCurrentlyDown() ? 10 : 1;				
+				if(programChangeDelay++>4){
+					programChangeDelay = 0;
+					if(msg.getData2()>64) programChangeValue+=changeSpeedup;
+					else programChangeValue-=changeSpeedup;
+					if(programChangeValue<0) programChangeValue = 0;
+					if(programChangeValue>127) programChangeValue = 127;
+					if(MFT_Configuration.isGlobalParameterBankSelectSend())
+					{	//also send the MSB and LSB before sending the program change
+						sendMidiToBitwig(0xB0, 0, bankSelectMSB);
+						sendMidiToBitwig(0xB0, 32, bankSelectLSB);
+
+					}
+					sendMidiToBitwig(0xC0, programChangeValue, 0);
+					setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_12, 11, programChangeValue);
+					setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_12, 10, programChangeValue);
+					showPopupNotification("Program Change: " + programChangeValue);
+				}		
 				return true;
 			case MFT_Hardware.MFT_BANK1_BUTTON_13:  
 				if(zoomDelay++>4){
@@ -270,8 +320,8 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 			case MFT_Hardware.MFT_BANK1_BUTTON_16:                
 				if(nextPatchDelay++>4){
 					nextPatchDelay = 0;
-					if(msg.getData2()>64) sendMidi(0xB0, 98, 127);
-					else sendMidi(0xB0, 99, 127);
+					if(msg.getData2()>64) sendMidiToBitwig(0xB0, 75, 127);
+					else sendMidiToBitwig(0xB0, 76, 127);
 				}
 				return true;   
 			default:

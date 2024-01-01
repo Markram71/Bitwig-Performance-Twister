@@ -141,6 +141,18 @@ public class MFT_Configuration {
     }; 
 
 
+    //------ Global Parameter  -----------------------------------------------------
+    // Configuration for the shift click in the mixer
+    static SettableEnumValue globalParameterBankSelectSetting  = null;
+    public static final String GLOBAL_PARAMETER_BANK_SELECT_NO  = "no";
+    public static final String GLOBAL_PARAMETER_BANK_SELECT_YES  = "yes";
+    
+    private final static String[] globalParameterBankSelectStrings = {
+        GLOBAL_PARAMETER_BANK_SELECT_NO, 
+        GLOBAL_PARAMETER_BANK_SELECT_YES
+    }; 
+
+
 
     /**
      * Constructor. Takes the Bitwig controller host. 
@@ -206,7 +218,14 @@ public class MFT_Configuration {
                                                                                 channelStripShiftClickActionStrings, 
                                                                                 channelStripShiftClickActionStrings[1]);
     
-    }  //end of constructor
+    
+    
+    MFT_Configuration.globalParameterBankSelectSetting = preferences.getEnumSetting( "Send bank select MSB/LSB", 
+                                                                                "Global Parameters", 
+                                                                                globalParameterBankSelectStrings, 
+                                                                                globalParameterBankSelectStrings[0]);
+    
+                                                                            }  //end of constructor
 
     // GLBOAL FUNCTIONS --------------------------------------------------------
 
@@ -285,7 +304,6 @@ public class MFT_Configuration {
         return MFT_Configuration.channelStripShiftClickActionSetting.get().equals(CHANNEL_STRIP_SHIFT_CLICK_ACTION_CUE_MARKER);
     }
 
-
     /**
      * A factor to increase or decrease the turning speed in normal case when the encoder is not clicked down.
      * @return a factor to multiply the turn speed. 
@@ -302,6 +320,11 @@ public class MFT_Configuration {
         return MFT_Configuration.globalClickDownTurnFactor.getAsDouble() *GLOBAL_TURN_SPEED_UP_MAX;
     }
   
+    // Global Parameter Moder ---------------------------------------------------
+    public static boolean isGlobalParameterBankSelectSend(){
+        return MFT_Configuration.globalParameterBankSelectSetting.get().equals(GLOBAL_PARAMETER_BANK_SELECT_YES);
+    }
+
 
     /**
      * Static convinience method to print a message to the console from anywhere in the code. 

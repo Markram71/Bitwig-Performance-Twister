@@ -20,7 +20,9 @@ package de.drMartinKramer.handler;
 
 
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.MidiIn;
 import com.bitwig.extension.controller.api.MidiOut;
+import com.bitwig.extension.controller.api.NoteInput;
 import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Transport;
 import de.drMartinKramer.MFT_Configuration;
@@ -36,7 +38,9 @@ public class AbstractHandler {
     protected boolean isActive = false; //is this handler currently active or not   
     private boolean isShiftPressed = false; //is the shift button pressed or not 
     private boolean isShiftConsumed = false; //has the shift button been consumed or not
-
+    protected MidiIn midiIn = null; //the midi in port
+    protected static NoteInput noteInput = null; //the note input port
+    
     
     /**
      * Constructor. Takes the Bitwig 
@@ -47,6 +51,9 @@ public class AbstractHandler {
         this.transport = host.createTransport();
         this.outPort = host.getMidiOutPort(0);
         this.project = host.getProject(); 
+        this.midiIn = host.getMidiInPort(0);
+        //the noteInput is used to pass CC message from the MFT's bank four into Bitwig
+        if(AbstractHandler.noteInput==null) AbstractHandler.noteInput = midiIn.createNoteInput("Midi Fighter Twister", "B4????", "B6????");
     }
 
     /**
@@ -68,6 +75,11 @@ public class AbstractHandler {
     protected boolean isShiftConsumed(){
         return this.isShiftConsumed;
     }
+
+    protected void sendMidiToBitwig(int status, int data1, int data2){
+         AbstractHandler.noteInput.sendRawMidiEvent(status, data1, data2);
+    }
+
 
     /**
      * Convinience method to easily print to the Bitwig Console
@@ -92,6 +104,8 @@ public class AbstractHandler {
     protected void errorln(String msg){
         host.errorln(msg);
     }
+
+
 
     /**
      * Send a midi message to the MFT. We make this a private method, since we want to encapsulate the midi interface to the MFT
@@ -206,5 +220,9 @@ public class AbstractHandler {
      */
     protected void sendMFT_Global_Command(int encoderID, int value){
         sendMidi(0xB3, encoderID, value);
+    }
+
+    protected void sendMidiCC(int channel, int cc, int value){
+        sendMidi(0xB0+channel, cc, value);
     }
 }
