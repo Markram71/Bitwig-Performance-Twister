@@ -37,7 +37,7 @@ public class EncoderStateMap {
      * Records a new click on an encoder
      * @param encoderID records that the encoder with this ID was clicked
      */
-    public void encoderClickDown(int encoderID){
+    public void putEncoderClickDown(int encoderID){
         if (this.encoderStateMap.containsKey(encoderID)){
             this.encoderStateMap.get(encoderID).clickDown();            
         } else {
@@ -49,7 +49,7 @@ public class EncoderStateMap {
      * Records a new click (up) on an encoder
      * @param encoderID records that the encoder with this ID was clicked
      */
-    public void encoderClickUp(int encoderID){
+    public void recordEncoderClickUp(int encoderID){
         if (this.encoderStateMap.containsKey(encoderID)){
             this.encoderStateMap.get(encoderID).clickUp();            
         } else {
@@ -81,6 +81,14 @@ public class EncoderStateMap {
         }
     }
 
+    public boolean isValidClick(int encoderID){
+        if (this.encoderStateMap.containsKey(encoderID)){
+            return this.encoderStateMap.get(encoderID).isValidClick();
+        } else {
+            return true;
+        }
+    }
+
     /**
      * Message is called if the encoder is turned while beeing pressed down
      *  In this case we don't have a long click any more, but we don't swith directly, so there is 
@@ -90,7 +98,7 @@ public class EncoderStateMap {
      */
     public void resetLongClickByTurn(int encoderID){
         if (this.encoderStateMap.containsKey(encoderID)){            
-            this.encoderStateMap.get(encoderID).resetLongClickByTurn();
+            this.encoderStateMap.get(encoderID).invalidateClickByTurn();
         }        
     }
 }

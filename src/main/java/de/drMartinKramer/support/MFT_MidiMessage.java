@@ -28,7 +28,7 @@ public class MFT_MidiMessage {
     private int encoderID = -1; //the ID of the encoder that sent the message
     private boolean longClick = false; //true if the encoder was clicked for a long time
     private boolean isButtonCurrentlyDown = false; //true if the encoder button is currently down
-    
+    private boolean isValidClick = true; //true if the click is valid, e.g. if the encoder was not turned after the click down
 
 
     public MFT_MidiMessage(ShortMidiMessage msg){
@@ -50,7 +50,7 @@ public class MFT_MidiMessage {
         return false;
     }
 
-    public boolean isEncoderTurnkMessage(){
+    public boolean isEncoderTurnMessage(){
         if(this.msg.isControlChange() && this.msg.getChannel() == MFT_Hardware.MFT_ENCODER_TURN_MIDI_CHANNEL) return true;
         return false;
     }
@@ -78,6 +78,13 @@ public class MFT_MidiMessage {
         return this.isButtonCurrentlyDown;
     }    
 
+    public boolean isValidClick(){
+        return this.isValidClick;
+    }
+
+    public void invalidateClick(){
+        this.isValidClick = false;
+    }
 
     //*****  Access to the core Midi Message  */
     public boolean isControlChange(){

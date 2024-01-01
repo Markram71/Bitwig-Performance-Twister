@@ -41,6 +41,9 @@ public class EncoderState {
     /** the state if the encoder, e.g. if it's clicked down or not*/
     private boolean isCurrentlyClickedDown = false;
    
+    /** We can invalid a click by turning the know when click down, then we don't want consume the click any more */
+    private boolean isValidClick = true;
+
     /*
      * This constructor should beused when the encoderState is created as a response to the downclick 
      * @param encoderID the ID of the encoder
@@ -48,7 +51,7 @@ public class EncoderState {
     EncoderState(int encoderID){
         this.downClickTime = System.currentTimeMillis();
         this.isCurrentlyClickedDown = true;  
-        this.turnMessageCounter = 0;      
+        this.turnMessageCounter = 0;             
     }
 
     /**
@@ -58,6 +61,7 @@ public class EncoderState {
         this.downClickTime = System.currentTimeMillis();
         this.isCurrentlyClickedDown = true;
         this.turnMessageCounter = 0;
+        this.isValidClick = true;
     }
 
     /**
@@ -82,11 +86,17 @@ public class EncoderState {
         return (System.currentTimeMillis() - this.downClickTime) > MFT_Configuration.getGlobalLongClickMillis();
     } 
 
-    public void resetLongClickByTurn(){
+    public void invalidateClickByTurn(){
         if(this.turnMessageCounter++>4){
             this.downClickTime =0; 
             this.turnMessageCounter = 0;
+            this.isValidClick = false;
         }             
-    }       
+    }     
+    
+    public boolean isValidClick(){
+        return this.isValidClick;
+    }
+
     
 }

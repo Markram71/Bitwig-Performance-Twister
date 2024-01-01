@@ -190,7 +190,7 @@ public class AbstractHandler {
     public boolean handleMidi (MFT_MidiMessage msg){
         boolean isHandled = false;
         checkShiftButton(msg);        
-        if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0) isHandled = handleButtonClick(msg);
+        if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0 && msg.isValidClick()) isHandled = handleButtonClick(msg);
 	    else if (msg.isControlChange()  && msg.getChannel()==0) isHandled =  handleEncoderTurn(msg);        
         if(msg.isShiftButton()&&msg.getData2()==0) this.isShiftConsumed = false;
         return isHandled; //we did not handle any incoming midi        

@@ -125,18 +125,19 @@ public class BitwigPerformanceTwister extends ControllerExtension
       MFT_MidiMessage mftMessage = new MFT_MidiMessage(msg); 
       if(mftMessage.isButtonClickMessage()){ //button click message
          if(mftMessage.getData2()==127){
-            this.encoderStateMap.encoderClickDown(mftMessage.getEncoderID()); //click down
+            this.encoderStateMap.putEncoderClickDown(mftMessage.getEncoderID()); //click down
          }
          else if(mftMessage.getData2()==0) //this is click up
          {
             if(encoderStateMap.isLongClick(mftMessage.getEncoderID())) mftMessage.setLongClick(true); //button up
             else mftMessage.setLongClick(false); 
-            this.encoderStateMap.encoderClickUp(mftMessage.getEncoderID()); //button up
+            if(!encoderStateMap.isValidClick(mftMessage.getEncoderID())) mftMessage.invalidateClick(); 
+            this.encoderStateMap.recordEncoderClickUp(mftMessage.getEncoderID()); //button up
          }
-      } else if(mftMessage.isEncoderTurnkMessage()){
+      } else if(mftMessage.isEncoderTurnMessage()){
          if(encoderStateMap.isEncoderCurrentlyClickedDown(mftMessage.getEncoderID())) {
             mftMessage.setButtonCurrentlyDown(true);
-            this.encoderStateMap.resetLongClickByTurn(mftMessage.getEncoderID());            
+            this.encoderStateMap.resetLongClickByTurn(mftMessage.getEncoderID());                        
          }
          else mftMessage.setButtonCurrentlyDown(false);
       }

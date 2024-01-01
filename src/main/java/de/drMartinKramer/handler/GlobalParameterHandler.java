@@ -43,6 +43,9 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 	/** delay for changing the zoom level */
 	private int zoomDelay = 0;
 
+	private int loopStartDelay = 0;
+	private int loopDurationDelay = 0; 
+
 	private int bankSelectDelay = 0;
 	private int programChangeDelay = 0;
 	private int programChangeValue = 0;
@@ -134,7 +137,7 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 
 	private void reactToMasterTrackVolumeChange(double volume){
 		int volumeAsInt = (int)Math.round(volume*127);
-		setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_04,3, volumeAsInt);
+		setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_10,9, volumeAsInt);
 	}
 
 	private void reactToCrossfadeValueChange(double value){
@@ -145,62 +148,63 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 	public boolean handleButtonClick(MFT_MidiMessage msg)
 	{
 		
-	switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
-	{	
-		case MFT_Hardware.MFT_BANK1_BUTTON_01:
-			this.transport.play();	                
-			return true;
-		case MFT_Hardware.MFT_BANK1_BUTTON_02:
-			this.transport.stop();
-			return true;
-		case MFT_Hardware.MFT_BANK1_BUTTON_03:
-			this.transport.record();
-			return true;
-		case MFT_Hardware.MFT_BANK1_BUTTON_04:
-			this.transport.isArrangerLoopEnabled().toggle();	                
-			return true;     
-		case MFT_Hardware.MFT_BANK1_BUTTON_05:
-			this.transport.isFillModeActive().toggle();	                
-			return true;   
-		case MFT_Hardware.MFT_BANK1_BUTTON_06:
-			this.transport.isArrangerOverdubEnabled().toggle();      
-			return true;
-		case MFT_Hardware.MFT_BANK1_BUTTON_07:
-			this.transport.isMetronomeEnabled().toggle();          
-			return true;  
-		case MFT_Hardware.MFT_BANK1_BUTTON_08:
-			this.transport.tapTempo();	                
-			return true; 
-		case MFT_Hardware.MFT_BANK1_BUTTON_09:
-			this.application.previousProject();
-			return true;
-		case MFT_Hardware.MFT_BANK1_BUTTON_10:
-			this.application.nextProject();
-			return true;  
-		case MFT_Hardware.MFT_BANK1_BUTTON_11:
-			this.application.activateEngine();					
-			return true;  
-		case MFT_Hardware.MFT_BANK1_BUTTON_12:
-			//nothing happening here
-			return true;                                                  
-		case MFT_Hardware.MFT_BANK1_BUTTON_13:
-			if(msg.isLongClick()) this.application.toggleDevices();
-			else this.application.toggleInspector();
-			return true;  
-		case MFT_Hardware.MFT_BANK1_BUTTON_14:
-			if(msg.isLongClick()) this.application.toggleMixer();
-			else this.application.setPanelLayout(Application.PANEL_LAYOUT_ARRANGE);
-			return true;  
-		case MFT_Hardware.MFT_BANK1_BUTTON_15:
-			if(msg.isLongClick()) this.application.toggleNoteEditor();
-			else this.application.setPanelLayout(Application.PANEL_LAYOUT_MIX);
-			return true; 			
-		case MFT_Hardware.MFT_BANK1_BUTTON_16:
-			if(msg.isLongClick()) this.application.toggleFullScreen() ;
-			else this.application.setPanelLayout(Application.PANEL_LAYOUT_EDIT);					
-			return true;  		
-		default:	                
-			return false; //no midi handled here
+		switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
+		{	
+			case MFT_Hardware.MFT_BANK1_BUTTON_01:
+				this.transport.play();	                
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_02:
+				this.transport.stop();
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_03:
+				this.transport.record();
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_04:
+				println(msg.getEncoderID() + ", Loop Button Clicked: " + msg.isValidClick() + ", long:" + msg.isLongClick());
+				this.transport.isArrangerLoopEnabled().toggle();	                
+				return true;     
+			case MFT_Hardware.MFT_BANK1_BUTTON_05:
+				this.transport.isFillModeActive().toggle();	                
+				return true;   
+			case MFT_Hardware.MFT_BANK1_BUTTON_06:
+				this.transport.isArrangerOverdubEnabled().toggle();      
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_07:
+				this.transport.isMetronomeEnabled().toggle();          
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_08:
+				this.transport.tapTempo();	                
+				return true; 
+			case MFT_Hardware.MFT_BANK1_BUTTON_09:
+				this.application.previousProject();
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_10:
+				this.application.nextProject();
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_11:
+				this.application.activateEngine();					
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_12:
+				//nothing happening here
+				return true;                                                  
+			case MFT_Hardware.MFT_BANK1_BUTTON_13:
+				if(msg.isLongClick()) this.application.toggleDevices();
+				else this.application.toggleInspector();
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_14:
+				if(msg.isLongClick()) this.application.toggleMixer();
+				else this.application.setPanelLayout(Application.PANEL_LAYOUT_ARRANGE);
+				return true;  
+			case MFT_Hardware.MFT_BANK1_BUTTON_15:
+				if(msg.isLongClick()) this.application.toggleNoteEditor();
+				else this.application.setPanelLayout(Application.PANEL_LAYOUT_MIX);
+				return true; 			
+			case MFT_Hardware.MFT_BANK1_BUTTON_16:
+				if(msg.isLongClick()) this.application.toggleFullScreen() ;
+				else this.application.setPanelLayout(Application.PANEL_LAYOUT_EDIT);					
+				return true;  		
+			default:	                
+				return false; //no midi handled here
 		}//switch
 	} //end of handleButtonClick
 
@@ -221,7 +225,17 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 				this.transport.crossfade().value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128);
 				return true;
 			case MFT_Hardware.MFT_BANK1_BUTTON_04:
-				this.masterTrack.volume().value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128);
+				if(msg.isButtonCurrentlyDown()) {
+					if(loopStartDelay++>4){
+						loopStartDelay = 0;
+						transport.arrangerLoopStart().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor()*0.5);
+					}
+				}else{
+					if(loopDurationDelay++>4){
+						loopDurationDelay = 0;
+						transport.arrangerLoopDuration().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor()*0.5);
+					}
+				} 
 				return true;
 			case MFT_Hardware.MFT_BANK1_BUTTON_05:                
 				turnedEncoder(4, msg);
@@ -247,7 +261,7 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 				}
 				return true;
 			case MFT_Hardware.MFT_BANK1_BUTTON_10:                
-				turnedEncoder(10, msg);
+				this.masterTrack.volume().value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128);
 				return true;
 			case MFT_Hardware.MFT_BANK1_BUTTON_11:
 				//send program change message
@@ -279,8 +293,7 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 				}                   
 					
 				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_12:   
-				//send program change message
+			case MFT_Hardware.MFT_BANK1_BUTTON_12:   //send program change message				
 				int changeSpeedup = msg.isButtonCurrentlyDown() ? 10 : 1;				
 				if(programChangeDelay++>4){
 					programChangeDelay = 0;
