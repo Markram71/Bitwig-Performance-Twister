@@ -162,7 +162,7 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 
 * (1) A long click on the first encoder toggles the EQ+ device on an off. 
 * (2) The color of the encoders in a column reflect (somehow closely) the color of the band in the EQ+ decive in bitwig. All encoders for a band (i.e. in a colum) have the same color. The colored led is switched off when the respective band is deactivated. You can still turn the parameters and see their value on the out ring though.
-* (3) A click on the encoder of the last row toggles the band on or off. This toggle switch is different to the toggle switch of the first row as it resets the band to the following useful band types: band 0: 24db low cut, band 1-2: bell curve, band 3: high shelf
+* (3) A click on the encoder of the last row toggles the band on or off. This toggle switch is different to the toggle switch of the first row as it resets the band to the following useful band types: band 1: 24db low cut, band 2-3: bell curve, band 4: high shelf
 
 
 
