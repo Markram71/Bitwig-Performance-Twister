@@ -56,9 +56,8 @@ Bitwig performance Twister offers the following features:
 ## What is not included
 Although _Bitwig Performance Twister_ offers a lot of features the following are currently **not** included (among others): 
 * arpeggiator
-* zooming
 * browsing for new devices
-* adding tracks, devices, or clips
+* adding tracks, devices (with the exception of EQ+), or clips 
 * quantization
 * editing notes
 * deletion of elements like tracks, devices, clips or notes
@@ -71,9 +70,16 @@ The following sections explain the mapping of encoders and the side buttons. For
 ### Mode 1 Mixer
 This bank or mode contains a basic mixer for 16 channels in Bitwig. Every encoder of the Midi Fighter Twister is associated to one track in Bitwig. 
 
-| Encoder | Turn (Twisting)      | Click & turn | Click           | Long Click          | RGB Light                   |
-|:-------:|----------------------|--------------|-----------------|---------------------|-----------------------------|
-|1-16     |Volume of track 1-16  |panning       |Select track 1-16|arm, mute, or solo** |color of the track in Bitwig
+| Encoder | Turn (Twisting)      | Click & turn | Click           | Long Click            |Shift Click (1)      | RGB Light                   |
+|:-------:|----------------------|--------------|-----------------|-----------------------|---------------------|-----------------------------|
+|1-14     |Volume of track 1-14  |panning (2)   |Select track 1-16|arm, mute, or solo (3) |Scene or marker 1-14 |color of the track in Bitwig |
+|15       |Volume of track 15    |panning (2)   |Select track 15  |arm, mute, or solo (3) |stop                 |color of the track in Bitwig |
+|16       |Volume of track 16    |panning (2)   |Select track 16  |arm, mute, or solo (3) |shift button         |color of the track in Bitwig |
+
+#### Notes
+* (1) Encoder 16 (lower row right) can be used a shift key. I.e. click and hold down this encoder and click on any other encoder. This triggers a scene (from scene 1 to 14) or the launch of a cue marker (marker 1-14). You can customize the behaviour in the [controller configuration](#configuration), below.   
+* (2) You can access a second functionality on each encoder when holding down the encoder ("Click&turn"). This is great for live performance, i.e. in this mode you can change the volume and then with the same encoder add an effect. This can be either panning, the send to FX channel 1 or changing the first track remote control. The behavior can be customized in the controller configuration. 
+* (3) A long click on an encoder adds another action. Again, you can customize the action in the controller configuration. You can choose from the following three actions: 1. record arm the track, mute, or solo the track. 
 
 ### Mode 2 Channel Strip
 This bank focuses on a single selected track. The first encoder is used to select a track. The other encoders are
@@ -86,19 +92,23 @@ pin a controller to a certain track (or device, see below). This can be done wit
 Midi Fighter Twister is pinned to the currently selected track, the first encoder turn green and you cannot change the selected
 track with encoder 1 any more. 
 
-| Encoder | Turn (Twisting)              | Click & turn | Click             | Long Click          | RGB Light                   |
-|:-------:|------------------------------|--------------|-------------------|---------------------|-----------------------------|
-|1        |select a track                |tbd           |toggle arm         |pin the track        | green if track is selected  |
-|2        |volume of selected track      |tbd           |toggle solo        |n/a                  | yellow if track is soloed   |
-|3        |panning selected track        |tbd           |toggle mute        |n/a                  | orange if track is muted    |
-|4        |volume: master,cue, x-fader(1)|tbd           |toggle fill (2)    |n/a                  | tbd                         |
-|5-8      |send to fx channel 1-4        |tbd           |toggle send enabled|n/a                  | blue, dark blue if send disabled|
-|9-16     |track remote control 1-8      |tbd           |toggle send enabled|n/a                  | color on Bitwig parameter page|
+| Encoder | Turn (Twisting)              | Click & turn | Click             | Long Click   | Shift Click (2) | RGB Light                   |
+|:-------:|------------------------------|--------------|-------------------|--------------|-----------------|--------------|
+|1        |select a track                |tbd           |toggle arm         |pin the track | scene or marker | green if track is selected  |
+|2        |volume of selected track      |tbd           |toggle solo        |n/a           | scene or marker | yellow if track is soloed   |
+|3        |panning selected track        |tbd           |toggle mute        |n/a           | scene or marker | orange if track is muted    |
+|4        |volume: master,cue, x-fader(1)|tbd           |toggle fill (2)    |n/a           | scene or marker | tbd                         |
+|5-8      |send to fx channel 1-4        |tbd           |toggle send enabled|n/a           | scene or marker | blue, dark blue if send disabled|
+|9-14     |track remote control 1-8      |tbd           |toggle send enabled|n/a           | scene or marker | color on Bitwig parameter page|
+|15       |track remote control 15b      |tbd           |toggle send enabled|n/a           | stop            | color on Bitwig parameter page|
+|16       |track remote control 16       |tbd           |toggle send enabled|n/a           | Shift button    | color on Bitwig parameter page|
 
-(1) Encoder #4 on this bank can be configured to control the
-* master volume 
-* cue volume
-* crossfader volume  
+#### Notes
+* (1) Encoder #4 on this bank can be configured to control the...
+	* master volume 
+	* cue volume
+	* crossfader volume  
+* (2) see mixer mode for shift click
 
 The control depends on the setting of the controller configuration. See [Controller Configuration](#controller-configuration).
 
@@ -159,29 +169,29 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 ### Mode 5 Global Parameters
 This mode allows you to control many actions of the Bitwig transport section and global parameter like master volume, cue volume, cross fader setting, etc. You can also use it to quickly change the appearance of the Bitwig window, e.g. by toggling the inspector on the left side. Note: all encoders have function assign to clicking it, but not all encoders react to turning. 
 
-| Encoder | Turn (Twisting)      | Click & turn | Click                          | Long Click           | RGB Light                       |
-|:-------:|----------------------|--------------|--------------------------------|----------------------|---------------------------------|
-|1        |start cursor (coarse) |              |start/pause                     |                      | green if play, off otherwise (1)|
-|2        |start cursorn (fine)  |              |stop                            |toggle window         | off                             |
-|3        |cross fader           |              |toggle record                   |                      | red if record enable            |
-|4        |master volumen        |              |toggle arranger loop            |                      | blue if arranger loop enabled   |
-|5        |                      |              |toggle fill (used by operators) |                      | off                             |
-|6        |                      |              |toggle midi overdub             |                      | off                             |
-|7        |cue volume            |              |toggle metronom                 |                      | off                             |
-|8        |tempo (normal)        |tempo (fine)  |tap tempo                       |                      | off                             |
-|9        |selected track        |              |previous project                |                      | off                             |
-|10       |                      |              |next project                    |                      | off                             |
-|11       |                      |              |activate audio                  |                      | off                             |
-|12       |                      |              |n/a                             |                      | off                             |
-|13       |zoom in and out       |              |toggle inspector                |toggle device view    | off                             |
-|14       |                      |              |change to arranger view         |toggle mixer view     | off                             |
-|15       |                      |              |change to mix view              |toggle note editor    | off                             |
-|16       |next/previous patch(2)|              |change to edit view             |toggle full screen    | off                             |
+| Encoder | Turn (Twisting)      | Click & turn      | Click                          | Long Click           | RGB Light                       |
+|:-------:|----------------------|-------------------|--------------------------------|----------------------|---------------------------------|
+|1        |start cursor (coarse) |                   |start/pause                     |                      | green if play, off otherwise (1)|
+|2        |start cursorn (fine)  |                   |stop                            |toggle window         | off                             |
+|3        |cross fader           |                   |toggle record                   |                      | red if record enable            |
+|4        |master volumen        |                   |toggle arranger loop            |                      | blue if arranger loop enabled   |
+|5        |                      |                   |toggle fill (used by operators) |                      | off                             |
+|6        |                      |                   |toggle midi overdub             |                      | off                             |
+|7        |cue volume            |                   |toggle metronom                 |                      | off                             |
+|8        |tempo (normal)        |tempo (fine)       |tap tempo                       |                      | off                             |
+|9        |selected track        |                   |previous project                |                      | off                             |
+|10       |                      |                   |next project                    |                      | off                             |
+|11       |Bank, LSB (3)         |Bank, MSB          |activate audio                  |                      | off                             |
+|12       |program change (3)    |prgrm chnge (fast) |n/a                             |                      | off                             |
+|13       |zoom in and out       |                   |toggle inspector                |toggle device view    | off                             |
+|14       |                      |                   |change to arranger view         |toggle mixer view     | off                             |
+|15       |                      |                   |change to mix view              |toggle note editor    | off                             |
+|16       |next/previous patch(2)|                   |change to edit view             |toggle full screen    | off                             |
 
 #### Notes
 * (1) When Bitwig is playing the first encoder turns green and flashes in the rhythm of quarter notes. In order to allow for this feature to work correctly you need to send midi clock to the Midi Fighter Twister. You can do that by adding a track and installing a Bitwig _HW INSTRUMENT_ in the device chain. On the HW INSTRUMENT you need to select the Midi Fighter Twister as Midi Out and enable Midi Clock. 
 * (2) When turning encoder 16 you can generate two different CC messages which can be used to to map to a _next patch_ and _previous patch_ button on your (VST) device. As an example, I have matched this to the Omnisphere next/previous patch buttons. With that I can easily scoll through patches using one encoder of the Midi Fighter Twister.   
-
+* (3) Program change message can be triggered when turning encoder 12. They are sent on channel 1 for the currently selected track. On encoder 11 bank messages can be sent. Both LSB and MSB are available (you need to press down for changing the MSB). In the configuration you can set if the bank message should be sent before a program change message. 
 
 ### Mode 6 User defined controls
 This mode simply allows to bypass the controller script and allows you to use it for your own Midi Learn mapping. When accessing the mode 6 the Midi Figther Twister is set internally to bank four. You can also configure the CC message and colors in the `Midifighter Utility`. Please keep the midi channels to five and six, respectively.  
@@ -205,6 +215,8 @@ The following configuration items are avaialable:
     *    **Click&Turn function**: In the mixer you have the possibility to control a secondary parameter with each encoder (remember, the first function is to change the volume). Here you can decide which function you want to control. You can either change the _panning_ or change the _send_ level to the first FX track or change the level of the first _remote control_ of the track. This is a great tool during performances.
 * **_Channel Strip Mode_**
     * **Channel Strip Encoder #4 function**: This lets you control the Bitwig parameter which is changed when you turn the fourth encoder on the first row in the channel strip mode. You can choose _master volume_, crossfader_, or _cue volume_.           
+* **_Global Parameters Mode_**
+	* **Send bank messages before program change**: Encoder 12 lets you send program change messages. With encoder 11 you can specify the MSB and LSB of the bank message. In case "yes" is selected a bank message is sent before each program change message.  
 
 ## Installation
 The installation of _Bitwig Performance Twister_ is straight forward. It requires basically four steps: 1. download and unpack the zip file of the latest release, 2. update the Midi Fighter Twister with the configuration provided in the zip file , 3. place the Bitwig extension into the correct Bitwig folder and 4. configure the controller . Here's the installation step by step: 
