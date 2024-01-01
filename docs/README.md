@@ -174,13 +174,13 @@ This mode allows you to control many actions of the Bitwig transport section and
 |1        |start cursor (coarse) |                   |start/pause                     |                      | green if play, off otherwise (1)|
 |2        |start cursorn (fine)  |                   |stop                            |toggle window         | off                             |
 |3        |cross fader           |                   |toggle record                   |                      | red if record enable            |
-|4        |master volumen        |                   |toggle arranger loop            |                      | blue if arranger loop enabled   |
+|4        |arranger loop duration|arranger loop start|toggle arranger loop            |                      | blue if arranger loop enabled   |
 |5        |                      |                   |toggle fill (used by operators) |                      | off                             |
 |6        |                      |                   |toggle midi overdub             |                      | off                             |
 |7        |cue volume            |                   |toggle metronom                 |                      | off                             |
 |8        |tempo (normal)        |tempo (fine)       |tap tempo                       |                      | off                             |
 |9        |selected track        |                   |previous project                |                      | off                             |
-|10       |                      |                   |next project                    |                      | off                             |
+|10       |master volume         |                   |next project                    |                      | off                             |
 |11       |Bank, LSB (3)         |Bank, MSB          |activate audio                  |                      | off                             |
 |12       |program change (3)    |prgrm chnge (fast) |n/a                             |                      | off                             |
 |13       |zoom in and out       |                   |toggle inspector                |toggle device view    | off                             |
