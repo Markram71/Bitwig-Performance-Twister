@@ -189,9 +189,11 @@ This mode allows you to control many actions of the Bitwig transport section and
 |16       |next/previous patch(2)|                   |change to edit view             |toggle full screen    | off                             |
 
 #### Notes
-* (1) When Bitwig is playing the first encoder turns green and flashes in the rhythm of quarter notes. In order to allow for this feature to work correctly you need to send midi clock to the Midi Fighter Twister. You can do that by adding a track and installing a Bitwig _HW INSTRUMENT_ in the device chain. On the HW INSTRUMENT you need to select the Midi Fighter Twister as Midi Out and enable Midi Clock. 
+* (1) When Bitwig is playing the first encoder turns green and flashes in the rhythm of quarter notes. In order to allow for this feature to work correctly you need to send midi clock to the Midi Fighter Twister. You can do that by adding a track and installing a Bitwig _HW INSTRUMENT_ in the device chain. On the HW INSTRUMENT you need to select the Midi Fighter Twister as Midi Out and enable Midi Clock, see screenshot below. 
 * (2) When turning encoder 16 you can generate two different CC messages which can be used to to map to a _next patch_ and _previous patch_ button on your (VST) device. As an example, I have matched this to the Omnisphere next/previous patch buttons. With that I can easily scoll through patches using one encoder of the Midi Fighter Twister.   
 * (3) Program change message can be triggered when turning encoder 12. They are sent on channel 1 for the currently selected track. On encoder 11 bank messages can be sent. Both LSB and MSB are available (you need to press down for changing the MSB). In the configuration you can set if the bank message should be sent before a program change message. 
+
+![HW Instrument configure to send MIDI clock to the Midi Fighter Twister](./resources/sending_Midi_clock_to_MFT.png)
 
 ### Mode 6 User defined controls
 This mode simply allows to bypass the controller script and allows you to use it for your own Midi Learn mapping. When accessing the mode 6 the Midi Figther Twister is set internally to bank four. You can also configure the CC message and colors in the `Midifighter Utility`. Please keep the midi channels to five and six, respectively.  
