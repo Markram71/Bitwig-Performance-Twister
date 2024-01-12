@@ -27,7 +27,7 @@ import com.bitwig.extension.controller.api.Transport;
 
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.MFT_Hardware;
-import de.drMartinKramer.support.MFT_MidiMessage;
+import de.drMartinKramer.support.MidiMessageWithContext;
 
 public class GlobalParameterHandler extends AbstractCachingHandler{
 
@@ -145,7 +145,7 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 		setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_03,2, valueAsInt);
 	}
 
-	public boolean handleButtonClick(MFT_MidiMessage msg)
+	public boolean handleButtonClick(MidiMessageWithContext msg)
 	{
 		
 		switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
@@ -209,7 +209,7 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 	} //end of handleButtonClick
 
 
-	public boolean handleEncoderTurn(MFT_MidiMessage msg)
+	public boolean handleEncoderTurn(MidiMessageWithContext msg)
 	{
 		switch (msg.getData1()) 
 		{
@@ -342,7 +342,7 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 		}
 	} //end of handleEncoderTurn
 	 
-    private void turnedEncoder(int encoder, MFT_MidiMessage msg)
+    private void turnedEncoder(int encoder, MidiMessageWithContext msg)
     {
         //println("Turned Encoder " + encoder + " to value " + msg.toString());
     }

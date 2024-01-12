@@ -33,8 +33,8 @@ import de.drMartinKramer.handler.DeviceHandler;
 import de.drMartinKramer.handler.EQ_Handler;
 import de.drMartinKramer.handler.GlobalParameterHandler;
 import de.drMartinKramer.handler.MixerHandler;
-import de.drMartinKramer.support.EncoderStateMap;
-import de.drMartinKramer.support.MFT_MidiMessage;
+import de.drMartinKramer.support.ContextHandler;
+import de.drMartinKramer.support.MidiMessageWithContext;
 
 
 public class BitwigPerformanceTwister extends ControllerExtension
@@ -49,7 +49,8 @@ public class BitwigPerformanceTwister extends ControllerExtension
    private DeviceHandler deviceHandler = null; 
    private EQ_Handler eq_Handler = null; 
    private GlobalParameterHandler globalParameterHandler= null;
-	private EncoderStateMap encoderStateMap = null; //a hashmap that stores the current state of the encoders  
+	/** The main handler for the context of the encoders of the MFT */
+   private ContextHandler contextHandler = null; 
    
    @SuppressWarnings("unused") //We just need to construct it once, but then we access it via static methods
    private MFT_Configuration configuration = null;
@@ -58,7 +59,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
    {
       super(definition, host);
       this.host = host; 
-      this.encoderStateMap = new EncoderStateMap();
+      this.contextHandler = new ContextHandler();
    }
 
    /**
@@ -121,43 +122,13 @@ public class BitwigPerformanceTwister extends ControllerExtension
       // currently nothing to do here.
    }
 
-   /**
-    * Important and a bit complex method in order to create a new MFT-specific Midi message that 
-    * takes the current state of the encoder into account. I.e. it could be that a prior message
-    * would invalida a current click message. In that specific case it could be that the encoder was 
-    * held down and the encoder was turned. 
-    * @param msg the Midi message from the MFT
-    * @return a MFT-specific midi message that contains further information on the context
-    */
-   private MFT_MidiMessage parseMidiMessage(ShortMidiMessage msg) {
-      MFT_MidiMessage mftMessage = new MFT_MidiMessage(msg); 
-      if(mftMessage.isButtonClickMessage()){ //button click message
-         if(mftMessage.getData2()==127){
-            this.encoderStateMap.putEncoderClickDown(mftMessage.getEncoderID()); //click down
-         }
-         else if(mftMessage.getData2()==0) //this is click up
-         {
-            if(encoderStateMap.isLongClick(mftMessage.getEncoderID())) mftMessage.setLongClick(true); //button up
-            else mftMessage.setLongClick(false); 
-            if(!encoderStateMap.isValidClick(mftMessage.getEncoderID())) mftMessage.invalidateClick(); 
-            this.encoderStateMap.recordEncoderClickUp(mftMessage.getEncoderID()); //button up
-         }
-      } else if(mftMessage.isEncoderTurnMessage()){
-         if(encoderStateMap.isEncoderCurrentlyClickedDown(mftMessage.getEncoderID())) {
-            mftMessage.setButtonCurrentlyDown(true);
-            this.encoderStateMap.resetLongClickByTurn(mftMessage.getEncoderID());                        
-         }
-         else mftMessage.setButtonCurrentlyDown(false);
-      }
-      return mftMessage;
-   }
-
+ 
    /** Called when we receive short MIDI message on port 0. */
    private void onMidi0(ShortMidiMessage msg) 
    {
 	   try {
          //an important first step is to add context to the midi message, e.g. let us know that an encoder was clicked shortly before
-         MFT_MidiMessage mftMessage = parseMidiMessage(msg);
+         MidiMessageWithContext mftMessage = contextHandler.createMidiMessageWithContext(msg);
 
          //Now let's select a handler based on the mode
 		   if(mftMessage.isGlobalMessage()){ //but let's first check if a bank has changed, these are sent by global messages

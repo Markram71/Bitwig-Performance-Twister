@@ -25,7 +25,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
-import de.drMartinKramer.support.MFT_MidiMessage;
+import de.drMartinKramer.support.MidiMessageWithContext;
 
 /**
  * The ModeHandler is used to handle sixe different modes of the Bitwig Performance Twister
@@ -88,7 +88,7 @@ public class ModeHandler  extends AbstractHandler
 	 * @return true if the Midi message was handled by the bank handler, false if no bank midi message was sent. 
 	 */
 	@Override
-	public boolean handleMidi (MFT_MidiMessage msg){
+	public boolean handleMidi (MidiMessageWithContext msg){
 	   //check for CC message on channel 4 (which is here 3 and left/right button clicked which is indicated by value (data2) = 127)
 	    int sideButtonID = msg.getData1();	 
 		if (msg.isGlobalMessage() && msg.getData2()==127) 

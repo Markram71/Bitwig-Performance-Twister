@@ -27,7 +27,7 @@ import com.bitwig.extension.controller.api.MasterTrack;
 
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
-import de.drMartinKramer.support.MFT_MidiMessage;
+import de.drMartinKramer.support.MidiMessageWithContext;
 
 public class ChannelStripHandler extends AbstractHandler
 {
@@ -230,7 +230,7 @@ public class ChannelStripHandler extends AbstractHandler
 	}
 	
 	@Override
-	public boolean handleButtonClick(MFT_MidiMessage msg)
+	public boolean handleButtonClick(MidiMessageWithContext msg)
 	{
 		//first handle the shift clicks
 		if(isShiftConsumed()&&msg.isShiftButton())return true; //shift is consumed, so we do not need to do anything
@@ -313,7 +313,7 @@ public class ChannelStripHandler extends AbstractHandler
 	}
 	    
 	@Override
-	public boolean handleEncoderTurn(MFT_MidiMessage msg)
+	public boolean handleEncoderTurn(MidiMessageWithContext msg)
 	{
 		switch (msg.getData1()) 
 		{

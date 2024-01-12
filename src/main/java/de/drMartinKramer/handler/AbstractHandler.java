@@ -27,7 +27,7 @@ import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Transport;
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.MFT_Hardware;
-import de.drMartinKramer.support.MFT_MidiMessage; 
+import de.drMartinKramer.support.MidiMessageWithContext; 
 
 public class AbstractHandler {
 
@@ -168,7 +168,7 @@ public class AbstractHandler {
      * In this method we only set the "consumed" flag.
      *  @param msg the incoming midi message      
      */
-    private void checkShiftButton(MFT_MidiMessage msg){
+    private void checkShiftButton(MidiMessageWithContext msg){
         if(msg.isControlChange() && msg.getChannel()==1){ //we have a click on an encoder
             //if shift is already pressed and we have another encoder click, then the
             //then we "consume" the shift button, i.e. we actually use the shift button as a shift button
@@ -187,11 +187,13 @@ public class AbstractHandler {
      * @param msg the enriched midi message
      * @return true if the message was handled, false otherwise
      */
-    public boolean handleMidi (MFT_MidiMessage msg){
+    public boolean handleMidi (MidiMessageWithContext msg){
         boolean isHandled = false;
         checkShiftButton(msg);        
-        if (msg.isControlChange() && msg.getChannel()==1 && msg.getData2()==0 && msg.isValidClick()) isHandled = handleButtonClick(msg);
-	    else if (msg.isControlChange()  && msg.getChannel()==0) isHandled =  handleEncoderTurn(msg);        
+        if(isShiftConsumed()&&msg.isShiftButton())return true; //shift is consumed, so we do not need to do anything
+		
+        if (msg.isButtonReleaseMessage() &&  msg.isValidClick()) isHandled = handleButtonClick(msg);
+	    else if (msg.isEncoderTurnMessage()) isHandled =  handleEncoderTurn(msg);        
         if(msg.isShiftButton()&&msg.getData2()==0) this.isShiftConsumed = false;
         return isHandled; //we did not handle any incoming midi        
     }
@@ -199,7 +201,7 @@ public class AbstractHandler {
     /**
      * Should be overwritten by the concrete handler
      */
-    public boolean handleEncoderTurn(MFT_MidiMessage msg){
+    public boolean handleEncoderTurn(MidiMessageWithContext msg){
         return false;
     }
 
@@ -208,7 +210,7 @@ public class AbstractHandler {
      * @param msg
      * @return
      */
-    public boolean handleButtonClick(MFT_MidiMessage msg){
+    public boolean handleButtonClick(MidiMessageWithContext msg){
         return false;
     }   
 

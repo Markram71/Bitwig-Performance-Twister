@@ -28,7 +28,7 @@ import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
-import de.drMartinKramer.support.MFT_MidiMessage;
+import de.drMartinKramer.support.MidiMessageWithContext;
 
 
 public class MixerHandler extends AbstractCachingHandler
@@ -113,14 +113,51 @@ public class MixerHandler extends AbstractCachingHandler
 				MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_LOW_BRIGHTNESS);
 	}
     
-    /**
-     * Method is called as a response to an encoder click MFT. 
+
+	/**
+     * Method is called as a response to an encoder value change on the MFT. We update Bitwig by either increasing of decreasing its current value
      * @param track which track is affected
      * @param msg the incoming midi message from the MFT
      */
-	private void updateTrackParameterAfterTurn (int encoderNr, MFT_MidiMessage msg)
+
+	@Override
+	public boolean handleButtonClick (MidiMessageWithContext msg)
+	{   
+		final int index = msg.getEncoderIndex();		
+		if(isShiftPressed())
+		{
+			if(index==15)transport.stop();
+			else 
+			{
+				if(MFT_Configuration.isMixerShiftClickActionScene()) this.sceneBank.launchScene(index);
+				if(MFT_Configuration.isMixerShiftClickActionCueMarker()) this.cueMarkerBank.getItemAt(index).launch(true);				
+			}
+			return true;
+		}
+		final Track myNewTrack = this.trackBank.getItemAt (index); //the new track we want to select
+		if(msg.isLongClick()){ //it's a long click: 
+			if(MFT_Configuration.isMixerLongButtonActionArm()) 			myNewTrack.arm().toggle();
+			else if(MFT_Configuration.isMixerLongButtonActionMute()) 	myNewTrack.mute().toggle();
+			else if(MFT_Configuration.isMixerLongButtonActionSolo())	myNewTrack.solo().toggle();
+		}else{ //short click: 
+			myNewTrack.selectInEditor();
+			myNewTrack.selectInMixer();
+	    	if(MFT_Configuration.mixerMakeVisible()){
+				myNewTrack.makeVisibleInMixer();
+	    		myNewTrack.makeVisibleInArranger();
+			}			
+		}
+		return false; 
+	} //handle button click 
+		
+	/**
+	 * Handle the encoder turn message from the MFT
+	 */
+	@Override
+	public boolean handleEncoderTurn (MidiMessageWithContext msg)
 	{
-		Track track = this.trackBank.getItemAt (encoderNr);
+		final int index = msg.getEncoderIndex();
+		Track track = this.trackBank.getItemAt (index);
 	    if(!msg.isButtonCurrentlyDown()){ //the button is currently not pressed
 			track.volume().inc ((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 128); 
 			updateDelay++;
@@ -135,165 +172,11 @@ public class MixerHandler extends AbstractCachingHandler
 			}else if(MFT_Configuration.isMixerClickAdnTurnFunctionSend1()){	
 				track.sendBank().getItemAt(0).value().inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);				
 			}else if(MFT_Configuration.isMixerClickAdnTurnFunctionTrackRemote1()){
-				Parameter parameter = remoteControlsPage[encoderNr].getParameter(0);
+				Parameter parameter = remoteControlsPage[index].getParameter(0);
 				if(parameter!=null)parameter.inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);
 			}
 		}
-	}
-	
-	/**
-     * Method is called as a response to an encoder value change on the MFT. We update Bitwig by either increasing of decreasing its current value
-     * @param track which track is affected
-     * @param msg the incoming midi message from the MFT
-     */
-	private void clickedOnEncoder (int index, MFT_MidiMessage msg)
-	{
-	    Track myNewTrack = this.trackBank.getItemAt (index);
-		if(isShiftConsumed()&&msg.isShiftButton())return; //shift is consumed, so we do not need to do anything
-		if(isShiftPressed())
-		{
-			if(msg.getData1()==MFT_Hardware.MFT_BANK1_BUTTON_15)transport.stop();
-			else 
-			{
-				if(MFT_Configuration.isMixerShiftClickActionScene()) this.sceneBank.launchScene(index);
-				if(MFT_Configuration.isMixerShiftClickActionCueMarker()) this.cueMarkerBank.getItemAt(index).launch(true);				
-			}
-			return;
-		}
-		if(msg.isLongClick()){
-			if(MFT_Configuration.isMixerLongButtonActionArm())
-				myNewTrack.arm().toggle();
-			else if(MFT_Configuration.isMixerLongButtonActionMute())
-				myNewTrack.mute().toggle();
-			else if(MFT_Configuration.isMixerLongButtonActionSolo())
-				myNewTrack.solo().toggle();
-		}else{ //short click
-			myNewTrack.selectInEditor();
-			myNewTrack.selectInMixer();
-	    	if(MFT_Configuration.mixerMakeVisible()){
-				myNewTrack.makeVisibleInMixer();
-	    		myNewTrack.makeVisibleInArranger();
-			}			
-		}
-	}
-
-	@Override
-	public boolean handleButtonClick (MFT_MidiMessage msg)
-	{   
-		switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
-		{
-			case MFT_Hardware.MFT_BANK1_BUTTON_01:
-				clickedOnEncoder(0, msg);	                
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_02:
-				clickedOnEncoder(1, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_03:
-				clickedOnEncoder(2, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_04:
-				clickedOnEncoder(3, msg);	                
-				return true;     
-			case MFT_Hardware.MFT_BANK1_BUTTON_05:
-				clickedOnEncoder(4, msg);	                
-				return true;   
-			case MFT_Hardware.MFT_BANK1_BUTTON_06:
-				clickedOnEncoder(5, msg);                
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_07:
-				clickedOnEncoder(6, msg);                
-				return true;  
-			case MFT_Hardware.MFT_BANK1_BUTTON_08:
-				clickedOnEncoder(7, msg);	                
-				return true; 
-			case MFT_Hardware.MFT_BANK1_BUTTON_09:
-				clickedOnEncoder(8, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_10:
-				clickedOnEncoder(9, msg);
-				return true;  
-			case MFT_Hardware.MFT_BANK1_BUTTON_11:
-				clickedOnEncoder(10, msg);
-				return true;  
-			case MFT_Hardware.MFT_BANK1_BUTTON_12:
-				clickedOnEncoder(11, msg);
-				return true;                                                  
-			case MFT_Hardware.MFT_BANK1_BUTTON_13:
-				clickedOnEncoder(12, msg);
-				return true;  
-			case MFT_Hardware.MFT_BANK1_BUTTON_14:
-				clickedOnEncoder(13, msg);
-				return true;  
-			case MFT_Hardware.MFT_BANK1_BUTTON_15:
-				clickedOnEncoder(14, msg);
-				return true;  
-			case MFT_Hardware.MFT_BANK1_BUTTON_16:
-				clickedOnEncoder(15, msg);
-				return true;  
-			default:	                
-				return false; //no midi handled here
-		}
-	} //handle button click 
-		
-	/**
-	 * Handle the encoder turn message from the MFT
-	 */
-	@Override
-	public boolean handleEncoderTurn (MFT_MidiMessage msg)
-	{
-		switch (msg.getData1()) 
-	    {
-			case MFT_Hardware.MFT_BANK1_BUTTON_01:
-				this.updateTrackParameterAfterTurn(0, msg);					
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_02:                
-				this.updateTrackParameterAfterTurn(1, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_03:                
-				this.updateTrackParameterAfterTurn(2, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_04:
-				this.updateTrackParameterAfterTurn(3, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_05:                
-				this.updateTrackParameterAfterTurn(4, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_06:                
-				this.updateTrackParameterAfterTurn(5, msg);               
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_07:                
-				this.updateTrackParameterAfterTurn(6, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_08:                
-				this.updateTrackParameterAfterTurn(7, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_09:                
-				this.updateTrackParameterAfterTurn(8, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_10:                
-				this.updateTrackParameterAfterTurn(9, msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_11:                
-				this.updateTrackParameterAfterTurn(10,msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_12:                
-				this.updateTrackParameterAfterTurn(11,msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_13:                
-				this.updateTrackParameterAfterTurn(12,msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_14:                
-				this.updateTrackParameterAfterTurn(13,msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_15:                
-				this.updateTrackParameterAfterTurn(14,msg);
-				return true;
-			case MFT_Hardware.MFT_BANK1_BUTTON_16:                
-				this.updateTrackParameterAfterTurn(15,msg);
-				return true;   
-			default:
-				return false; //false = no midi handled
-		}	
+		return true; //we did not handle any incoming midi			
 	}	//end of handle encoder turn
 
 } //of class

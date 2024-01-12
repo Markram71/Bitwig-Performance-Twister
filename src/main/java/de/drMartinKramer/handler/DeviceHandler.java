@@ -27,7 +27,7 @@ import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
 
 import de.drMartinKramer.hardware.*;
-import de.drMartinKramer.support.MFT_MidiMessage;
+import de.drMartinKramer.support.MidiMessageWithContext;
 
 public class DeviceHandler extends AbstractHandler 
 {
@@ -174,7 +174,7 @@ public class DeviceHandler extends AbstractHandler
 	}
 
 	@Override
-	public boolean handleButtonClick(MFT_MidiMessage msg) 
+	public boolean handleButtonClick(MidiMessageWithContext msg) 
 	{			 
 		switch (msg.getData1()) //data1 contains the controller number, we use this to differentiate the different encoders
 		{	            
@@ -254,7 +254,7 @@ public class DeviceHandler extends AbstractHandler
 	} 
 	
 	@Override
-	public boolean handleEncoderTurn(MFT_MidiMessage msg) 
+	public boolean handleEncoderTurn(MidiMessageWithContext msg) 
 	{
 		switch (msg.getData1()) 
 		{

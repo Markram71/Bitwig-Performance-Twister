@@ -32,7 +32,7 @@ import com.bitwig.extension.controller.api.SpecificBitwigDevice;
 
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.MFT_Hardware;
-import de.drMartinKramer.support.MFT_MidiMessage;
+import de.drMartinKramer.support.MidiMessageWithContext;
 
 public class EQ_Handler  extends AbstractCachingHandler
 {
@@ -152,7 +152,7 @@ public class EQ_Handler  extends AbstractCachingHandler
     }
 
     @Override
-    public boolean handleButtonClick(MFT_MidiMessage msg){
+    public boolean handleButtonClick(MidiMessageWithContext msg){
         //first let's check if we actually have an EQ (or nor)
         if(!this.eqPlusDevice.exists().get()){
             //no EQ device exists, thus we need to create one
@@ -222,7 +222,7 @@ public class EQ_Handler  extends AbstractCachingHandler
 
 
     @Override
-    public boolean handleEncoderTurn (MFT_MidiMessage msg)
+    public boolean handleEncoderTurn (MidiMessageWithContext msg)
 	{   
         switch (msg.getData1()) 
         {
@@ -282,26 +282,26 @@ public class EQ_Handler  extends AbstractCachingHandler
     }//end of handleEncoder turn
 
 
-    private void changeGain(int column, MFT_MidiMessage msg)
+    private void changeGain(int column, MidiMessageWithContext msg)
     {
         if(gainParameter[column]!=null){
             gainParameter[column].value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 512);
         }     
     }
 
-    private void changeFrequency(int column, MFT_MidiMessage msg)
+    private void changeFrequency(int column, MidiMessageWithContext msg)
     {
         if(frequencyParameter[column]!=null){
             frequencyParameter[column].value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 512);
         }
     }
-    private void changeQ(int column, MFT_MidiMessage msg)
+    private void changeQ(int column, MidiMessageWithContext msg)
     {
         if(qParameter[column]!=null){
             qParameter[column].value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 512);
         }
     }
-    private void changeType(int column, MFT_MidiMessage msg)
+    private void changeType(int column, MidiMessageWithContext msg)
     {
        if(typeParameter[column]!=null){
             if(typeChangeDelay++>5){ //let's slow down the changes a bit
