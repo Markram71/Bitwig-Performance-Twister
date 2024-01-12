@@ -51,6 +51,9 @@ public class BitwigPerformanceTwister extends ControllerExtension
    private GlobalParameterHandler globalParameterHandler= null;
 	/** The main handler for the context of the encoders of the MFT */
    private ContextHandler contextHandler = null; 
+
+   /* New Feature: OSC Implementation by DrivenByMoss integrated so we can add an OSC Client */
+   OSCControllerSetup oscControllerSetup = null;
    
    @SuppressWarnings("unused") //We just need to construct it once, but then we access it via static methods
    private MFT_Configuration configuration = null;
