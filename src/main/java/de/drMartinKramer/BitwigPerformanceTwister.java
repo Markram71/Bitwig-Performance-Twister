@@ -35,7 +35,9 @@ import de.drMartinKramer.handler.GlobalParameterHandler;
 import de.drMartinKramer.handler.MixerHandler;
 import de.drMartinKramer.support.ContextHandler;
 import de.drMartinKramer.support.MidiMessageWithContext;
-
+import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
+import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
+import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.controller.osc.OSCControllerSetup;
 
 
@@ -103,7 +105,10 @@ public class BitwigPerformanceTwister extends ControllerExtension
       this.modeHandler = new ModeHandler(host, handlerMap);   
            
       //Let's add the DrivenByMoss OSC implementation: 
-      //oscControllerSetup = new OSCControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
+      oscControllerSetup = new OSCControllerSetup (new HostImpl (host), 
+                                                   new BitwigSetupFactory (host), 
+                                                   new SettingsUIImpl (host, host.getPreferences ()), 
+                                                   new SettingsUIImpl (host, host.getDocumentState ()));
 
       //we schedule the initial startup of the MFT and give is some time to initialize itself
       host.scheduleTask((Runnable)()->scheduledInitialStartup(), 1500);
