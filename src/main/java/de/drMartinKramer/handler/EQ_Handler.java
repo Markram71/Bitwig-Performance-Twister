@@ -148,7 +148,6 @@ public class EQ_Handler  extends AbstractCachingHandler
     {
         InsertionPoint endOfDeviceChainInsertionPoint = this.cursorTrack.endOfDeviceChainInsertionPoint();
         endOfDeviceChainInsertionPoint.insertBitwigDevice(UUID.fromString(BITWIG_EQ_PLUS_DEVICE_ID));
-        
     }
 
     @Override
@@ -180,16 +179,16 @@ public class EQ_Handler  extends AbstractCachingHandler
                 toggleEQ_on_off(3);	                
                 return true;     
             case MFT_Hardware.MFT_BANK1_BUTTON_05:	            		
-                frequencyParameter[0].reset();                
+                frequencyParameter[0].reset();
                 return true;   
             case MFT_Hardware.MFT_BANK1_BUTTON_06:
-                frequencyParameter[1].reset();                
+                frequencyParameter[1].reset(); 
                 return true;
             case MFT_Hardware.MFT_BANK1_BUTTON_07:
-                frequencyParameter[2].reset();               
+                frequencyParameter[2].reset(); 
                 return true;  
             case MFT_Hardware.MFT_BANK1_BUTTON_08:
-                frequencyParameter[3].reset();                
+                frequencyParameter[3].reset();  
                 return true; 
             case MFT_Hardware.MFT_BANK1_BUTTON_09:
                 qParameter[0].reset();

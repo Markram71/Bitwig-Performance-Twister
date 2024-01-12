@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../DrivenByMoss"
+		}
+	],
+	"settings": {
+		"maven.view": "hierarchical",
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
+}

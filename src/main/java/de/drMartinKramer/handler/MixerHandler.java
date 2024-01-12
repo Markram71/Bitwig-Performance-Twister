@@ -126,8 +126,9 @@ public class MixerHandler extends AbstractCachingHandler
 		final int index = msg.getEncoderIndex();		
 		if(isShiftPressed())
 		{
-			if(index==15)transport.stop();
-			else 
+			if(index==14){
+				transport.stop();
+			}else 
 			{
 				if(MFT_Configuration.isMixerShiftClickActionScene()) this.sceneBank.launchScene(index);
 				if(MFT_Configuration.isMixerShiftClickActionCueMarker()) this.cueMarkerBank.getItemAt(index).launch(true);				
