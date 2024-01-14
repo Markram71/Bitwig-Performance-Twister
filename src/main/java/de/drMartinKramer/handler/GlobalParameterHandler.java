@@ -11,9 +11,9 @@
  * Nevertheless, BPT does come WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  * See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with Twister
- * Sister. If not, see <https://www.gnu.org/licenses/>.
- *
+  * You should have received a copy of the GNU Lesser General Public License along with 
+ * Bitwig Performance Twister 
+ * If not, see https://www.gnu.org/licenses/.
  */
 
 package de.drMartinKramer.handler;

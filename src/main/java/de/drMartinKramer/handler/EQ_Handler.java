@@ -148,6 +148,7 @@ public class EQ_Handler  extends AbstractCachingHandler
     {
         InsertionPoint endOfDeviceChainInsertionPoint = this.cursorTrack.endOfDeviceChainInsertionPoint();
         endOfDeviceChainInsertionPoint.insertBitwigDevice(UUID.fromString(BITWIG_EQ_PLUS_DEVICE_ID));
+        frequencyParameter[0].value().set(0.8); 
     }
 
     @Override

@@ -91,7 +91,7 @@ public class AbstractHandler {
 
     /**
      * Convinience method to easily create a pop up message in Bitwig
-     * @param msg
+     * @param msg the string message to be shown
      */
     protected void showPopupNotification(String msg){
         if(MFT_Configuration.showPupupNotifications()) host.showPopupNotification(msg);
