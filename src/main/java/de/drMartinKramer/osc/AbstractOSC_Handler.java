@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Dr. Martin Kramer
+ * Copyright 2023-2024 Dr. Martin Kramer
  *
  * This file is part of the Extension "Bitwig Performance Twister".
  *
@@ -22,6 +22,18 @@ package de.drMartinKramer.osc;
 import com.bitwig.extension.controller.api.ControllerHost;
 
 public class AbstractOSC_Handler implements IOSC_Handler{
-    protected ControllerHost host = null;
+    protected ControllerHost host = null;    
+
+    public AbstractOSC_Handler(ControllerHost host){
+        this.host = host;
+    }
+
+    public void refreshOSC_Surface(){
+        //do nothing
+    }
+
+    public void setEncoderColor(int encoder, int color){
+        //do nothing
+    }
     
 }
