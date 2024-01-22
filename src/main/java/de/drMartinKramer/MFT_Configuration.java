@@ -24,6 +24,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.Preferences;
 import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.SettableRangedValue;
+import com.bitwig.extension.controller.api.SettableStringValue;
 
 import de.drMartinKramer.hardware.MFT_Hardware;
 
@@ -155,6 +156,11 @@ public class MFT_Configuration {
 
 
 
+    //--------- OSC - Preferences --------------------------------------------------
+    private static SettableRangedValue oscPortToReceiveOnSetting  = null;
+    private static SettableRangedValue oscPortToSendToSetting  = null;
+    private static SettableStringValue oscHostToSendToSetting  = null;
+
     /**
      * Constructor. Takes the Bitwig controller host. 
      * It is not really need to create an object of this class, but it is needed to initialize the static variables
@@ -221,12 +227,26 @@ public class MFT_Configuration {
     
     
     
-    MFT_Configuration.globalParameterBankSelectSetting = preferences.getEnumSetting( "Send bank select MSB/LSB", 
+        MFT_Configuration.globalParameterBankSelectSetting = preferences.getEnumSetting( "Send bank select MSB/LSB", 
                                                                                 "Global Parameters", 
                                                                                 globalParameterBankSelectStrings, 
                                                                                 globalParameterBankSelectStrings[0]);
     
-                                                                            }  //end of constructor
+       
+        /* MFT_Configuration.oscPortToReceiveOnSetting = preferences.getNumberSetting("Port to receive on", 
+                                                                                "OSC Settings", 0, 
+                                                                                64000, 1.0, 
+                                                                                "", 8000);
+       
+        MFT_Configuration.oscHostToSendToSetting = preferences.getStringSetting("Host to send to (requires restart)","OSC Settings",20,"127.0.0.1" );
+        
+        MFT_Configuration.oscPortToSendToSetting = preferences.getNumberSetting("Port to send to (requires restart)", 
+                                                                                "OSC Settings", 0, 
+                                                                                64000, 1.0, 
+                                                                                "", 9000);
+                                                                                
+        */
+    }  //end of constructor
 
     // GLBOAL FUNCTIONS --------------------------------------------------------
 
@@ -333,5 +353,25 @@ public class MFT_Configuration {
      */
     public static void println(String msg){
         host.println(msg);
+    }
+
+
+
+    // OSC Settings ------------------------------------------------------------
+    public static int getOscPortToReceiveOn(){
+        final  int result = (int)MFT_Configuration.oscPortToReceiveOnSetting.getAsDouble();
+        //Todo hier läuft es etwas schief....
+        println("OSCPort to receive on: " + result );
+        return 8000;
+    } 
+    public static int getOscPortToSendTo(){
+        final int result = (int)MFT_Configuration.oscPortToSendToSetting.getAsDouble();
+        println("OSCPort to send to: " + result );
+        
+        return 9000;
+    }
+    public static String getOscHostToSendTo(){
+        final String result = MFT_Configuration.oscHostToSendToSetting.get();
+        return result;
     }
 }

@@ -37,5 +37,11 @@ public interface IOSC_Handler {
      */
     public  void setEncoderColor(int encoder, int color);
 
+    /**
+     * Set the value of an encoder
+     * @param encoder the number of the encoder (0-15)
+     * @param value the new value of the encoder (0-127)
+     */
+    public void setEncoderValue(int encoder, int value);
     
 }

@@ -28,6 +28,7 @@ import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Transport;
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.MFT_Hardware;
+import de.drMartinKramer.osc.IOSC_Handler;
 import de.drMartinKramer.support.MidiMessageWithContext; 
 
 public class AbstractHandler {
@@ -41,6 +42,9 @@ public class AbstractHandler {
     private boolean isShiftConsumed = false; //has the shift button been consumed or not
     protected MidiIn midiIn = null; //the midi in port
     protected static NoteInput noteInput = null; //the note input port
+
+    /** An OSC Handler to also update a GUI surface via OSC */
+    IOSC_Handler oscHandler = null;
     
     
     /**
@@ -125,6 +129,7 @@ public class AbstractHandler {
      */
     protected void setEncoderColor(int encoder, int color){
         sendMidi(0xB1, encoder, color);
+        if(this.oscHandler!=null) this.oscHandler.setEncoderColor(encoder, color);
     }
     
     /**
@@ -155,6 +160,7 @@ public class AbstractHandler {
      */
     protected void setEncoderRingValue(int encoder, int value){
         sendMidi(0xB0, encoder, value);
+        if(this.oscHandler!=null) this.oscHandler.setEncoderColor(encoder, value);
         
     }
 

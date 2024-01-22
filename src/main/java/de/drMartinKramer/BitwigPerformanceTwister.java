@@ -71,13 +71,12 @@ public class BitwigPerformanceTwister extends ControllerExtension
    }
 
    /**
-    * The init method is called to by Bitwig to initialize the controller script. 
+    * The init method is called by Bitwig to initialize the controller script. 
     * Some calls to Bitwig are only possible here. E.g. calls to register callbacks or 
     * markInterested. 
     * So, it's important to create the Handler objects right nere and not in the constructor.
     */
-@Override
-   
+   @Override   
    public void init() 
    {
       final ControllerHost host = getHost(); 
@@ -103,7 +102,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
       handlerMap.put(ModeHandler.MFT_MODE_GLOBAL, this.globalParameterHandler);
       
       //finally we create the mode handler and inform it about the handlers      
-      this.modeHandler = new ModeHandler(host, handlerMap);   
+      this.modeHandler = new ModeHandler(host, handlerMap);    
            
       //Let's add the DrivenByMoss OSC implementation: 
       oscControllerSetup = new OSCControllerSetup (new HostImpl (host), 
@@ -111,7 +110,11 @@ public class BitwigPerformanceTwister extends ControllerExtension
                                                    new SettingsUIImpl (host, host.getPreferences ()), 
                                                    new SettingsUIImpl (host, host.getDocumentState ()));
 
-      //we schedule the initial startup of the MFT and give is some time to initialize itself
+      //Since Bitwig is not calling init (it already did as we are exactily here), we need to call
+      //init of the OSCControllerSetup manually
+      oscControllerSetup.init ();
+
+                                                   //we schedule the initial startup of the MFT and give is some time to initialize itself
       host.scheduleTask((Runnable)()->scheduledInitialStartup(), 1500);
 
    } //end of init
@@ -133,7 +136,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
    @Override
    public void flush()
    {
-      // currently nothing to do here.
+      oscControllerSetup.flush ();
    }
 
  

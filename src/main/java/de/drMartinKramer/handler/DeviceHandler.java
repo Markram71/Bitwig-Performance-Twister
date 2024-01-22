@@ -37,14 +37,13 @@ public class DeviceHandler extends AbstractHandler
 	final public static int BITWIG_SIZE_OF_PARAMTER_PAGE = 8; //the number of parameters that are shown on a parameter page in Bitwig
 	private DeviceBank deviceBank = null; //A window to look over the device chain
 	private CursorTrack cursorTrack = null; //the track that is currently selected
-    //private MasterTrack masterTrack= null;
-	PinnableCursorDevice cursorDevice = null;
-	CursorRemoteControlsPage myDeviceParameterPage = null; //this is a page of 8 device parameters
-	int[] deviceParameterColorArray = {82,75,64,50,40,15,110,105};
-	boolean deviceButtonClicked = false;
-	boolean parameterPageButtonClicked = false; //indicates if the use clicked on a parameter page button, i.e. we need to change the device parameter page
-	boolean projectParameterPageClicked = false; //the same for the project-wide parameter 
-	CursorRemoteControlsPage projectControlsPage = null;
+	private CursorRemoteControlsPage myDeviceParameterPage = null; //this is a page of 8 device parameters
+    private PinnableCursorDevice cursorDevice = null;
+	private int[] deviceParameterColorArray = {82,75,64,50,40,15,110,105};
+	private boolean deviceButtonClicked = false;
+	private boolean parameterPageButtonClicked = false; //indicates if the use clicked on a parameter page button, i.e. we need to change the device parameter page
+	private boolean projectParameterPageClicked = false; //the same for the project-wide parameter 
+	private static CursorRemoteControlsPage projectControlsPage = null;
 	
 	public  DeviceHandler(ControllerHost host) 
 	{
@@ -77,7 +76,7 @@ public class DeviceHandler extends AbstractHandler
 			//register callback for the existence of a device parameter
 			myDeviceParameterPage.getParameter(myParameter).exists().addValueObserver((exists)->reactToDeviceParameterExists(myParameter, exists));
 
-			/** Now we do the same for the project-wide project controls. That is for row 3 and 4 */
+			/** Now we do the same for the project-wide remote controls. That is for row 3 and 4 */
 			final int myProjectParameter = i;
 			projectControlsPage.getParameter(myProjectParameter).value().markInterested();
 			projectControlsPage.getParameter(myProjectParameter).setIndication (true);
@@ -85,7 +84,9 @@ public class DeviceHandler extends AbstractHandler
 			projectControlsPage.getParameter(i).value().addValueObserver((newValue)->reactToProjectParameterChange(myParameter, newValue));
 			//register callback for the existence of a device parameter
 			projectControlsPage.getParameter(myParameter).exists().addValueObserver((exists)->reactToProjectParameterExists(myParameter, exists));
-		}		
+		
+		}	
+			
     }//end of constructor
 	
 	/**
@@ -314,5 +315,15 @@ public class DeviceHandler extends AbstractHandler
 				return false; //false = no midi handled here
 		} // end of switch	
 	} //handle encoder turn
+
+
+	/**
+	 * Since Bitwig only allows us to  create one ProjectControlspage (for project wide remote controls), 
+	 * we need to provide access to this page and let the OSC implementation use it, as well.
+	 * @return ProjectControlspage for project-wide remote controls
+	 */
+	public static CursorRemoteControlsPage getProjectControlsPage() {
+		return DeviceHandler.projectControlsPage;
+	}
 	
 }

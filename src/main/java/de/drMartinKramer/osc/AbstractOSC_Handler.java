@@ -28,11 +28,18 @@ public class AbstractOSC_Handler implements IOSC_Handler{
         this.host = host;
     }
 
+    /** {@inheritDoc} */
     public void refreshOSC_Surface(){
         //do nothing
     }
 
+    /** {@inheritDoc} */    
     public void setEncoderColor(int encoder, int color){
+        //do nothing
+    }
+
+    /** {@inheritDoc} */
+    public void setEncoderValue(int encoder, int value){
         //do nothing
     }
     
