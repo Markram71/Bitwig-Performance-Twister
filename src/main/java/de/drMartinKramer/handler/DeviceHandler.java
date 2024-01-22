@@ -60,9 +60,9 @@ public class DeviceHandler extends AbstractHandler
 		myDeviceParameterPage.getName().addValueObserver((name) -> reactToParameterPageNameChange(name));
 
 		//**** Access to the project remote controls */
-		this.projectControlsPage = this.project.getRootTrackGroup().createCursorRemoteControlsPage(BITWIG_SIZE_OF_PARAMTER_PAGE);
-		this.projectControlsPage.getName().markInterested();
-		this.projectControlsPage.getName().addValueObserver((name) -> reactToProjectParameterPageNameChange(name));
+		DeviceHandler.projectControlsPage = this.project.getRootTrackGroup().createCursorRemoteControlsPage(BITWIG_SIZE_OF_PARAMTER_PAGE);
+		DeviceHandler.projectControlsPage.getName().markInterested();
+		DeviceHandler.projectControlsPage.getName().addValueObserver((name) -> reactToProjectParameterPageNameChange(name));
 		
 		for(int i=0; i<BITWIG_SIZE_OF_PARAMTER_PAGE; i++)
 		{
