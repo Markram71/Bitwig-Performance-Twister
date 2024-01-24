@@ -68,7 +68,7 @@ public class AbstractCachingHandler extends AbstractHandler{
      * @param value new value for the color (0-127)
      */
     protected void setEncoderColorCached(int encoderID, int encoderNumber,int color){
-        if(isActive)sendMidi(0xB1, encoderID, color);
+        if(isActive) setEncoderColor(encoderID, color);
         this.encoderColorCache[encoderNumber] = color; //update the cache even when the handler is not active
     }
 
@@ -90,7 +90,7 @@ public class AbstractCachingHandler extends AbstractHandler{
      * @param value new value for the ring (0-127)
      */
     protected void setEncoderRingValueCached(int encoderID, int encoderNumber, int value){
-        if(isActive)sendMidi(0xB0, encoderID, value);
+        if(isActive) setEncoderRingValue(encoderID, value);
         /* we need to update the cache even if the handler is not active, since changes might occur 
          * in the background, e.g. a track is changed
         */ 

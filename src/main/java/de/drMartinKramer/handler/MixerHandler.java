@@ -29,6 +29,7 @@ import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
+import de.drMartinKramer.osc.OSC_MixerHandler;
 import de.drMartinKramer.support.MidiMessageWithContext;
 
 
@@ -45,6 +46,9 @@ public class MixerHandler extends AbstractCachingHandler
 	public MixerHandler (ControllerHost host)
 	{		
 		super(host);
+
+		//install an OSC handler that is associated to this mixer hander
+		this.oscHandler = new OSC_MixerHandler(host);
 		
 		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 1, 0);
 	    this.remoteControlsPage = new RemoteControlsPage[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
@@ -64,16 +68,23 @@ public class MixerHandler extends AbstractCachingHandler
 	        track.volume().setIndication (true);
 	        track.volume().value().addValueObserver( (newValue)->this.reactToTrackVolumeChange(trackIndex,newValue) );
             
+			track.name().markInterested();
+			track.name().addValueObserver( (newName) ->this.reactToTrackNameChange(trackIndex, newName));
+
 			//Get access to one send and one remote parameter for click&turn		
-			this.remoteControlsPage[i] =  track.createCursorRemoteControlsPage(1);
+			this.remoteControlsPage[trackIndex] =  track.createCursorRemoteControlsPage(1);
 
 			//COLOR
 	        track.color().markInterested();	
             track.color().addValueObserver((colorRed,colorGreen,colorBlue)->this.reactToColorChange(trackIndex,colorRed,colorGreen,colorBlue) );
+
+			//check if track actually exists
+			track.exists().markInterested();
+			track.exists().addValueObserver((exists)->this.reactToIsSelected(trackIndex, exists));
 			
-			track.addIsSelectedInMixerObserver(isActive->reactToIsSelected(trackIndex, isActive));
+			track.addIsSelectedInMixerObserver(isActive->reactToTrackExists(trackIndex, isActive));
 		}
-	}// end of trackHandler Constructor
+	}// end of mixerHandler Constructor
 	
 
 
@@ -86,6 +97,16 @@ public class MixerHandler extends AbstractCachingHandler
     	setEncoderRingValueCached(trackIndex,trackIndex,  (int) Math.round(newValue*127));
     }
     
+	private void reactToTrackNameChange(int trackIndex, String newValue){
+		if(this.oscHandler!= null){
+			oscHandler.setEncoderName(trackIndex, newValue);
+		}
+	}
+     
+	
+
+
+
     /**
      * This callback method is called when a color of a track in Bitwig is changed. We receive the trackIndex and the 
      * color in form of an RGB value, as red, green, blue. 
@@ -112,8 +133,12 @@ public class MixerHandler extends AbstractCachingHandler
 			isSelected ? 
 				MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS : 
 				MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_LOW_BRIGHTNESS);
+		oscHandler.setEncoderSelected(trackIndex, isSelected);
 	}
     
+	private void reactToTrackExists(int trackIndex, boolean exists){
+		oscHandler.setEncoderActive(trackIndex, exists);
+	}
 
 	/**
      * Method is called as a response to an encoder value change on the MFT. We update Bitwig by either increasing of decreasing its current value

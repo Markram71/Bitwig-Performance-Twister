@@ -142,6 +142,7 @@ public class EQ_Handler  extends AbstractCachingHandler
         setBandColor(column, frequencyParameter[column].value().get());
     }
 
+
     /**
      * Method create a new EQ device on the current channel in case there has been no EQ already
      */
@@ -149,8 +150,12 @@ public class EQ_Handler  extends AbstractCachingHandler
     {
         InsertionPoint endOfDeviceChainInsertionPoint = this.cursorTrack.endOfDeviceChainInsertionPoint();
         endOfDeviceChainInsertionPoint.insertBitwigDevice(UUID.fromString(BITWIG_EQ_PLUS_DEVICE_ID));
-        frequencyParameter[0].value().set(0.8); 
+        //this.cursorTrack.
+        //TODO set the frequency default to 0.2 0.4 0.6 0.8
+        //but for that we need to get access to the device, it simply does not work via the frequencyParameters
     }
+
+    
 
     @Override
     public boolean handleButtonClick(MidiMessageWithContext msg){

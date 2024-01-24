@@ -44,4 +44,37 @@ public interface IOSC_Handler {
      */
     public void setEncoderValue(int encoder, int value);
     
+
+    /**
+     * Sets the name of the encoder, e.g. the track name in the mixer mode
+     * @param encoderNo the number of the encoder (0-15)
+     * @param name the new name of the encoder
+     */
+    public void setEncoderName(int encoderNo, String name);
+
+    /**
+     * Every handler is associated to a mode, e.g. a mixer. This function returns
+     * the name of this mode
+     * @return the name of the for which the handler is used for
+     */
+    public String getModeName();
+
+
+     /**
+     * Sets the selected state of an encoder. In some of our modes, an encoder can be selected, 
+     * e.g. in the mixer mode, the currently selected encoder reflects the currently selected track.
+     *
+     * @param encoderNo The number of the encoder (0-15).
+     * @param isSelected The selected state to set.
+     */
+    public void setEncoderSelected(int encoderNo, boolean isSelected);
+
+    /**
+     * Sets the active state of the specified encoder.
+     *
+     * @param encoderNo the number of the encoder
+     * @param isActive  the active state of the encoder
+     */
+    public void setEncoderActive(int encoderNo, boolean isActive);
+
 }

@@ -67,6 +67,8 @@ public class AbstractHandler {
      */
     public void setActive(boolean  newActiveState){
         this.isActive = newActiveState;
+        //we are activating this mode so we also need to update the OSC surface (if there is any)
+        if(this.isActive && this.oscHandler!=null) this.oscHandler.refreshOSC_Surface();
     }
 
     protected boolean isActive(){
@@ -160,7 +162,7 @@ public class AbstractHandler {
      */
     protected void setEncoderRingValue(int encoder, int value){
         sendMidi(0xB0, encoder, value);
-        if(this.oscHandler!=null) this.oscHandler.setEncoderColor(encoder, value);
+        if(this.oscHandler!=null) this.oscHandler.setEncoderValue(encoder, value);
         
     }
 
