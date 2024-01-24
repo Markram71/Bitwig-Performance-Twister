@@ -28,7 +28,6 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.ControllerExtension;
 
 import de.drMartinKramer.handler.ModeHandler;
-import de.drMartinKramer.osc.OSC_MixerModule;
 import de.drMartinKramer.handler.AbstractHandler;
 import de.drMartinKramer.handler.ChannelStripHandler;
 import de.drMartinKramer.handler.DeviceHandler;

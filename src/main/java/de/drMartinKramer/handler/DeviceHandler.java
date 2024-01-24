@@ -30,7 +30,6 @@ import com.bitwig.extension.controller.api.PinnableCursorDevice;
 
 import de.drMartinKramer.hardware.*;
 import de.drMartinKramer.support.MidiMessageWithContext;
-import de.mossgrabers.controller.osc.protocol.OSCWriter;
 
 public class DeviceHandler extends AbstractHandler 
 {

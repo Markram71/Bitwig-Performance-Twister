@@ -31,7 +31,6 @@ import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
 import de.drMartinKramer.osc.OSC_MixerModule;
 import de.drMartinKramer.support.MidiMessageWithContext;
-import de.mossgrabers.controller.osc.protocol.OSCWriter;
 
 
 public class MixerHandler extends AbstractCachingHandler

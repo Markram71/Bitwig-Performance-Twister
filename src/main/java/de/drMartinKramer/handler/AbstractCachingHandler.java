@@ -21,7 +21,7 @@ package de.drMartinKramer.handler;
 
 import com.bitwig.extension.controller.api.ControllerHost; 
 import de.drMartinKramer.hardware.MFT_Hardware;
-import de.mossgrabers.controller.osc.protocol.OSCWriter;
+
 
 /**
  * This is an AbstractHandler, but with a Caching functionality. It caches the values of the 
