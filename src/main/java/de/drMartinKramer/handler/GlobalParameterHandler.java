@@ -29,6 +29,7 @@ import com.bitwig.extension.controller.api.Transport;
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.MFT_Hardware;
 import de.drMartinKramer.support.MidiMessageWithContext;
+import de.mossgrabers.controller.osc.protocol.OSCWriter;
 
 public class GlobalParameterHandler extends AbstractCachingHandler{
 

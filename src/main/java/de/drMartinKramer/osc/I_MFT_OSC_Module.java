@@ -19,10 +19,12 @@
 
 package de.drMartinKramer.osc;
 
+import de.mossgrabers.controller.osc.protocol.OSCWriter;
+
 /**
  * Interface for module which implement OSC handling for the Midi Fighter Twister.
  */
-public interface IOSC_Handler {
+public interface I_MFT_OSC_Module {
 
     /**
      * Method is called to refresh the OSC surface. I.e. all update messages are sent via
@@ -76,5 +78,12 @@ public interface IOSC_Handler {
      * @param isActive  the active state of the encoder
      */
     public void setEncoderActive(int encoderNo, boolean isActive);
+
+    /**
+     * Message is used to inject an OSC writer (once it's ready) into this module
+     * so that we can use this writer to send out OSC messages
+     * @param writer
+     */
+    public void setOSC_Writer(OSCWriter writer);
 
 }

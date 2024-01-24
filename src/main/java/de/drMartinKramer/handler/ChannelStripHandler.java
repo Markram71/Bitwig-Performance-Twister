@@ -29,6 +29,7 @@ import com.bitwig.extension.controller.api.MasterTrack;
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
 import de.drMartinKramer.support.MidiMessageWithContext;
+import de.mossgrabers.controller.osc.protocol.OSCWriter;
 
 public class ChannelStripHandler extends AbstractHandler
 {

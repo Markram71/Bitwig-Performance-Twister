@@ -27,6 +27,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
 import de.drMartinKramer.support.MidiMessageWithContext;
+import de.mossgrabers.controller.osc.protocol.OSCWriter;
 
 /**
  * The ModeHandler is used to handle sixe different modes of the Bitwig Performance Twister

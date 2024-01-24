@@ -28,6 +28,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.ControllerExtension;
 
 import de.drMartinKramer.handler.ModeHandler;
+import de.drMartinKramer.osc.OSC_MixerModule;
 import de.drMartinKramer.handler.AbstractHandler;
 import de.drMartinKramer.handler.ChannelStripHandler;
 import de.drMartinKramer.handler.DeviceHandler;
@@ -40,6 +41,7 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.controller.osc.OSCControllerSetup;
+import de.mossgrabers.controller.osc.protocol.OSCWriter;
 
 
 public class BitwigPerformanceTwister extends ControllerExtension
@@ -87,7 +89,9 @@ public class BitwigPerformanceTwister extends ControllerExtension
       
       host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
      
-      // First, create a HashMap of Handlers in which we can store all the handlers
+      
+
+      // Now, we can create a HashMap of Handlers in which we can store all the handlers
       final HashMap<Integer, AbstractHandler> handlerMap = new HashMap<>();
       //then, let's create all the handlers and add them to the handlerMap
       this.trackHandler = new MixerHandler(host);
@@ -103,7 +107,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
       
       //finally we create the mode handler and inform it about the handlers      
       this.modeHandler = new ModeHandler(host, handlerMap);    
-           
+      
       //Let's add the DrivenByMoss OSC implementation: 
       oscControllerSetup = new OSCControllerSetup (new HostImpl (host), 
                                                    new BitwigSetupFactory (host), 
@@ -112,9 +116,14 @@ public class BitwigPerformanceTwister extends ControllerExtension
 
       //Since Bitwig is not calling init (it already did as we are exactily here), we need to call
       //init of the OSCControllerSetup manually
-      oscControllerSetup.init ();
+      oscControllerSetup.init ();           
 
-                                                   //we schedule the initial startup of the MFT and give is some time to initialize itself
+      final OSCWriter oscWriter = oscControllerSetup.getOSCWriter ();
+      for (AbstractHandler handler : handlerMap.values()) {
+         handler.setOSC_Writer(oscWriter);
+      }
+      
+      //we schedule the initial startup of the MFT and give is some time to initialize itself
       host.scheduleTask((Runnable)()->scheduledInitialStartup(), 1500);
 
    } //end of init

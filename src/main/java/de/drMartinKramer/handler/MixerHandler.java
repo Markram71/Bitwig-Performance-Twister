@@ -29,8 +29,9 @@ import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
-import de.drMartinKramer.osc.OSC_MixerHandler;
+import de.drMartinKramer.osc.OSC_MixerModule;
 import de.drMartinKramer.support.MidiMessageWithContext;
+import de.mossgrabers.controller.osc.protocol.OSCWriter;
 
 
 public class MixerHandler extends AbstractCachingHandler
@@ -48,7 +49,7 @@ public class MixerHandler extends AbstractCachingHandler
 		super(host);
 
 		//install an OSC handler that is associated to this mixer hander
-		this.oscHandler = new OSC_MixerHandler(host);
+		this.oscModule = new OSC_MixerModule("Mixer Mode", host);
 		
 		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 1, 0);
 	    this.remoteControlsPage = new RemoteControlsPage[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
@@ -98,8 +99,8 @@ public class MixerHandler extends AbstractCachingHandler
     }
     
 	private void reactToTrackNameChange(int trackIndex, String newValue){
-		if(this.oscHandler!= null){
-			oscHandler.setEncoderName(trackIndex, newValue);
+		if(this.oscModule!= null){
+			oscModule.setEncoderName(trackIndex, newValue);
 		}
 	}
      
@@ -133,11 +134,11 @@ public class MixerHandler extends AbstractCachingHandler
 			isSelected ? 
 				MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS : 
 				MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_LOW_BRIGHTNESS);
-		oscHandler.setEncoderSelected(trackIndex, isSelected);
+		oscModule.setEncoderSelected(trackIndex, isSelected);
 	}
     
 	private void reactToTrackExists(int trackIndex, boolean exists){
-		oscHandler.setEncoderActive(trackIndex, exists);
+		oscModule.setEncoderActive(trackIndex, exists);
 	}
 
 	/**

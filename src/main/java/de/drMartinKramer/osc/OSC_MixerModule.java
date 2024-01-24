@@ -20,15 +20,19 @@
 
 package de.drMartinKramer.osc;
 
+import java.util.LinkedList;
+
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import de.drMartinKramer.MFT_Configuration;
 
-public class OSC_MixerHandler extends AbstractMFT_OSC_Handler{
+
+public class OSC_MixerModule extends AbstractMFT_OSC_Module{
 
     
-    public OSC_MixerHandler(ControllerHost host){
-        super("Mixer Mode", host);
+    public OSC_MixerModule(String name, ControllerHost host){
+        super(name, host);
+        
 
         for (int i= 0;i<NO_OF_ENCODERS;i++){
             this.encoderState[i] = new EncoderState();
@@ -63,14 +67,24 @@ public class OSC_MixerHandler extends AbstractMFT_OSC_Handler{
         for(int i=0;i<NO_OF_ENCODERS-2;i++){
             this.encoderState[i].shiftClickFunction = shiftClickFunction + " " + (i+1);
             //Todo hier geht's weiter, die Nachricht an OSC senden
-            sendOSC_Message(ENCODER + i + "/shiftClickFunction/" + encoderState[i].shiftClickFunction);
+            sendOSC_Message(ENCODER + i + "/shiftClickFunction" ,  encoderState[i].shiftClickFunction, false);
         }
     }
 
     public void setEncoderName(int encoderNo, String encoderName){
         //todo: auch OSC informieren
         this.encoderState[encoderNo].name = encoderName;
-        sendOSC_Message(ENCODER + encoderNo + "/name/" + encoderState[encoderNo].name);
+        sendOSC_Message(ENCODER + encoderNo + "/name" ,  encoderState[encoderNo].name, false);
+    }
+
+    
+    public String[] getSupportedCommands() {
+        //Todo das müssen wir nochmal anschauen
+        return new String[] { "name", "color", "value", "turnFunction", "pushAndTurnFunction", "clickFunction", "longClickFunction", "shiftClickFunction", "isSelected" };
+    }
+
+    public void execute(String command, LinkedList<String> path, Object value){
+        //TODO hier geht's weiter 
     }
 
    

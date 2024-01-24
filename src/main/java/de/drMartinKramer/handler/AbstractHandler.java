@@ -28,8 +28,9 @@ import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Transport;
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.MFT_Hardware;
-import de.drMartinKramer.osc.IOSC_Handler;
-import de.drMartinKramer.support.MidiMessageWithContext; 
+import de.drMartinKramer.osc.I_MFT_OSC_Module;
+import de.drMartinKramer.support.MidiMessageWithContext;
+import de.mossgrabers.controller.osc.protocol.OSCWriter; 
 
 public class AbstractHandler {
 
@@ -42,16 +43,16 @@ public class AbstractHandler {
     private boolean isShiftConsumed = false; //has the shift button been consumed or not
     protected MidiIn midiIn = null; //the midi in port
     protected static NoteInput noteInput = null; //the note input port
-
-    /** An OSC Handler to also update a GUI surface via OSC */
-    IOSC_Handler oscHandler = null;
     
+    /** An OSC Handler to also update a GUI surface via OSC */
+    protected I_MFT_OSC_Module oscModule = null;
+   
     
     /**
      * Constructor. Takes the Bitwig 
      * @param host the Bitwig controller host
      */
-    public AbstractHandler(ControllerHost host){
+    public AbstractHandler(ControllerHost host ){
         this.host = host;
         this.transport = host.createTransport();
         this.outPort = host.getMidiOutPort(0);
@@ -62,13 +63,29 @@ public class AbstractHandler {
     }
 
     /**
+     * Gets the OSC module for this handler
+     * @param oscModule the OSC module that this handler uses to to talk to the OSC surface
+     */
+    public I_MFT_OSC_Module getOSC_Module(){
+        return this.oscModule;
+    }
+
+    /**
+     * This message is called when an OSC writer is ready and we can inject it into this handler
+     * @param writer
+     */
+    public void setOSC_Writer(OSCWriter writer){
+        if (this.oscModule!=null)this.oscModule.setOSC_Writer(writer); 
+    }
+
+    /**
      * This method is called from BankHanlder to activate or deactivate this handler.
      * @param isActive true if this handler should be active, false otherwise
      */
     public void setActive(boolean  newActiveState){
         this.isActive = newActiveState;
         //we are activating this mode so we also need to update the OSC surface (if there is any)
-        if(this.isActive && this.oscHandler!=null) this.oscHandler.refreshOSC_Surface();
+        if(this.isActive && this.oscModule!=null) this.oscModule.refreshOSC_Surface();
     }
 
     protected boolean isActive(){
@@ -131,7 +148,7 @@ public class AbstractHandler {
      */
     protected void setEncoderColor(int encoder, int color){
         sendMidi(0xB1, encoder, color);
-        if(this.oscHandler!=null) this.oscHandler.setEncoderColor(encoder, color);
+        if(this.oscModule!=null) this.oscModule.setEncoderColor(encoder, color);
     }
     
     /**
@@ -162,7 +179,7 @@ public class AbstractHandler {
      */
     protected void setEncoderRingValue(int encoder, int value){
         sendMidi(0xB0, encoder, value);
-        if(this.oscHandler!=null) this.oscHandler.setEncoderValue(encoder, value);
+        if(this.oscModule!=null) this.oscModule.setEncoderValue(encoder, value);
         
     }
 
