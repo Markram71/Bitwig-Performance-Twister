@@ -99,7 +99,7 @@ track with encoder 1 any more.
 |3        |panning selected track        |tbd           |toggle mute        |n/a           | scene or marker | orange if track is muted    |
 |4        |volume: master,cue, x-fader(1)|tbd           |toggle fill (2)    |n/a           | scene or marker | tbd                         |
 |5-8      |send to fx channel 1-4        |tbd           |toggle send enabled|n/a           | scene or marker | blue, dark blue if send disabled|
-|9-14     |track remote control 1-8      |tbd           |                   |n/a           | scene or marker | color on Bitwig parameter page|
+|9-14     |track remote control 1-6      |tbd           |                   |n/a           | scene or marker | color on Bitwig parameter page|
 |15       |track remote control 7        |tbd           |                   |n/a           | stop            | color on Bitwig parameter page|
 |16       |track remote control 8        |tbd           |                   |n/a           | Shift button    | color on Bitwig parameter page|
 
