@@ -204,7 +204,49 @@ This mode allows you to control many actions of the Bitwig transport section and
 This mode simply allows to bypass the controller script and allows you to use it for your own Midi Learn mapping. When accessing the mode 6 the Midi Figther Twister is set internally to bank four. You can also configure the CC message and colors in the `Midifighter Utility`. Please keep the midi channels to five and six, respectively.  
 
 ## OSC Extension
-This script extends the functionality of the Midi Fighter Twister with additional visual feedback.  
+This script extends the functionality of the Midi Fighter Twister with additional visual feedback. This is based on OSC, the Open Sound Protocol. This protocol allow to connect an additional device (like a tablet or another computer or phone) with this script and control Bitwig or just visualize what you are controlling the the Midid Fighter Twister. By doing this you greatly enhance your workflow, i.e. by using the Midi Fighter Twister with its great encoders and also being able to see what you can control (as the MFT does not have any screens). With this functionality you can either
+* build your own custom controller surface and show the status of the Midi Fighter Twister, or
+* use the template for TouchOSC which comes with this script, see section on configuration below. (Note: you need to buy a an additional license for TouchOSC. This is not included in Bitwig Performance Twister )
+
+The following section describe how to use the visualization in TouchOSC. The great thing about OSC is that you can fully customize the visualization to your own needs. Or simply start of with the one that comes with this script. 
+
+### The Mixer page
+When changing into the mixer mode the following screenshot shows the status of the encoders and additional information. 
+![Screenshot of the mixer page in TouchOSC](./resources/OSC-Mixer.png)
+
+On the left side, under _Current Mode_ you can see which mode is currently active. The screen on the right shows the 16 encoders of the Midi Fighter Twister. In case not all encoders are active, like in this case, the encoders are hidden. The following information is available : 
+* In the middle of the encoder, the name of the track is shown.
+* The currently selected track is indicated by star below the track name. In this case it's the track _Top Loop_.
+* On the right side of the encoder you can find further information about the functionality of each encoder. From top to bottom
+  ** What happens when you turn the encoder. In the mixer mode, it's the track volume.
+  ** The function when you press down an encoder and turn the encoder. This is configurable, in this setup it's the send to Effects Channel 1.
+  ** The function when you click an encoder. Here, it's to select the associated track.
+  ** What happens when you long click an encoder. In this setup it's to activate Solo
+  ** Lastly, what happens when you shift click an encoder. This is also configurable, in this example a shift click triggers a scene.
+
+### The Channel Strip Page
+The following screenshot shows the visualization of the Channel Strip mode.   
+
+![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Channel_Strip.png)
+  
+
+### The EQ Page
+The following screenshot shows the visualization of the EQ mode.   
+
+![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-EQ.png)
+
+
+### The Device Page
+The following screenshot shows the visualization of the Device mode.   
+
+![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Device.png)
+  
+### The Global Parameters Page
+The following screenshot shows the visualization of the Global Parameters mode.   
+
+![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Global_Parameter.png)
+  
+
 
 
 
