@@ -12,8 +12,8 @@ With this extension you will be able to use the midi controller
 1. [Implemented Modes](#implemented-modes)
     1. [Mode 1 Mixer](#mode-1-mixer)
     1. [Mode 2 Channel Strip](#mode-2-channel-strip) 
-    1. [Mode 3 Device and Project-wide Remote Controls](#mode-3-device-and-project-wide-remote-controls) 
-    1. [Mode 4 EQ](#mode-4-eq)  
+    1. [Mode 3 EQ](#mode-3-eq)  
+    1. [Mode 4 Device and Project-wide Remote Controls](#mode-4-device-and-project-wide-remote-controls) 
     1. [Mode 5 Global Parameters](#mode-5-global-parameters) 
     1. [Mode 6 User defined Controls](#mode-6-user-defined-controls) 
        
@@ -120,30 +120,7 @@ The control depends on the setting of the controller configuration. See [Control
 
 (2) A click on encoder #4 on this bank toggle the global Bitwig fill flag which effects operators
 
-
-### Mode 3 Device and Project-wide Remote Controls
-| Encoder | Turn (Twisting)        | Click & turn | Click                    | Long Click          | RGB Light                      |
-|:-------:|------------------------|--------------|--------------------------|---------------------|--------------------------------|
-|1        |device parameter 1      |              |go to first device        |toggle device on/off | color on Bitwig parameter page |
-|2        |device parameter 2      |              |go to previous deviece    |n/a                  | color on Bitwig parameter page |
-|3        |device parameter 3      |              |go to next device         |n/a                  | color on Bitwig parameter page |
-|4        |device parameter 4      |              |go to last device         |n/a                  | color on Bitwig parameter page |
-|5        |device parameter 5      |              |go to first param bank    |n/a                  | color on Bitwig parameter page |
-|6        |device parameter 6      |              |go to previous param bank |n/a                  | color on Bitwig parameter page |
-|7        |device parameter 7      |              |go to next param bank     |n/a                  | color on Bitwig parameter page |
-|8        |device parameter 8      |              |go to last param bank     |n/a                  | color on Bitwig parameter page |
-|9        |Project remote  1       |              |                          |n/a                  | color on Bitwig parameter page |
-|10       |Project remote  2       |              |                          |n/a                  | color on Bitwig parameter page |
-|11       |Project remote  3       |              |                          |n/a                  | color on Bitwig parameter page |
-|12       |Project remote  4       |              |                          |n/a                  | color on Bitwig parameter page |
-|13       |Project remote  5       |              |go to first prj.param bank    |n/a                  | color on Bitwig parameter page |
-|14       |Project remote  6       |              |go to previous prj.param bank |n/a                  | color on Bitwig parameter page |
-|15       |Project remote  7       |              |go to next prj.param bank     |n/a                  | color on Bitwig parameter page |
-|16       |Project remote  8       |              |go to last prj. param bank    |n/a                  | color on Bitwig parameter page |
-
-
-
-### Mode 4 EQ
+### Mode 3 EQ
 This mode is there to help you twist and turn the prarameters of the Bitwig EQ+. In case there is an EQ+ installed in the device chain of the currently selected track, the encoders of the Midi Fighter Twister are automatically mapped to this EQ device. In case there is no EQ available you can easily create a new EQ+ device by simply clicking on any encoder button. This installs the  new EQ+ at the end of the device chain. 
 
 | Encoder | Turn (Twisting)     | Click & turn | Click                     | Long Click           | RGB Light                 |
@@ -168,6 +145,28 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 * (1) A long click on the first encoder toggles the EQ+ device on an off. 
 * (2) The color of the encoders in a column reflect (somehow closely) the color of the band in the EQ+ decive in bitwig. All encoders for a band (i.e. in a colum) have the same color. The colored led is switched off when the respective band is deactivated. You can still turn the parameters and see their value on the out ring though.
 * (3) A click on the encoder of the last row toggles the band on or off. This toggle switch is different to the toggle switch of the first row as it resets the band to the following useful band types: band 1: 24db low cut, band 2-3: bell curve, band 4: high shelf
+
+
+### Mode 4 Device and Project-wide Remote Controls
+| Encoder | Turn (Twisting)        | Click & turn | Click                    | Long Click          | RGB Light                      |
+|:-------:|------------------------|--------------|--------------------------|---------------------|--------------------------------|
+|1        |device parameter 1      |              |go to first device        |toggle device on/off | color on Bitwig parameter page |
+|2        |device parameter 2      |              |go to previous deviece    |n/a                  | color on Bitwig parameter page |
+|3        |device parameter 3      |              |go to next device         |n/a                  | color on Bitwig parameter page |
+|4        |device parameter 4      |              |go to last device         |n/a                  | color on Bitwig parameter page |
+|5        |device parameter 5      |              |go to first param bank    |n/a                  | color on Bitwig parameter page |
+|6        |device parameter 6      |              |go to previous param bank |n/a                  | color on Bitwig parameter page |
+|7        |device parameter 7      |              |go to next param bank     |n/a                  | color on Bitwig parameter page |
+|8        |device parameter 8      |              |go to last param bank     |n/a                  | color on Bitwig parameter page |
+|9        |Project remote  1       |              |                          |n/a                  | color on Bitwig parameter page |
+|10       |Project remote  2       |              |                          |n/a                  | color on Bitwig parameter page |
+|11       |Project remote  3       |              |                          |n/a                  | color on Bitwig parameter page |
+|12       |Project remote  4       |              |                          |n/a                  | color on Bitwig parameter page |
+|13       |Project remote  5       |              |go to first prj.param bank    |n/a                  | color on Bitwig parameter page |
+|14       |Project remote  6       |              |go to previous prj.param bank |n/a                  | color on Bitwig parameter page |
+|15       |Project remote  7       |              |go to next prj.param bank     |n/a                  | color on Bitwig parameter page |
+|16       |Project remote  8       |              |go to last prj. param bank    |n/a                  | color on Bitwig parameter page |
+
 
 
 
