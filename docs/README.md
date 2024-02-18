@@ -332,6 +332,7 @@ Note: more information on TouchOSC is available [here](https://hexler.net/toucho
 
 ## Known Bugs
 * In the `MidiFighter Utility`tool, the check boxes, e.g. for the side buttons, don't seem to work corretly. The check box `Bank Side Buttons`under `Global Settings` needs to be de-activated and then the MFT needs to be flushed with this value. After flushing the check mark disappears, even if it had been checked before. It's important that is not activated. In this case the side buttons always send the same CC messages. And this is what we want.
+* The TouchOSC template is not complete yet. I plan to extend. Therefore some groups are still empty. 
 
 ## Acknowledgements
 I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. 
