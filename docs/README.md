@@ -225,29 +225,34 @@ On the left side, under _Current Mode_ you can see which mode is currently activ
 
 ### The Channel Strip Page
 The following screenshot shows the visualization of the Channel Strip mode.   
-
 ![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Channel_Strip.png)
 
+This page can be structured in three parts: 
+1. The first line of encoders is always fixed. 
+2. The second line shows four encoders that represent the send levels to up to four effects channels
+3. The last two lines of encoders are active when a track remote page is active. 
   
 
 ### The EQ Page
 The following screenshot shows the visualization of the EQ mode.   
-
 ![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-EQ.png)
 
+The EQ pages visualizse the four bands which can be controlled with the Midi Figher Twister. Look how the color of the encoders change with the frequency of the band. The color reflects color of the EQ+ device in Bitwig. 
 
 ### The Device Page
-The following screenshot shows the visualization of the Device mode.   
-
+The following screenshot shows the visualization of the Device mode.  
 ![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Device.png)
+
+The device page can be structured into two parts: 
+1. The upper two lines of 8 encoders which reflect the currently selected device, and
+2. the lower two lines which reflect the project remove parameters. 
   
 ### The Global Parameters Page
 The following screenshot shows the visualization of the Global Parameters mode.   
-
 ![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Global_Parameter.png)
+
+The visualization with OSC is especially useful for a mode like the _Global Parameter Mode_. This mode contains a lot of different control possibilities. But without a screen on the Midi Figther Twister the different functionalities are hard to remember. Thus, a tablet placed behind the MFT comes in handy to show the meaning of the 16 encoders. 
   
-
-
 ## Configuration
 The _Bitwig Performance Twister_ can be configured to suit to your needs. In order to change the configuration click on the Bitwig Icon on the top of the Bitwig screen, then change to _configuration_ and there choose _controller_ on the left side. 
 
@@ -279,7 +284,7 @@ The following screenshot shows the first part of the configuration items.
 
 This most important configuration to use the OSC extension are the first three parameters. You need to get these right otherwise the the OSC extension will not work. The good think is, you don't need to deal with all the other configuration items. The initial setup might be a bit confusing. The following chart shows an example to facilitate the understanding of the setup.  
 
-![Sample OSC configuration](./resources/Sample_OSC_Configuration)
+![Sample OSC configuration](./resources/Sample_OSC_Configuration.png)
 
 One the left side you can see your computer on which Bitwig is running. Within Bitwig the Bitwig Performance Twister is running. This enables the communication between Bitwig and the Midi Fighter Twister (shown below) which is connected via USB to your computer. On the right side you can see a tablet that is running TouchOSC. TouchOSC and Bitwig communicate via the Bitwig Performance Twister script. In order to allow for a bi-directional communication, both side, Bitwig and TouchOSC must be configured to communicate to each other. 
 
@@ -293,8 +298,6 @@ In order to to get the communication going you need to consider two important th
 
 The following screenshot shows some more OSC related configuration items. Again, these are useful it you want to use additional OSC functionality. Please visit the excellent site of MOSS with a detailed description on how these configuration items work. 
 ![Screenshot of the add controller dialog in Bitwig](./resources/OSC_Configuration_Part2.png)
-
-
 
 
 ## Installation
@@ -315,14 +318,21 @@ The installation of _Bitwig Performance Twister_ is straight forward. It require
 7. Select the input and output midi connection by choosing `Midi Fighter Twister`from the dropdown box, see screenshot below
 ![Screenshot of the add controller dialog in Bitwig](./resources/add_controller_BPT2.png)
 
+### OSC Installation (in TouchOSC)
+When you want to extend the functionality of the script by using the OSC extension you also need to configure the OSC parameters, see section configuration above. 
+This script comes with a sample TouchOSC template. This file is part of the zip file, see above. The filename is `BitwigPerformanceTwister.tosc`. In TouchOSC, load up this file, configure the OSC in TouchOSC as described above. 
+
+Note: more information on TouchOSC is available [here](https://hexler.net/touchosc). 
 
 ## Implementation Notes 
 * **Modes and Banks:** Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
-* Unfortunately, the color palette of the LED lights below the encoders of the Midi Fighter is limited. 
+* Unfortunately, the color palette of the LED lights below the encoders of the Midi Fighter is limited. I have used a GenAI tool to analyze the spectrum provided in the Midi Fighter Twister to analyze all 127 colors possible of the MFT.
+* A GenAI tool was also helpful to analyze the color spectrum of the EQ+ device in Bitwig. The color or the encoders in the EQ mode not match nicely the frequency of the band in the EQ+ device in Bitwig.    
 * Unfortunately I could not test this script on Windows or Linux. Please help to test it and make it available to these communities, as well. 
 
 ## Known Bugs
 * In the `MidiFighter Utility`tool, the check boxes, e.g. for the side buttons, don't seem to work corretly. The check box `Bank Side Buttons`under `Global Settings` needs to be de-activated and then the MFT needs to be flushed with this value. After flushing the check mark disappears, even if it had been checked before. It's important that is not activated. In this case the side buttons always send the same CC messages. And this is what we want.
+* The TouchOSC template is not complete yet. I plan to extend. Therefore some groups are still empty. 
 
 ## Acknowledgements
 I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. 
