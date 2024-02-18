@@ -12,8 +12,8 @@ With this extension you will be able to use the midi controller
 1. [Implemented Modes](#implemented-modes)
     1. [Mode 1 Mixer](#mode-1-mixer)
     1. [Mode 2 Channel Strip](#mode-2-channel-strip) 
-    1. [Mode 3 Device and Project-wide Remote Controls](#mode-3-device-and-project-wide-remote-controls) 
-    1. [Mode 4 EQ](#mode-4-eq)  
+    1. [Mode 3 EQ](#mode-3-eq)  
+    1. [Mode 4 Device and Project-wide Remote Controls](#mode-4-device-and-project-wide-remote-controls) 
     1. [Mode 5 Global Parameters](#mode-5-global-parameters) 
     1. [Mode 6 User defined Controls](#mode-6-user-defined-controls) 
        
@@ -120,30 +120,7 @@ The control depends on the setting of the controller configuration. See [Control
 
 (2) A click on encoder #4 on this bank toggle the global Bitwig fill flag which effects operators
 
-
-### Mode 3 Device and Project-wide Remote Controls
-| Encoder | Turn (Twisting)        | Click & turn | Click                    | Long Click          | RGB Light                      |
-|:-------:|------------------------|--------------|--------------------------|---------------------|--------------------------------|
-|1        |device parameter 1      |              |go to first device        |toggle device on/off | color on Bitwig parameter page |
-|2        |device parameter 2      |              |go to previous deviece    |n/a                  | color on Bitwig parameter page |
-|3        |device parameter 3      |              |go to next device         |n/a                  | color on Bitwig parameter page |
-|4        |device parameter 4      |              |go to last device         |n/a                  | color on Bitwig parameter page |
-|5        |device parameter 5      |              |go to first param bank    |n/a                  | color on Bitwig parameter page |
-|6        |device parameter 6      |              |go to previous param bank |n/a                  | color on Bitwig parameter page |
-|7        |device parameter 7      |              |go to next param bank     |n/a                  | color on Bitwig parameter page |
-|8        |device parameter 8      |              |go to last param bank     |n/a                  | color on Bitwig parameter page |
-|9        |Project remote  1       |              |                          |n/a                  | color on Bitwig parameter page |
-|10       |Project remote  2       |              |                          |n/a                  | color on Bitwig parameter page |
-|11       |Project remote  3       |              |                          |n/a                  | color on Bitwig parameter page |
-|12       |Project remote  4       |              |                          |n/a                  | color on Bitwig parameter page |
-|13       |Project remote  5       |              |go to first prj.param bank    |n/a                  | color on Bitwig parameter page |
-|14       |Project remote  6       |              |go to previous prj.param bank |n/a                  | color on Bitwig parameter page |
-|15       |Project remote  7       |              |go to next prj.param bank     |n/a                  | color on Bitwig parameter page |
-|16       |Project remote  8       |              |go to last prj. param bank    |n/a                  | color on Bitwig parameter page |
-
-
-
-### Mode 4 EQ
+### Mode 3 EQ
 This mode is there to help you twist and turn the prarameters of the Bitwig EQ+. In case there is an EQ+ installed in the device chain of the currently selected track, the encoders of the Midi Fighter Twister are automatically mapped to this EQ device. In case there is no EQ available you can easily create a new EQ+ device by simply clicking on any encoder button. This installs the  new EQ+ at the end of the device chain. 
 
 | Encoder | Turn (Twisting)     | Click & turn | Click                     | Long Click           | RGB Light                 |
@@ -168,6 +145,28 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 * (1) A long click on the first encoder toggles the EQ+ device on an off. 
 * (2) The color of the encoders in a column reflect (somehow closely) the color of the band in the EQ+ decive in bitwig. All encoders for a band (i.e. in a colum) have the same color. The colored led is switched off when the respective band is deactivated. You can still turn the parameters and see their value on the out ring though.
 * (3) A click on the encoder of the last row toggles the band on or off. This toggle switch is different to the toggle switch of the first row as it resets the band to the following useful band types: band 1: 24db low cut, band 2-3: bell curve, band 4: high shelf
+
+
+### Mode 4 Device and Project-wide Remote Controls
+| Encoder | Turn (Twisting)        | Click & turn | Click                    | Long Click          | RGB Light                      |
+|:-------:|------------------------|--------------|--------------------------|---------------------|--------------------------------|
+|1        |device parameter 1      |              |go to first device        |toggle device on/off | color on Bitwig parameter page |
+|2        |device parameter 2      |              |go to previous deviece    |n/a                  | color on Bitwig parameter page |
+|3        |device parameter 3      |              |go to next device         |n/a                  | color on Bitwig parameter page |
+|4        |device parameter 4      |              |go to last device         |n/a                  | color on Bitwig parameter page |
+|5        |device parameter 5      |              |go to first param bank    |n/a                  | color on Bitwig parameter page |
+|6        |device parameter 6      |              |go to previous param bank |n/a                  | color on Bitwig parameter page |
+|7        |device parameter 7      |              |go to next param bank     |n/a                  | color on Bitwig parameter page |
+|8        |device parameter 8      |              |go to last param bank     |n/a                  | color on Bitwig parameter page |
+|9        |Project remote  1       |              |                          |n/a                  | color on Bitwig parameter page |
+|10       |Project remote  2       |              |                          |n/a                  | color on Bitwig parameter page |
+|11       |Project remote  3       |              |                          |n/a                  | color on Bitwig parameter page |
+|12       |Project remote  4       |              |                          |n/a                  | color on Bitwig parameter page |
+|13       |Project remote  5       |              |go to first prj.param bank    |n/a                  | color on Bitwig parameter page |
+|14       |Project remote  6       |              |go to previous prj.param bank |n/a                  | color on Bitwig parameter page |
+|15       |Project remote  7       |              |go to next prj.param bank     |n/a                  | color on Bitwig parameter page |
+|16       |Project remote  8       |              |go to last prj. param bank    |n/a                  | color on Bitwig parameter page |
+
 
 
 
@@ -204,8 +203,49 @@ This mode allows you to control many actions of the Bitwig transport section and
 This mode simply allows to bypass the controller script and allows you to use it for your own Midi Learn mapping. When accessing the mode 6 the Midi Figther Twister is set internally to bank four. You can also configure the CC message and colors in the `Midifighter Utility`. Please keep the midi channels to five and six, respectively.  
 
 ## OSC Extension
-This script extends the functionality of the Midi Fighter Twister with additional visual feedback.  
+This script extends the functionality of the Midi Fighter Twister with additional visual feedback. This is based on OSC, the Open Sound Protocol. This protocol allow to connect an additional device (like a tablet or another computer or phone) with this script and control Bitwig or just visualize what you are controlling the the Midid Fighter Twister. By doing this you greatly enhance your workflow, i.e. by using the Midi Fighter Twister with its great encoders and also being able to see what you can control (as the MFT does not have any screens). With this functionality you can either
+* build your own custom controller surface and show the status of the Midi Fighter Twister, or
+* use the template for TouchOSC which comes with this script, see section on configuration below. (Note: you need to buy a an additional license for TouchOSC. This is not included in Bitwig Performance Twister )
 
+The following section describe how to use the visualization in TouchOSC. The great thing about OSC is that you can fully customize the visualization to your own needs. Or simply start of with the one that comes with this script. 
+
+### The Mixer page
+When changing into the mixer mode the following screenshot shows the status of the encoders and additional information. 
+![Screenshot of the mixer page in TouchOSC](./resources/OSC-Mixer.png)
+
+On the left side, under _Current Mode_ you can see which mode is currently active. The screen on the right shows the 16 encoders of the Midi Fighter Twister. In case not all encoders are active, like in this case, the encoders are hidden. The following information is available : 
+* In the middle of the encoder, the name of the track is shown.
+* The currently selected track is indicated by star below the track name. In this case it's the track _Top Loop_.
+* On the right side of the encoder you can find further information about the functionality of each encoder. From top to bottom
+  	* What happens when you turn the encoder. In the mixer mode, it's the track volume.
+  	* The function when you press down an encoder and turn the encoder. This is configurable, in this setup it's the send to Effects Channel 1.
+  	* The function when you click an encoder. Here, it's to select the associated track.
+  	* What happens when you long click an encoder. In this setup it's to activate Solo
+  	* Lastly, what happens when you shift click an encoder. This is also configurable, in this example a shift click triggers a scene.
+
+### The Channel Strip Page
+The following screenshot shows the visualization of the Channel Strip mode.   
+
+![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Channel_Strip.png)
+
+  
+
+### The EQ Page
+The following screenshot shows the visualization of the EQ mode.   
+
+![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-EQ.png)
+
+
+### The Device Page
+The following screenshot shows the visualization of the Device mode.   
+
+![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Device.png)
+  
+### The Global Parameters Page
+The following screenshot shows the visualization of the Global Parameters mode.   
+
+![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Global_Parameter.png)
+  
 
 
 ## Configuration
@@ -213,6 +253,7 @@ The _Bitwig Performance Twister_ can be configured to suit to your needs. In ord
 
 ![Screenshot of the add controller dialog in Bitwig](./resources/configure_BPT.png)
 
+### Basic Configuration
 The following configuration items are avaialable: 
 * **_Global_**
     * **Encoder turn speedup factor**: This is a factor that influence how fast the encoder change values in Bitwig. A factor >1 speeds up the value change, a factor <1 slows down the speed of change.
@@ -229,6 +270,32 @@ The following configuration items are avaialable:
     * **Channel Strip Encoder #4 function**: This lets you control the Bitwig parameter which is changed when you turn the fourth encoder on the first row in the channel strip mode. You can choose _master volume_, crossfader_, or _cue volume_.           
 * **_Global Parameters Mode_**
 	* **Send bank messages before program change**: Encoder 12 lets you send program change messages. With encoder 11 you can specify the MSB and LSB of the bank message. In case "yes" is selected a bank message is sent before each program change message.  
+
+### Extended Configuration for the OSC Extension 
+Additional configuration is required and possible for the extension with OSC to enable visualization with tools with TouchOSC. _Bitwig Performance Twister_ utilizes the OSC implementation developed by Jürgen Moßgräber, aka MOSS. The following configuration items are directly associated to his OSC implementation. See additional information here [here](https://github.com/git-moss/DrivenByMoss). 
+
+The following screenshot shows the first part of the configuration items. 
+![Screenshot of the add controller dialog in Bitwig](./resources/OSC_Configuration_Part1.png)
+
+This most important configuration to use the OSC extension are the first three parameters. You need to get these right otherwise the the OSC extension will not work. The good think is, you don't need to deal with all the other configuration items. The initial setup might be a bit confusing. The following chart shows an example to facilitate the understanding of the setup.  
+
+![Sample OSC configuration](./resources/Sample_OSC_Configuration)
+
+One the left side you can see your computer on which Bitwig is running. Within Bitwig the Bitwig Performance Twister is running. This enables the communication between Bitwig and the Midi Fighter Twister (shown below) which is connected via USB to your computer. On the right side you can see a tablet that is running TouchOSC. TouchOSC and Bitwig communicate via the Bitwig Performance Twister script. In order to allow for a bi-directional communication, both side, Bitwig and TouchOSC must be configured to communicate to each other. 
+
+Let's start with the Bitwig side. Within the controller section you need to provide the address of the table that is running TouchOSC. You also need to provide the port number on which TouchOSC is listening to incoming OSC messages. Moreover you also need to provide the port number on which Bitwig is listening to incoming OSC messages from TouchOSC. 
+
+On the other side, on the tablet you need to configure TouchOSC to communicate to Bitwig. Again you need to provide the port number on both side. 
+
+In order to to get the communication going you need to consider two important things: 
+1. You need to supply the IP address of the other side
+2. The _receiving port_ and the _port to send to_ must be cross over. 
+
+The following screenshot shows some more OSC related configuration items. Again, these are useful it you want to use additional OSC functionality. Please visit the excellent site of MOSS with a detailed description on how these configuration items work. 
+![Screenshot of the add controller dialog in Bitwig](./resources/OSC_Configuration_Part2.png)
+
+
+
 
 ## Installation
 The installation of _Bitwig Performance Twister_ is straight forward. It requires basically four steps: 1. download and unpack the zip file of the latest release, 2. update the Midi Fighter Twister with the configuration provided in the zip file , 3. place the Bitwig extension into the correct Bitwig folder and 4. configure the controller . Here's the installation step by step: 
@@ -251,7 +318,7 @@ The installation of _Bitwig Performance Twister_ is straight forward. It require
 
 ## Implementation Notes 
 * **Modes and Banks:** Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
-* Unfortunately, the color palette of the LED lights below the encoders of the Midi Fighter is limited. _Bitwig Performance Twister_ uses the approximation of [Twister Sister](...) by Dan Smith.
+* Unfortunately, the color palette of the LED lights below the encoders of the Midi Fighter is limited. 
 * Unfortunately I could not test this script on Windows or Linux. Please help to test it and make it available to these communities, as well. 
 
 ## Known Bugs
@@ -268,5 +335,5 @@ I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi con
 
 ## Dependencies
 _Bitwig Performance Twister_ uses the following libraries 
-* [Twister Sister](https://github.com/dozius/TwisterSister/tree/main), Copyright 2021 Dan Smith
+* [Driven by Moss](https://github.com/git-moss/DrivenByMoss), Copyright 2024 Jürgen Moßgräber
 
