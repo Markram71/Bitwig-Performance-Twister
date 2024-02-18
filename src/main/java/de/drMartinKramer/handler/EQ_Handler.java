@@ -22,6 +22,7 @@ package de.drMartinKramer.handler;
 
 import java.util.UUID;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.Device;
@@ -32,7 +33,9 @@ import com.bitwig.extension.controller.api.Parameter;
 import com.bitwig.extension.controller.api.SpecificBitwigDevice;
 
 import de.drMartinKramer.MFT_Configuration;
+import de.drMartinKramer.hardware.MFT_ColorMapper;
 import de.drMartinKramer.hardware.MFT_Hardware;
+import de.drMartinKramer.osc.OSC_EQ_Module;
 import de.drMartinKramer.support.MidiMessageWithContext;
 
 
@@ -55,14 +58,17 @@ public class EQ_Handler  extends AbstractCachingHandler
     private static final double EQ_TYPE_BELL = 0.48;
     private static final double EQ_TYPE_OFF = 0.0;
     private final double[] eqBankCache = new double[4]; 
+    private final boolean[] eqBankIsActive = new boolean[4];
 
     // Color related constants
-    private static final int COLOR_OFF = 0;    //the color when the band if off
-    private static final int COLOR_FREQ_MIN = 88;  //the color for the lowest frequency
-    private static final int COLOR_FREQ_MAX = 20;   //the color for the highest frequency
-
+    private static final Color COLOR_OFF = Color.fromRGB255(0, 0, 0);    //the color when the band if off
+    
     public EQ_Handler(ControllerHost host) {
         super(host);
+
+        //install an OSC handler that is associated to this mixer hander
+		this.oscModule = new OSC_EQ_Module(host);
+		
         this.cursorTrack = host.createCursorTrack(0, 0);
         DeviceBank eqPlusFilterDeviceBank = cursorTrack.createDeviceBank(1);
         UUID eqUUID = UUID.fromString(BITWIG_EQ_PLUS_DEVICE_ID);
@@ -99,24 +105,34 @@ public class EQ_Handler  extends AbstractCachingHandler
     
     private void reactToGainChange(int column, double newValue) {
         final int newIntValue = (int)Math.round(newValue * 127.0);
-        setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01 +  column,column, newIntValue);
+        setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01 ,column, newIntValue);
         
     }
     private void reactToFrequencyChange(int column, double newValue) {
-       final int newIntValue = (int)Math.round(newValue * 127.0);
-       setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_05 +  column, 4+column,newIntValue); 
+       int newIntValue = (int)Math.round(newValue * 127.0);
+       if(!this.eqBankIsActive[column]) newIntValue = 0; //if the band is off, we set the value to 0
+       setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01 , column+4,newIntValue); 
        setBandColor(column, newValue);      
     }
 
     private void reactToQ_Change(int column, double newValue) {
-        final int newIntValue = (int)Math.round(newValue * 127.0);
-        setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_09 +  column,8+column, newIntValue);
+        int newIntValue = (int)Math.round(newValue * 127.0);
+        if(!this.eqBankIsActive[column]) newIntValue = 0; //if the band is off, we set the value to 0
+        setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01 ,column+8, newIntValue);
     }
 
     private void reactToTypeChange(int column, double newValue) {
         final int newIntValue = (int)Math.round(newValue * 127.0);
-        setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_13 +  column,12+column,  newIntValue);
+        setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01 ,column+12,  newIntValue);
         setBandColor(column);    //also set the color of the encoder
+
+        boolean bandExists = newValue > EQ_TYPE_OFF ? true : false;
+        this.oscModule.sendEncoderExists(column, bandExists); 
+        this.oscModule.sendEncoderExists(column+4, bandExists);  
+        this.oscModule.sendEncoderExists(column+8, bandExists);  
+        this.oscModule.sendEncoderExists(column+12, bandExists);
+
+        this.eqBankIsActive[column] = bandExists;
     }   
 
     private void reactToEQ_Exists(boolean exists) {
@@ -124,19 +140,33 @@ public class EQ_Handler  extends AbstractCachingHandler
     }    
 
     private void setBandColor(int column, double frequency)
-    {
-        int newColor = 0;
+    { 
+        
+        Color newColor = null;
         double bandType = typeParameter[column].value().get();
         if(bandType==EQ_TYPE_OFF) newColor = COLOR_OFF;
+        /* 
+        else{ //here we try to reconstruct the color scheme we can see in the Bitwig EQ band, it's not perfect, but OK for a start. 
+            
+            double red = 255-frequency*2*255;
+            if(red<0) red = 0;
+
+            double green = frequency<0.5 ?  green = frequency*2*255 :  255-(frequency-0.5)*2*255;
+
+            double blue = -255 + frequency*2*255;
+            if(blue<0) blue = 0;
+             
+            newColor = Color.fromRGB255((int)Math.round(red),(int)Math.round(green), (int)Math.round(blue) );  
+        }   
+        */
         else{
-            newColor = (int)Math.round(COLOR_FREQ_MIN + frequency*(COLOR_FREQ_MAX-COLOR_FREQ_MIN));
-        } 
-        
+            newColor = MFT_ColorMapper.getEQColor(frequency);
+        }
         //we want to set the band color for a whole column, thus four similar statements
-        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01 +  column, column, newColor);
-        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_05 +  column, 4+column, newColor);
-        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_09 +  column, 8+column, newColor);
-        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_13 +  column, 12+column, newColor);
+        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01 , column, newColor);
+        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01 , column+4, newColor);
+        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01 , column+8, newColor);
+        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01 , column+12, newColor);
     }
 
     private void setBandColor(int column){
@@ -299,7 +329,12 @@ public class EQ_Handler  extends AbstractCachingHandler
     private void changeFrequency(int column, MidiMessageWithContext msg)
     {
         if(frequencyParameter[column]!=null){
-            frequencyParameter[column].value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 512);
+            if(msg.isButtonCurrentlyDown()){
+                frequencyParameter[column].value().inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 512);
+            }else{
+                frequencyParameter[column].value().inc((msg.getData2()-64)*MFT_Configuration.getNormalTurnFactor(), 512);
+            }
+            
         }
     }
     private void changeQ(int column, MidiMessageWithContext msg)
@@ -357,11 +392,14 @@ public class EQ_Handler  extends AbstractCachingHandler
         if(typeParameter!=null){
             double currentValue = typeParameter.value().get();
             double oldValue = eqBankCache[column];
+            
             if(currentValue>EQ_TYPE_OFF) 
             {
                 //the bank is active: 
                 typeParameter.value().set(EQ_TYPE_OFF); //thus, switch it off 
-                eqBankCache[column] = currentValue;     // and store the value from when it was on       
+                eqBankCache[column] = currentValue;     // and store the value from when it was on   
+                
+                     
             }else{
                 //the band is off, thus we need to switch it on again
                 if(oldValue==EQ_TYPE_OFF) //but the old value is also off, so let's create a good default
@@ -369,7 +407,9 @@ public class EQ_Handler  extends AbstractCachingHandler
                     oldValue = getDefaultValueForBand(column);
                 }
                 typeParameter.value().set(oldValue); //thus, switch it on again with the value from the cache
-            }                   
+                
+            } 
+                              
         }
     }
 

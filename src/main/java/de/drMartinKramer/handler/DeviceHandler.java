@@ -21,6 +21,9 @@
 
 package de.drMartinKramer.handler;
 
+import java.util.List;
+
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
 import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
@@ -29,6 +32,7 @@ import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
 
 import de.drMartinKramer.hardware.*;
+import de.drMartinKramer.osc.OSC_DeviceModule;
 import de.drMartinKramer.support.MidiMessageWithContext;
 
 public class DeviceHandler extends AbstractHandler 
@@ -39,7 +43,7 @@ public class DeviceHandler extends AbstractHandler
 	private CursorTrack cursorTrack = null; //the track that is currently selected
 	private CursorRemoteControlsPage myDeviceParameterPage = null; //this is a page of 8 device parameters
     private PinnableCursorDevice cursorDevice = null;
-	private int[] deviceParameterColorArray = {82,75,64,50,40,15,110,105};
+	private List<Color> deviceParameterColorList = MFT_ColorMapper.parameterColorList();
 	private boolean deviceButtonClicked = false;
 	private boolean parameterPageButtonClicked = false; //indicates if the use clicked on a parameter page button, i.e. we need to change the device parameter page
 	private boolean projectParameterPageClicked = false; //the same for the project-wide parameter 
@@ -49,13 +53,13 @@ public class DeviceHandler extends AbstractHandler
 	{
 		super(host);
 		this.cursorTrack = host.createCursorTrack ("DEVICE_HANDLER_CURSOR_TRACK", "MFT_DEVICE_HANDLER_CURSOR_TRACK", 0, 0,true);
-		this.deviceBank = this.cursorTrack.createDeviceBank(MFT_Hardware.MFT_No_ENCODER);
+		this.deviceBank = this.cursorTrack.createDeviceBank(MFT_Hardware.MFT_NUMBER_OF_ENCODERS);
 		this.deviceBank.cursorIndex().markInterested();
 
 		this.cursorDevice = this.cursorTrack.createCursorDevice("DEVICE_HANDLER_CURSOR_DEVICE", "MFT Device Handler Cursor Device", 0, CursorDeviceFollowMode.FOLLOW_SELECTION);
 		this.cursorDevice.name().markInterested();
 		this.cursorDevice.name().addValueObserver((name) -> reactToDeviceNameChange(name));
-		myDeviceParameterPage = cursorDevice.createCursorRemoteControlsPage(MFT_Hardware.MFT_No_ENCODER);
+		myDeviceParameterPage = cursorDevice.createCursorRemoteControlsPage(MFT_Hardware.MFT_NUMBER_OF_ENCODERS);
 		myDeviceParameterPage.getName().markInterested();
 		myDeviceParameterPage.getName().addValueObserver((name) -> reactToParameterPageNameChange(name));
 
@@ -75,6 +79,8 @@ public class DeviceHandler extends AbstractHandler
 			myDeviceParameterPage.getParameter(i).value().addValueObserver((newValue)->reactToDeviceParameterChange(myParameter, newValue));
 			//register callback for the existence of a device parameter
 			myDeviceParameterPage.getParameter(myParameter).exists().addValueObserver((exists)->reactToDeviceParameterExists(myParameter, exists));
+			//get the name as well to show it on the OSC surface
+			myDeviceParameterPage.getParameter(myParameter).name().addValueObserver(name -> reactToDeviceNameChange(myParameter, name));
 
 			/** Now we do the same for the project-wide remote controls. That is for row 3 and 4 */
 			final int myProjectParameter = i;
@@ -84,8 +90,13 @@ public class DeviceHandler extends AbstractHandler
 			projectControlsPage.getParameter(i).value().addValueObserver((newValue)->reactToProjectParameterChange(myParameter, newValue));
 			//register callback for the existence of a device parameter
 			projectControlsPage.getParameter(myParameter).exists().addValueObserver((exists)->reactToProjectParameterExists(myParameter, exists));
-		
+			//register callback for the name so that we can send it to the OSC surface
+			projectControlsPage.getParameter(myParameter).name().addValueObserver(name -> reactToProjectParameterNameChange(myParameter, name));
+			
 		}	
+
+		//create an associated OSC module that updates the OSC surface
+		this.oscModule = new OSC_DeviceModule(host);
 			
     }//end of constructor
 	
@@ -95,9 +106,13 @@ public class DeviceHandler extends AbstractHandler
 	 * @param newValue the new value of the device parameter
 	 */
 	private void reactToDeviceParameterChange(int index, double newValue) {
-    	setEncoderRingValue(MFT_Hardware.MFT_BANK3_BUTTON_01+index, (int) Math.round(newValue*127));		
+    	setEncoderValue(MFT_Hardware.MFT_BANK3_BUTTON_01, index, (int) Math.round(newValue*127));		
     }
 		
+	private void reactToDeviceNameChange(int myParameter, String name){
+		if(this.oscModule!=null)this.oscModule.sendEncoderName(myParameter, name);
+	}
+
 	/**
 	 * Callback function that is called to indicate if a device control exists or not.  
 	 * In case there is a device control exists, we can light up the LED for the remote control
@@ -108,8 +123,9 @@ public class DeviceHandler extends AbstractHandler
 	private void reactToDeviceParameterExists(int remoteIndex, boolean exists) {
 		if(remoteIndex<8){
 
-			int newColor = deviceParameterColorArray[remoteIndex];
-			setEncoderColor(MFT_Hardware.MFT_BANK3_BUTTON_01+remoteIndex, exists ? newColor : 0);				
+			Color newColor = deviceParameterColorList.get(remoteIndex);
+			setEncoderColor(MFT_Hardware.MFT_BANK3_BUTTON_01, remoteIndex, exists ? newColor : Color.fromRGB(0,0,0));
+			if(this.oscModule!=null)this.oscModule.sendEncoderExists(remoteIndex, exists);				
 		}
     }
 
@@ -119,7 +135,7 @@ public class DeviceHandler extends AbstractHandler
 	 * @param newValue the new value of the project-wide parameter
 	 */
 	private void reactToProjectParameterChange(int index, double newValue) {
-    	setEncoderRingValue(MFT_Hardware.MFT_BANK3_BUTTON_01+BITWIG_SIZE_OF_PARAMTER_PAGE+index, (int) Math.round(newValue*127));		
+    	setEncoderValue(MFT_Hardware.MFT_BANK3_BUTTON_01, BITWIG_SIZE_OF_PARAMTER_PAGE+index, (int) Math.round(newValue*127));				
     }
 		
 	/**
@@ -131,9 +147,9 @@ public class DeviceHandler extends AbstractHandler
 	 */
 	private void reactToProjectParameterExists(int remoteIndex, boolean exists) {
 		if(remoteIndex<8){
-
-			int newColor = deviceParameterColorArray[remoteIndex];
-			setEncoderColor(MFT_Hardware.MFT_BANK3_BUTTON_01+BITWIG_SIZE_OF_PARAMTER_PAGE+remoteIndex, exists ? newColor : 0);				
+			Color newColor = deviceParameterColorList.get(remoteIndex);
+			setEncoderColor(MFT_Hardware.MFT_BANK3_BUTTON_01, BITWIG_SIZE_OF_PARAMTER_PAGE+remoteIndex, exists ? newColor : Color.fromRGB255(0,0,0));				
+			if(this.oscModule!=null)this.oscModule.sendEncoderExists(BITWIG_SIZE_OF_PARAMTER_PAGE+remoteIndex, exists);
 		}
     }
 
@@ -149,6 +165,10 @@ public class DeviceHandler extends AbstractHandler
 			showPopupNotification("Active Device: " + cursorDevice.name().get());
 		}	
     }	
+
+	private void reactToProjectParameterNameChange(int myParameter, String name){
+		if(this.oscModule!=null)this.oscModule.sendEncoderName(BITWIG_SIZE_OF_PARAMTER_PAGE+myParameter, name);	
+	}
 
 	/**
 	 * Callback function that is called whenever the parameter page of a device is changed (e.g. by click on the button) 

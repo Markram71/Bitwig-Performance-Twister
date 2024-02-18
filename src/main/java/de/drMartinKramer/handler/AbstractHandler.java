@@ -20,6 +20,7 @@
 package de.drMartinKramer.handler;
 
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.MidiIn;
 import com.bitwig.extension.controller.api.MidiOut;
@@ -27,8 +28,9 @@ import com.bitwig.extension.controller.api.NoteInput;
 import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Transport;
 import de.drMartinKramer.MFT_Configuration;
+import de.drMartinKramer.hardware.MFT_ColorMapper;
 import de.drMartinKramer.hardware.MFT_Hardware;
-import de.drMartinKramer.osc.I_MFT_OSC_Module;
+import de.drMartinKramer.osc.AbstractMFT_OSC_Module;
 import de.drMartinKramer.support.MidiMessageWithContext;
 import de.mossgrabers.controller.osc.protocol.OSCWriter; 
 
@@ -45,7 +47,7 @@ public class AbstractHandler {
     protected static NoteInput noteInput = null; //the note input port
     
     /** An OSC Handler to also update a GUI surface via OSC */
-    protected I_MFT_OSC_Module oscModule = null;
+    protected AbstractMFT_OSC_Module oscModule = null;
    
     
     /**
@@ -62,14 +64,7 @@ public class AbstractHandler {
         if(AbstractHandler.noteInput==null) AbstractHandler.noteInput = midiIn.createNoteInput("Midi Fighter Twister", "B4????", "B6????");
     }
 
-    /**
-     * Gets the OSC module for this handler
-     * @param oscModule the OSC module that this handler uses to to talk to the OSC surface
-     */
-    public I_MFT_OSC_Module getOSC_Module(){
-        return this.oscModule;
-    }
-
+    
     /**
      * This message is called when an OSC writer is ready and we can inject it into this handler
      * @param writer
@@ -80,12 +75,18 @@ public class AbstractHandler {
 
     /**
      * This method is called from BankHanlder to activate or deactivate this handler.
-     * @param isActive true if this handler should be active, false otherwise
+     * @param exists true if this handler should be active, false otherwise
      */
     public void setActive(boolean  newActiveState){
         this.isActive = newActiveState;
-        //we are activating this mode so we also need to update the OSC surface (if there is any)
-        if(this.isActive && this.oscModule!=null) this.oscModule.refreshOSC_Surface();
+        if(this.oscModule!=null) this.oscModule.setActive(newActiveState);        
+    }
+
+    /**
+     * If we have an OSC surface assiocated this method calls for an update of the surface
+     */
+    public void refreshOSC_Surface(){
+        if(this.oscModule!=null) this.oscModule.refreshOSC_Surface();
     }
 
     protected boolean isActive(){
@@ -143,14 +144,17 @@ public class AbstractHandler {
 
     /**
      * Set the color of an encoder
-     * @param encoder which encoder should be set
-     * @param color the color of the encoder (0-127)
+     * @param encoderBase the first encoder in this mode
+     * @param encoderIndex which encoder should be set (0-15). This is added to encoderBase to address the final MFT encoder 
+     * @param color the color of the encoder (as Bitwig-Color)
      */
-    protected void setEncoderColor(int encoder, int color){
-        sendMidi(0xB1, encoder, color);
-        if(this.oscModule!=null) this.oscModule.setEncoderColor(encoder, color);
+    protected void setEncoderColor(int encoderBase, int encoderIndex, Color color){
+        final int colorIndexB = MFT_ColorMapper.findNearestColorIndex(color);
+        sendMidi(0xB1, encoderBase + encoderIndex, colorIndexB);
+        if(this.oscModule!=null) this.oscModule.sendEncoderColor(encoderIndex, color);
     }
-    
+
+
     /**
      * Sends a midi value on the special channel 3 which is used to change the brightness of the encoder
      * or change to a special effect
@@ -177,10 +181,11 @@ public class AbstractHandler {
      * @param encoder for which encoder should there be a change (Encoder CC value)
      * @param value the value for the ring (0-127)
      */
-    protected void setEncoderRingValue(int encoder, int value){
-        sendMidi(0xB0, encoder, value);
-        if(this.oscModule!=null) this.oscModule.setEncoderValue(encoder, value);
-        
+    protected void setEncoderValue(int encoderBase, int encoderIndex, int value){
+        if(this.isActive){
+            sendMidi(0xB0, encoderBase+encoderIndex, value);
+            if(this.oscModule!=null) this.oscModule.sendEncoderValue(encoderIndex, value);
+        }        
     }
 
     /** 

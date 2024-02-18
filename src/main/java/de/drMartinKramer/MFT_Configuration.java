@@ -20,6 +20,7 @@
 
 package de.drMartinKramer;
 
+import com.bitwig.extension.callback.EnumValueChangedCallback;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.Preferences;
 import com.bitwig.extension.controller.api.SettableEnumValue;
@@ -250,22 +251,7 @@ public class MFT_Configuration {
 
     // GLBOAL FUNCTIONS --------------------------------------------------------
 
-    /**
-     * Function to let us know what should happen when the user clicks a button in the mixer bank for a long time.
-     * @return true, if within the mixer bank, the long click action is set to "Solo"
-     */
-    public static boolean isMixerLongButtonActionSolo(){
-        return MFT_Configuration.mixerLongButtonSetting.get().equals(MIXER_LONG_BUTTON_ACTION_SOLO);
-    }
-    public static boolean isMixerLongButtonActionArm(){
-        return MFT_Configuration.mixerLongButtonSetting.get().equals(MIXER_LONG_BUTTON_ACTION_ARM);
-    }
-    public static boolean isMixerLongButtonActionMute(){
-        return MFT_Configuration.mixerLongButtonSetting.get().equals(MIXER_LONG_BUTTON_ACTION_MUTE);
-    }
-    public static boolean mixerMakeVisible(){
-        return MFT_Configuration.mixerMakeVisibleSetting.get().equals(MIXER_MAKE_VISIBLE_YES);
-    }
+    
     public static double getGlobalLongClickMillis(){
         return MFT_Configuration.globalLongClickMillis.getAsDouble() * GLOBAL_LONG_CLICK_MILLIS_MAX;
     }
@@ -288,24 +274,78 @@ public class MFT_Configuration {
         else return MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1; //default, the mixer, on the first left button
     }
 
-    //------- MIXER ----  
-    public static boolean isMixerClickAdnTurnFunctionPan(){
+    //------- MIXER --------------------------
+    /**
+     * Function to let us know what should happen when the user clicks a button in the mixer bank for a long time.
+     * @return true, if within the mixer bank, the long click action is set to "Solo"
+     */
+    public static boolean isMixerLongButtonActionSolo(){
+        return MFT_Configuration.mixerLongButtonSetting.get().equals(MIXER_LONG_BUTTON_ACTION_SOLO);
+    }
+
+    public static boolean isMixerLongButtonActionArm(){
+        return MFT_Configuration.mixerLongButtonSetting.get().equals(MIXER_LONG_BUTTON_ACTION_ARM);
+    }
+    public static boolean isMixerLongButtonActionMute(){
+        return MFT_Configuration.mixerLongButtonSetting.get().equals(MIXER_LONG_BUTTON_ACTION_MUTE);
+    }
+
+    /**
+     * Method allows to set a callback for the setting of the long button click in the mixer. 
+     * The OSC module will call this method to stay informed potential changes so that it 
+     * can update the OSC surface
+     * @param callback a callback method that is called when the setting is changed. 
+     */
+    public static void addValueObserver_MixerLongButton(EnumValueChangedCallback callback){
+        MFT_Configuration.mixerLongButtonSetting.addValueObserver(callback);
+    }
+
+    
+    public static boolean mixerMakeVisible(){
+        return MFT_Configuration.mixerMakeVisibleSetting.get().equals(MIXER_MAKE_VISIBLE_YES);
+    }
+
+
+    public static boolean isMixerPushAndTurnFunctionPan(){
         return MFT_Configuration.mixerClickAndTurnFunctionSetting.get().equals(MIXER_CLICK_AND_TURN_FUNCTION_PAN);
     }
-    public static boolean isMixerClickAdnTurnFunctionSend1(){
+    public static boolean isMixerPushAndTurnFunctionSend1(){
         return MFT_Configuration.mixerClickAndTurnFunctionSetting.get().equals(MIXER_CLICK_AND_TURN_FUNCTION_SEND1);
     }
-    public static boolean isMixerClickAdnTurnFunctionTrackRemote1(){
+    public static boolean isMixerPushAndTurnFunctionTrackRemote1(){
         return MFT_Configuration.mixerClickAndTurnFunctionSetting.get().equals(MIXER_CLICK_AND_TURN_FUNCTION_TRACK_REMOTE1);
     }
+    
+    /**
+     * Method allows to set a callback for the setting of the click and turn function in the mixer. 
+     * The OSC module will call this method to stay informed potential changes so that it 
+     * can update the OSC surface
+     * @param callback a callback method that is called when the setting is changed. 
+     */
+    public static void addValueObserver_MixerPushAndTurnFunction(EnumValueChangedCallback callback){
+        MFT_Configuration.mixerClickAndTurnFunctionSetting.addValueObserver(callback);
+    }
+    
+    
     public static boolean isMixerShiftClickActionScene(){
         return MFT_Configuration.mixerShiftClickActionSetting.get().equals(MIXER_SHIFT_CLICK_ACTION_SCENE);
     }
     public static boolean isMixerShiftClickActionCueMarker(){
         return MFT_Configuration.mixerShiftClickActionSetting.get().equals(MIXER_SHIFT_CLICK_ACTION_CUE_MARKER);
     }
+
+    /**
+     * Method allows to set a callback for the setting of the shift click in the mixer. 
+     * The OSC module will call this method to stay informed potential changes so that it 
+     * can update the OSC surface
+     * @param callback a callback method that is called when the setting is changed. 
+     */
+    public static void addValueObserver_MixerShiftClick(EnumValueChangedCallback callback){
+        MFT_Configuration.mixerShiftClickActionSetting.addValueObserver(callback);
+    }
+
     
-    //------- CHANNEL STRIP --------------
+    //------- CHANNEL STRIP ------------------------
 
     //Channel Strip Encoder 4
     public static boolean isChannelStripEncoder4_MasterVolume(){
@@ -318,11 +358,31 @@ public class MFT_Configuration {
         return MFT_Configuration.channelStripEncoder4Setting.get().equals(CHANNEL_STRIP_ENCODER_4_CUE_VOLUME);
     }
 
+    /**
+     * Method allows to set a callback for the setting of the shift click in the mixer. 
+     * The OSC module will call this method to stay informed potential changes so that it 
+     * can update the OSC surface
+     * @param callback a callback method that is called when the setting is changed. 
+     */
+    public static void addValueObserver_ChannelStripEncoder4(EnumValueChangedCallback callback){
+        MFT_Configuration.channelStripEncoder4Setting.addValueObserver(callback);
+    }
+
     public static boolean isChannelStripShiftClickActionScene(){
         return MFT_Configuration.channelStripShiftClickActionSetting.get().equals(CHANNEL_STRIP_SHIFT_CLICK_ACTION_SCENE);
     }
     public static boolean isChannelStripShiftClickActionCueMarker(){
         return MFT_Configuration.channelStripShiftClickActionSetting.get().equals(CHANNEL_STRIP_SHIFT_CLICK_ACTION_CUE_MARKER);
+    }
+
+    /**
+     * Method allows to set a callback for the setting of the shift click in the channel strip. 
+     * The OSC module will call this method to stay informed potential changes so that it 
+     * can update the OSC surface
+     * @param callback a callback method that is called when the setting is changed. 
+     */
+    public static void addValueObserver_ChannelStripShiftClick(EnumValueChangedCallback callback){
+        MFT_Configuration.channelStripShiftClickActionSetting.addValueObserver(callback);
     }
 
     /**

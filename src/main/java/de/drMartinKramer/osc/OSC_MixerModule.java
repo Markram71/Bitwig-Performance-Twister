@@ -20,8 +20,6 @@
 
 package de.drMartinKramer.osc;
 
-import java.util.LinkedList;
-
 import com.bitwig.extension.controller.api.ControllerHost;
 
 import de.drMartinKramer.MFT_Configuration;
@@ -29,13 +27,10 @@ import de.drMartinKramer.MFT_Configuration;
 
 public class OSC_MixerModule extends AbstractMFT_OSC_Module{
 
-    
-    public OSC_MixerModule(String name, ControllerHost host){
-        super(name, host);
+    public OSC_MixerModule(ControllerHost host){
+        super(host);
         
-
         for (int i= 0;i<NO_OF_ENCODERS;i++){
-            this.encoderState[i] = new EncoderState();
             this.encoderState[i].clickFunction = "Select track";
             this.encoderState[i].turnFunction = "Track volume";
                         
@@ -46,49 +41,38 @@ public class OSC_MixerModule extends AbstractMFT_OSC_Module{
             if(MFT_Configuration.isMixerShiftClickActionCueMarker())    this.encoderState[i].shiftClickFunction = "Launch cue marker " + (i+1);
             else if(MFT_Configuration.isMixerShiftClickActionScene())   this.encoderState[i].shiftClickFunction = "Launch scene " + (i+1);
             
-            if(MFT_Configuration.isMixerClickAdnTurnFunctionPan())                  this.encoderState[i].pushAndTurnFunction = "Pan";
-            else if(MFT_Configuration.isMixerClickAdnTurnFunctionSend1())           this.encoderState[i].pushAndTurnFunction = "Send 1 level";
-            else if(MFT_Configuration.isMixerClickAdnTurnFunctionTrackRemote1())    this.encoderState[i].pushAndTurnFunction = "Track remote 1";
+            if(MFT_Configuration.isMixerPushAndTurnFunctionPan())                  this.encoderState[i].pushTurnFunction = "Pan";
+            else if(MFT_Configuration.isMixerPushAndTurnFunctionSend1())           this.encoderState[i].pushTurnFunction = "Send 1 level";
+            else if(MFT_Configuration.isMixerPushAndTurnFunctionTrackRemote1())    this.encoderState[i].pushTurnFunction = "Track remote 1";
             
         }
         //Override the last two encoder clicks as we need them for the shift button: 
         this.encoderState[NO_OF_ENCODERS-1].shiftClickFunction = "Shift button";
         this.encoderState[NO_OF_ENCODERS-2].shiftClickFunction = "Stop";
+
+        //We need to add listeners to stay informed about changes in the configuration
+        MFT_Configuration.addValueObserver_MixerLongButton(newConfig -> setLongClickFunction(newConfig));
+        MFT_Configuration.addValueObserver_MixerShiftClick(newConfig -> setShiftClickFunction(newConfig));
+        MFT_Configuration.addValueObserver_MixerPushAndTurnFunction(newConfig -> setClickAndTurnFunction(newConfig));
+
     } //end of constructor
 
-    public void setLongClickFunction(String longClickFunction){
+    
+    private void setLongClickFunction(String longClickFunction){
         for (int i = 0;i<NO_OF_ENCODERS;i++){
-            this.encoderState[i].longClickFunction = longClickFunction;
-
+            sendEncoderLongClickFunction(i, longClickFunction);
         }
     }
     
-    public void setShiftClickFunction(String shiftClickFunction){
-        for(int i=0;i<NO_OF_ENCODERS-2;i++){
-            this.encoderState[i].shiftClickFunction = shiftClickFunction + " " + (i+1);
-            //Todo hier geht's weiter, die Nachricht an OSC senden
-            sendOSC_Message(ENCODER + i + "/shiftClickFunction" ,  encoderState[i].shiftClickFunction, false);
+    private void setShiftClickFunction(String shiftClickFunction){
+        for(int i=0;i<NO_OF_ENCODERS-2;i++){ //don't set it for the last two encoders
+            sendEncoderShiftClickFunction(i, shiftClickFunction + " " + (i+1));            
         }
     }
-
-    public void setEncoderName(int encoderNo, String encoderName){
-        //todo: auch OSC informieren
-        this.encoderState[encoderNo].name = encoderName;
-        sendOSC_Message(ENCODER + encoderNo + "/name" ,  encoderState[encoderNo].name, false);
-    }
-
     
-    public String[] getSupportedCommands() {
-        //Todo das müssen wir nochmal anschauen
-        return new String[] { "name", "color", "value", "turnFunction", "pushAndTurnFunction", "clickFunction", "longClickFunction", "shiftClickFunction", "isSelected" };
+    private void setClickAndTurnFunction(String shiftClickFunction){
+        for(int i=0;i<NO_OF_ENCODERS;i++){
+            sendEncoderPushTurnFunction(i, shiftClickFunction);            
+        }
     }
-
-    public void execute(String command, LinkedList<String> path, Object value){
-        //TODO hier geht's weiter 
-    }
-
-   
-
-
-    
 }

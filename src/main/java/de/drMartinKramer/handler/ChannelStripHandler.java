@@ -19,6 +19,7 @@
 
 package de.drMartinKramer.handler;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CueMarkerBank;
 import com.bitwig.extension.controller.api.RemoteControlsPage;
@@ -28,6 +29,7 @@ import com.bitwig.extension.controller.api.MasterTrack;
 
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
+import de.drMartinKramer.osc.OSC_ChannelStripModule;
 import de.drMartinKramer.support.MidiMessageWithContext;
 
 
@@ -43,8 +45,17 @@ public class ChannelStripHandler extends AbstractHandler
 	private boolean isPinned = false; //is the cursortrack pinned or not?
 	private MasterTrack masterTrack = null;
 	private RemoteControlsPage trackRemoteControlsPage = null;
-	private static final int COLOR_PINK = 100; 
-
+	private static final Color COLOR_BLACK = 			Color.fromRGB255(0,0,0); 
+	private static final Color COLOR_PURPLE = 			Color.fromRGB255(255,0,255); 
+	private static final Color COLOR_SOLO = 			Color.fromRGB255(200,191,1); 
+	private static final Color COLOR_ARMED = 			Color.fromRGB255(193,10,10); 
+	private static final Color COLOR_MUTED = 			Color.fromRGB255(170,94,20); 
+	
+	private static final Color COLOR_SEND_EXIST_YES = 	Color.fromRGB255(0,255,100); 
+	private static final Color COLOR_SEND_EXIST_NO = 	Color.fromRGB255(0,50,255); 
+	
+	private static final Color COLOR_PINNED = 			Color.fromRGB255(0,255,20); 
+	
 	//for shift clicks we need access to the sceneBank or a cue marker bank
 	private SceneBank sceneBank = null;
 	private CueMarkerBank cueMarkerBank = null;
@@ -77,9 +88,9 @@ public class ChannelStripHandler extends AbstractHandler
 	    this.isArmed = this.cursorTrack.arm().getAsBoolean();  //the arm flag
 	    
 	    //add an observer to the Solo flag of the currently selected track
-	    this.cursorTrack.solo().addValueObserver((toggleValue) -> setSoloValue(toggleValue));
-	    this.cursorTrack.mute().addValueObserver((toggleValue) -> setMutedValue(toggleValue)); //and the same for the Muted flag
-		this.cursorTrack.arm().addValueObserver((toggleValue) -> setArmedValue(toggleValue));  //also for the armed flag
+	    this.cursorTrack.solo().addValueObserver((toggleValue) -> reactToSolo(toggleValue));
+	    this.cursorTrack.mute().addValueObserver((toggleValue) -> reactToMuted(toggleValue)); //and the same for the Muted flag
+		this.cursorTrack.arm().addValueObserver((toggleValue) -> reactToArmed(toggleValue));  //also for the armed flag
 	    
 	    this.cursorTrack.volume().value().addValueObserver((newVolume) -> reactToTrackVolumeChange(newVolume)); //new volume of the current track
 	    this.cursorTrack.pan().value().addValueObserver((newPanning) -> reactToTrackPanningChange(newPanning)); //new panning of the current track
@@ -99,33 +110,38 @@ public class ChannelStripHandler extends AbstractHandler
 		for (int i=0;i<8;i++) {
 			final int remoteIndex = i;
 			this.trackRemoteControlsPage.getParameter(remoteIndex).markInterested();
-			this.trackRemoteControlsPage.getParameter(remoteIndex).exists().addValueObserver((exists)->reactToRemoteExists(remoteIndex, exists));	
+			this.trackRemoteControlsPage.getParameter(remoteIndex).exists().markInterested();
+			this.trackRemoteControlsPage.getParameter(remoteIndex).exists().addValueObserver((exists)->reactToRemoteExists(remoteIndex, exists));
+			this.trackRemoteControlsPage.getParameter(remoteIndex).value().addValueObserver(newValue -> reactToRmoteControlsValue(remoteIndex, newValue));	
+			this.trackRemoteControlsPage.getParameter(remoteIndex).name().addValueObserver(name -> reactToRemoteControlsName(remoteIndex, name));
 		}		
 
 		//for shift clicks we need access to the sceneBank or a cue marker bank
-		this.sceneBank = host.createSceneBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS-2); //-1 for the shift button and another one for the stop button on Encoder 15  
+		this.sceneBank = host.createSceneBank(MFT_Hardware.MFT_NUMBER_OF_ENCODERS-2); //-1 for the shift button and another one for the stop button on Encoder 15  
 		//we need a cue marker bank to be able to jump to the cue markers
-		this.cueMarkerBank = host.createArranger().createCueMarkerBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS-2); 
+		this.cueMarkerBank = host.createArranger().createCueMarkerBank(MFT_Hardware.MFT_NUMBER_OF_ENCODERS-2); 
 		
+		//create an associated OSC module to update an OSC surface
+		this.oscModule = new OSC_ChannelStripModule(host);
 	}//end of constructor
 	
 	
-	private void setSoloValue(boolean toggleValue) {
+	private void reactToSolo(boolean toggleValue) {
 		this.isSolo = toggleValue;
-		final int encoderColorIndex = toggleValue ? 127 : 0;
-		setEncoderColor(MFT_Hardware.MFT_BANK2_BUTTON_02, encoderColorIndex);  		
+		final Color color = toggleValue ? COLOR_SOLO : COLOR_PURPLE;
+		setEncoderColor(MFT_Hardware.MFT_BANK2_BUTTON_01, 1, color);  		
 	}
 	
-	private void setMutedValue(boolean toggleValue) {
+	private void reactToMuted(boolean toggleValue) {
 		this.isMuted = toggleValue;
-		final int encoderColorIndex = toggleValue ? 127 : 0;
-		setEncoderColor(MFT_Hardware.MFT_BANK2_BUTTON_03, encoderColorIndex);
+		final Color color  = toggleValue ? COLOR_MUTED : COLOR_PURPLE;
+		setEncoderColor(MFT_Hardware.MFT_BANK2_BUTTON_01,2,  color);
 	}
 	
-	private void setArmedValue(boolean toggleValue) {
+	private void reactToArmed(boolean toggleValue) {
 		this.isArmed = toggleValue;
-		final int encoderColorIndex = toggleValue ? 127 : 0;
-		setEncoderColor(MFT_Hardware.MFT_BANK2_BUTTON_04, encoderColorIndex);
+		final Color color  = toggleValue ? COLOR_ARMED : COLOR_PURPLE;
+		setEncoderColor(MFT_Hardware.MFT_BANK2_BUTTON_01,0, color);
 	}
 	
 	/**
@@ -133,7 +149,7 @@ public class ChannelStripHandler extends AbstractHandler
 	 * @param newValue new volume of the currently selected track
 	 */
 	private void reactToTrackVolumeChange(double newValue) {
-    	setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_02, (int) Math.round(newValue*127));
+    	setEncoderValue(MFT_Hardware.MFT_BANK2_BUTTON_01, 1,(int) Math.round(newValue*127));
     }
 	/**
 	 * Callback function that is called whenever the current track changes its volume
@@ -141,17 +157,17 @@ public class ChannelStripHandler extends AbstractHandler
 	 */
 	private void reactToMasterTrackVolumeChange(double newValue) {
     	if(MFT_Configuration.isChannelStripEncoder4_MasterVolume()){
-			setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_04, (int) Math.round(newValue*127));
+			setEncoderValue(MFT_Hardware.MFT_BANK2_BUTTON_01, 3, (int) Math.round(newValue*127));
 		}
 	}
 	private void reactToCrossfadeValueChange(double newValue){
 		if(MFT_Configuration.isChannelStripEncoder4_Crossfader()){
-			setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_04, (int) Math.round(newValue*127));
+			setEncoderValue(MFT_Hardware.MFT_BANK2_BUTTON_01, 3, (int) Math.round(newValue*127));
 		}	
 	}
 	private void reactToCueVolumeChange(double newValue){
 		if(MFT_Configuration.isChannelStripEncoder4_CueVolume	()){
-			setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_04, (int) Math.round(newValue*127));
+			setEncoderValue(MFT_Hardware.MFT_BANK2_BUTTON_01, 3,(int) Math.round(newValue*127));
 		}
 	}
 
@@ -161,7 +177,7 @@ public class ChannelStripHandler extends AbstractHandler
 	 * @param newValue New panning of the currently selected track
 	 */
 	private void reactToTrackPanningChange(double newValue) {
-    	setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_03, (int) Math.round(newValue*127));
+    	setEncoderValue(MFT_Hardware.MFT_BANK2_BUTTON_01,2, (int) Math.round(newValue*127));
     }
 	
 	/**
@@ -169,7 +185,7 @@ public class ChannelStripHandler extends AbstractHandler
 	 * @param newValue the new send value of the track that is indicated by the track-index
 	 */
 	private void reactToTrackSendChange(int index, double newValue) {
-    	setEncoderRingValue(MFT_Hardware.MFT_BANK2_BUTTON_05+index, (int) Math.round(newValue*127));		
+    	setEncoderValue(MFT_Hardware.MFT_BANK2_BUTTON_01, index+4, (int) Math.round(newValue*127));		
     }
 	/**
 	 * Callback function that is called to indicate if the send channel exists. 
@@ -179,26 +195,26 @@ public class ChannelStripHandler extends AbstractHandler
 	private void reactToTrackSendExists(int index, boolean sendExists) {
 		//switch the colored light on or off, depending on the sendExists status
 		boolean enabled = this.cursorTrack.sendBank().getItemAt(index).isEnabled().get();
+		if(oscModule!=null)oscModule.sendEncoderExists(index+4, sendExists);
 		if (sendExists && enabled){
-			setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_05+index, 127);	
+			setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_01, index+4, COLOR_SEND_EXIST_YES);				
 		}
 		else if(sendExists && !enabled){
 			//set the encoder color to pink to indicate the FX channel exists but is disabled
-			setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_05+index, COLOR_PINK);
+			setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_01, index+4, COLOR_SEND_EXIST_NO);			
 		}else 
-			setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_05+index, 0); //no FX channel, color off
-			
+			setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_01, index+4, COLOR_BLACK); //no FX channel, color off			
     }	
 	/**
-	 * Callback function that is called to indicate if the send channel isenabled. 
+	 * Callback function that is called to indicate if the send channel is enabled. 
 	 * We use this to light up the colored led, in case the send channel is disabled, for example
 	 * @param newValue indidaes if the send channel is enabled or not
 	 */
 	 private void reactToTrackSendEnabled(int index, boolean isEnabled) {
 		//switch the colored light to gray or on
 		boolean exists = this.cursorTrack.sendBank().getItemAt(index).exists().get();
-		if(exists)setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_05+index, isEnabled ? 127 : COLOR_PINK);	
-		else setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_05+index, isEnabled ? 127 : 0);
+		if(exists)setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_01, index+4, isEnabled ? COLOR_SEND_EXIST_YES : COLOR_SEND_EXIST_NO);	
+		else setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_01, index+4, isEnabled ? COLOR_SEND_EXIST_NO : COLOR_BLACK);
     }	
 	
 	/**
@@ -209,8 +225,9 @@ public class ChannelStripHandler extends AbstractHandler
 	 */
 	private void reactToIsPinned(boolean isPinned) {
 		this.isPinned = isPinned; //update our internal flag to the status Bitwigs cursortrack
+		Color notPinnedColor = this.isArmed ? COLOR_ARMED : COLOR_BLACK;
 		//switch the colored light on or off, depending on the sendExists status
-		setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_01, isPinned ? 127 : 0);	
+		setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_01, 0, isPinned ? COLOR_PINNED : notPinnedColor);	
     }	
 	/**
 	 * Callback function that is called to indicate if a remote control for a track exists or not. 
@@ -220,15 +237,25 @@ public class ChannelStripHandler extends AbstractHandler
 	 * @param exists indicates if the remote control exists or not
 	 */
 	private void reactToRemoteExists(int remoteIndex, boolean exists) {
-		setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_09+remoteIndex, exists ? 127 : 0);	
-    }	
+		Color remoteColor = MFT_ColorMapper.parameterColorList().get(remoteIndex);
+		setEncoderColor( MFT_Hardware.MFT_BANK2_BUTTON_01, remoteIndex+8, exists ? remoteColor : COLOR_BLACK);	
+		if(oscModule!=null)oscModule.sendEncoderExists(remoteIndex+8, exists);
+	}	
+
+	private void reactToRmoteControlsValue(int index, double newValue){
+		setEncoderValue(MFT_Hardware.MFT_BANK2_BUTTON_01, index+8, (int) Math.round(newValue*127));
+	}
+
+	private void reactToRemoteControlsName(int remoteIndex, String name){
+		if(this.oscModule!=null)this.oscModule.sendEncoderName(remoteIndex+8,name);
+	}
 
 	/**
 	 * Callback method that is called to incidate if the fill mode is active or not (this is used by operators)
 	 * @param isFillModeActive indicates if the fill mode is active or not
 	 */
 	private void reactToFillModeActive(boolean isFillModeActive){
-		setEncoderColor(MFT_Hardware.MFT_BANK2_BUTTON_04, isFillModeActive ? 127 : 0);
+		setEncoderColor(MFT_Hardware.MFT_BANK2_BUTTON_01, 3, isFillModeActive ? Color.fromRGB255(170, 94, 20) : COLOR_PURPLE);
 	}
 	
 	@Override

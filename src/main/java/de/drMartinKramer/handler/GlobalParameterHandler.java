@@ -20,6 +20,7 @@
 package de.drMartinKramer.handler;
 
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.Application;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorTrack;
@@ -28,6 +29,7 @@ import com.bitwig.extension.controller.api.Transport;
 
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.MFT_Hardware;
+import de.drMartinKramer.osc.OSC_GlobalParameterModule;
 import de.drMartinKramer.support.MidiMessageWithContext;
 
 
@@ -54,6 +56,17 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 	private int bankSelectMSB = 0;
 	private int bankSelectLSB = 0;
 
+	private static final Color COLOR_PLAYING = 		Color.fromRGB255(0, 255, 0);
+	private static final Color COLOR_METRONOM = 	Color.fromRGB255(50, 200, 255);
+	private static final Color COLOR_RECORD = 		Color.fromRGB255(193, 10, 10);
+	private static final Color COLOR_FILL = 		Color.fromRGB255(170, 94, 20);
+	private static final Color COLOR_LOOP = 		Color.fromRGB255(0, 20, 255);
+	private static final Color COLOR_OVERDUP = 		Color.fromRGB255(170, 94, 20);
+
+	private static final Color COLOR_BLUE = 		Color.fromRGB255(10, 10, 200);
+	private static final Color COLOR_PURPLE = 	Color.fromRGB255(220, 0, 255);
+	
+	
     public GlobalParameterHandler(ControllerHost host)
     {
         super(host);
@@ -73,7 +86,31 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 		this.masterTrack.volume().value().addValueObserver((newVolume)-> reactToMasterTrackVolumeChange(newVolume));
 		this.transport.crossfade().value().addValueObserver((newValue) -> reactToCrossfadeValueChange(newValue));
 		
+		//Create a an OSC Module to send updates to the OSC surface
+		this.oscModule = new OSC_GlobalParameterModule(host);
+
+		//Set the color for the first two start Cursor encoder
+		setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,1,  COLOR_RECORD);
 		
+		//Initialize BankChange Color
+		Color bankChangeColor = Color.fromRGB255(250,10,10);
+		setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 10, bankChangeColor);
+		setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 11, bankChangeColor);
+		
+		//and the tempo color
+		Color tempoColor = Color.fromRGB255(50, 50, 255);
+        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,7,  tempoColor);
+
+		setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,8,  COLOR_FILL);
+		setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,9,  COLOR_FILL);
+
+		//and some color for the view encoders in the last row
+		setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,12,  COLOR_BLUE);
+		setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,13,  COLOR_BLUE);
+		setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,14,  COLOR_BLUE);
+		setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,15,  COLOR_BLUE);
+
+        
      } //end of constructor
     
      /**
@@ -83,10 +120,11 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
       */
     private void reactToTempoChange(double tempo)
     {
-        int tempoAsInt = (int)Math.round(1+tempo/0.28*125);
-        tempoAsInt = tempoAsInt >125 ? 125 : tempoAsInt; //cut of values over 125
-        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_08,7,  tempoAsInt);
-        setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_08,7, tempoAsInt);
+        int tempoAsInt = (int)Math.round(1+tempo/0.28*127);
+		if(tempoAsInt>127)tempoAsInt=127;
+		Color tempoColor = Color.fromRGB255(50, tempoAsInt*2, 240);
+        setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,7,  tempoColor);
+        setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01,7, tempoAsInt);
     }
     
 
@@ -95,56 +133,56 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
         if(isPlaying)
 		{
 			//set the first button to green
-			setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,0,  50);			
+			setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,0,  COLOR_PLAYING);			
 			//and have it flash in quarter notes (when the MFT receives midi clock)
 			setEncoderSpecialFXCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 0, 6);
 		}else 
 		{	
 			//turn off the first button
-			setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,0,  0); 
+			setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,0,  COLOR_PLAYING); 
 			//and reset the special FX, i.e. blinking of the LED  			
 			setEncoderSpecialFXCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 0, 0);	
 		}
     }
     private void reactToIsRecordEnabled(boolean isEnabled){
-        if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_03,2,  80);            
-        else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_03,2,  0);  
+        if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,2,  COLOR_RECORD);            
+        else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,2,  COLOR_PURPLE);  
     }
 
 	private void reactToIsLoopEnabled(boolean isEnabled)
 	{
-		if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_04,3,  20);            
-		else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_04,3,  0);  
+		if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,3,  COLOR_LOOP);            
+		else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,3,  COLOR_PURPLE);  
 	}
 
 	private void reactToIsFillModeEnabled(boolean isEnabled){
-		if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_05,4,  75);            
-		else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_05,4,  0);
+		if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,4,  COLOR_FILL);            
+		else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,4,  COLOR_PURPLE);
 	}	
 
 	private void reactToIsOverdubEnabled(boolean isEnabled){
-		if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_06,5,  85);            
-		else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_06,5,  0);
+		if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,5,  COLOR_OVERDUP);            
+		else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,5,  COLOR_PURPLE);
 	}
 
 	private void reactToIsMetronomeEnabled(boolean isEnabled){
-		if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_07,6,  10);            
-		else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_07,6,  0);
+		if(isEnabled)setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_07,6,  COLOR_METRONOM);            
+		else setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01,6,  COLOR_PURPLE);
 	}
 
 	private void reactToCueVolumeChange(double volume){
 		int volumeAsInt = (int)Math.round(volume*127);
-		setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_07,6, volumeAsInt);
+		setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01,6, volumeAsInt);
 	}
 
 	private void reactToMasterTrackVolumeChange(double volume){
 		int volumeAsInt = (int)Math.round(volume*127);
-		setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_10,9, volumeAsInt);
+		setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01,9, volumeAsInt);
 	}
 
 	private void reactToCrossfadeValueChange(double value){
 		int valueAsInt = (int)Math.round(value*127);
-		setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_03,2, valueAsInt);
+		setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01,2, valueAsInt);
 	}
 
 	public boolean handleButtonClick(MidiMessageWithContext msg)
@@ -276,8 +314,7 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 						else bankSelectMSB--;
 						if(bankSelectMSB<0) bankSelectMSB = 0;
 						if(bankSelectMSB>127) bankSelectMSB = 127;
-						sendMidiToBitwig(0xB0, 0, bankSelectMSB);	
-						setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_11, 10, bankSelectMSB);					
+						sendMidiToBitwig(0xB0, 0, bankSelectMSB);
 						showPopupNotification("Bank Select MSB: " + bankSelectMSB);
 					}	 
 					
@@ -290,6 +327,8 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 						if(bankSelectLSB>127) bankSelectLSB = 127;
 						sendMidiToBitwig(0xB0, 32, bankSelectLSB);
 						setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_11, 10, bankSelectLSB);
+						Color bankChangeColor = Color.fromRGB255(250,10,bankSelectLSB*2);
+						setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 11, bankChangeColor);
 						showPopupNotification("Bank Select LSB: " + bankSelectLSB);
 					}
 				}                   
@@ -310,8 +349,9 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 
 					}
 					sendMidiToBitwig(0xC0, programChangeValue, 0);
-					setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_12, 11, programChangeValue);
-					setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_12, 10, programChangeValue);
+					setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 11, programChangeValue);
+					Color prgmChangeColor = Color.fromRGB255(255,10,programChangeValue*2);
+					setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01, 11, prgmChangeColor);
 					showPopupNotification("Program Change: " + programChangeValue);
 				}		
 				return true;
@@ -344,7 +384,8 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 		}
 	} //end of handleEncoderTurn
 	 
-    private void turnedEncoder(int encoder, MidiMessageWithContext msg)
+    
+	private void turnedEncoder(int encoder, MidiMessageWithContext msg)
     {
         //println("Turned Encoder " + encoder + " to value " + msg.toString());
     }

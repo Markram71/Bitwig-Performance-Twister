@@ -24,8 +24,7 @@ package de.drMartinKramer.hardware;
 public class MFT_Hardware
 {
 
-	public static final int MFT_No_ENCODER = 16;
-	public static final int MFG_NUMBER_OF_ENCODERS = 16;
+	public static final int MFT_NUMBER_OF_ENCODERS = 16;
 	/** On which Midi channel does the MFT send global messages (channel 0-15) */
 	public static final int MFT_GLOBAL_MIDI_CHANNEL = 3;
 	/** On which Midi channel does the MFT send button click messages (channel 0-15) */

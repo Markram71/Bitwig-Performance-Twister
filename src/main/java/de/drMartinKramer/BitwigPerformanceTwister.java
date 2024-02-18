@@ -28,6 +28,8 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.ControllerExtension;
 
 import de.drMartinKramer.handler.ModeHandler;
+import de.drMartinKramer.handler.UserModeHandler;
+import de.drMartinKramer.hardware.MFT_ColorMapper;
 import de.drMartinKramer.handler.AbstractHandler;
 import de.drMartinKramer.handler.ChannelStripHandler;
 import de.drMartinKramer.handler.DeviceHandler;
@@ -55,11 +57,17 @@ public class BitwigPerformanceTwister extends ControllerExtension
    private DeviceHandler deviceHandler = null; 
    private EQ_Handler eq_Handler = null; 
    private GlobalParameterHandler globalParameterHandler= null;
+   private UserModeHandler userModeHandler = null;
 	/** The main handler for the context of the encoders of the MFT */
    private ContextHandler contextHandler = null; 
 
    /* New Feature: OSC Implementation by DrivenByMoss integrated so we can add an OSC Client */
    OSCControllerSetup oscControllerSetup = null;
+
+   //A helper object to allow to convert between Bitwig Colors (Color) and the MFT color spectrum. We just need to call the 
+   //construct and the let the other classes use the static methods.
+   @SuppressWarnings("unused") //We just need to construct it once, but then we access it via static methods
+   private  MFT_ColorMapper colorMapper = null;
    
    @SuppressWarnings("unused") //We just need to construct it once, but then we access it via static methods
    private MFT_Configuration configuration = null;
@@ -82,6 +90,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
    {
       final ControllerHost host = getHost(); 
       this.configuration = new MFT_Configuration(host);
+      this.colorMapper = new MFT_ColorMapper();
       
       //create a note input: this will make the MFT messages visible in Bitwig, with it's on input port. We can also filter there only for MFT bank 4
       //The CC messages on Bank 4 are sent on channel 5 and 6 
@@ -103,7 +112,9 @@ public class BitwigPerformanceTwister extends ControllerExtension
       handlerMap.put(ModeHandler.MFT_MODE_EQ, this.eq_Handler);
       this.globalParameterHandler = new GlobalParameterHandler(host);
       handlerMap.put(ModeHandler.MFT_MODE_GLOBAL, this.globalParameterHandler);
-      
+      this.userModeHandler = new UserModeHandler(host);
+      handlerMap.put(ModeHandler.MFT_MODE_USER, this.userModeHandler);      
+
       //finally we create the mode handler and inform it about the handlers      
       this.modeHandler = new ModeHandler(host, handlerMap);    
       
@@ -117,10 +128,12 @@ public class BitwigPerformanceTwister extends ControllerExtension
       //init of the OSCControllerSetup manually
       oscControllerSetup.init ();           
 
+      //now the OSCWriter is available and we can inject it into the handlers
       final OSCWriter oscWriter = oscControllerSetup.getOSCWriter ();
       for (AbstractHandler handler : handlerMap.values()) {
          handler.setOSC_Writer(oscWriter);
       }
+      this.modeHandler.setOSC_Writer(oscWriter); // and also the mode handler needs to know the writer
       
       //we schedule the initial startup of the MFT and give is some time to initialize itself
       host.scheduleTask((Runnable)()->scheduledInitialStartup(), 1500);
@@ -132,7 +145,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
     */
    public void scheduledInitialStartup(){
       //set the controller to the inital mode and show a popup notification for that. 
-      this.modeHandler.changeToMode(MFT_Configuration.getFirstMode());     
+      this.modeHandler.handleModeChange(MFT_Configuration.getFirstMode(), true);     
    }
 
    @Override

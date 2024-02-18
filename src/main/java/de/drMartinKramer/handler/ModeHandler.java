@@ -26,6 +26,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 
 import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.hardware.*;
+import de.drMartinKramer.osc.OSC_ModeModule;
 import de.drMartinKramer.support.MidiMessageWithContext;
 
 
@@ -58,13 +59,17 @@ public class ModeHandler  extends AbstractHandler
 	private  int lastMode = mode;
 	private  int lastSideButtonID = MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1;
 	private static double lastModekDownClickTime = -1;
-	HashMap<Integer, AbstractHandler> handlerMap = null;
+	private HashMap<Integer, AbstractHandler> handlerMap = null;
+	private final OSC_ModeModule oscModeModule;
    
 	
 	public ModeHandler(ControllerHost host, HashMap<Integer, AbstractHandler> handlerMap)	
 	{    
 		super(host);
-		this.handlerMap = handlerMap;
+		this.handlerMap = handlerMap;	
+		//install a new associated OSC MOdule to send the mode changes to OSC
+		this.oscModeModule = new OSC_ModeModule(host);
+		this.oscModule = this.oscModeModule;
 	}
 	
 	/**
@@ -97,7 +102,7 @@ public class ModeHandler  extends AbstractHandler
 	    {	
 			//the button is clicked down, we change to a new bank            
 			lastModekDownClickTime = System.currentTimeMillis(); //record when the side click happened
-			return handleModeChange(sideButtonID);				
+			return handleModeChange(sideButtonID, false);				
 		}else if (msg.isGlobalMessage() && msg.getData2()==0) 
 		{
 			//the consecutive up click 
@@ -105,7 +110,7 @@ public class ModeHandler  extends AbstractHandler
 			if(duration > MFT_Configuration.getGlobalLongClickMillis())
 			{				
 				//we have a long click, i.e. we need to change back to the last mode 
-				return handleModeChange(lastSideButtonID);
+				return handleModeChange(lastSideButtonID, false);
 			}else 
 			{ //we have a short click, i.e. we will not return to the original bank
 				lastSideButtonID = sideButtonID; //store the last encoder ID
@@ -115,42 +120,40 @@ public class ModeHandler  extends AbstractHandler
 		return false;	    
 	}//end of handleMidi	
 
-	public void changeToMode(int buttonID){		
-		handleModeChange(buttonID);
-	}	
-
+	
 	/**
 	 * Manage the main action to change the bank to a new bank as a result of a click on one
 	 * of the side buttons
 	 * @param buttonID The ID of the button that is delivered via a Midi CC message. 
 	 * @return if a bank transfer was successfully handled or not. 
 	 */
-	private boolean handleModeChange(int buttonID){
+	public boolean handleModeChange(int buttonID, boolean forceUpdate){
 	// Click on a button on the left or the right		
 		switch (buttonID) //data1 contains the button number, we use this to differentiate the different side buttons
 		{   
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_1:
-				handleModeChange(MFT_MODE_MIXER, 0, "Midi Fighter Twister: Mixer mode");				
+				handleModeChange(MFT_MODE_MIXER, 0, "Midi Fighter Twister: Mixer mode", false);				
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_2: 
-				handleModeChange(MFT_MODE_EQ, 0, "Midi Fighter Twister: EQ mode");				
+				handleModeChange(MFT_MODE_EQ, 0, "Midi Fighter Twister: EQ mode", false);				
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_LEFT_3: 
-				handleModeChange(MFT_MODE_GLOBAL, 0, "Midi Fighter Twister: Global parameters");				
+				handleModeChange(MFT_MODE_GLOBAL, 0, "Midi Fighter Twister: Global parameters", false);				
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_1: 
-				handleModeChange(MFT_MODE_CHANNEL_STRIP, 1, "Midi Fighter Twister: Channel strip mode");				
+				handleModeChange(MFT_MODE_CHANNEL_STRIP, 1, "Midi Fighter Twister: Channel strip mode", false);				
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_2: 
-				handleModeChange(MFT_MODE_DEVICE, 2, "Midi Fighter Twister: Device mode");
+				handleModeChange(MFT_MODE_DEVICE, 2, "Midi Fighter Twister: Device mode", false);
 				return true;
 			case MFT_Hardware.MFT_SIDE_BUTTON_CC_RIGHT_3: 
-				handleModeChange(MFT_MODE_USER, 3, "Midi Fighter Twister: User mode");
+				handleModeChange(MFT_MODE_USER, 3, "Midi Fighter Twister: User mode", false);
 				return true;
 			default: 
 				errorln("no left/right button identiified");
 				return false; //no midi was handled
 		}//end of switch
+		
 	}//end of handleBankChange
 
 	/**
@@ -159,15 +162,20 @@ public class ModeHandler  extends AbstractHandler
 	 * @param newBank the new bank to be changed to
 	 * @param popUpMessage the message to be shown in Bitwig (if pop up messages are enabled)
 	 */
-	private void handleModeChange(int newMode, int newBank, String popUpMessage)
+	private void handleModeChange(int newMode, int newBank, String popUpMessage, boolean forceUpdate)
 	{
-		showPopupNotification(popUpMessage);
+		showPopupNotification(popUpMessage);		
 
 		this.lastMode = this.mode;
 		this.mode = newMode;
 		changeMFT_Bank(newBank);
-		AbstractHandler newHandler = handlerMap.get(newMode);
-		if(newHandler != null) newHandler.setActive(true);
+		AbstractHandler newHandler = handlerMap.get(newMode);		
+		if(newHandler != null) {
+			newHandler.setActive(true);
+			oscModeModule.sendMode(newMode); // refesh the mode of the OSC surface
+			newHandler.refreshOSC_Surface(); //and refresh the surface itself
+			
+		}
 		if(newMode != lastMode) {
 			AbstractHandler oldHandler = handlerMap.get(lastMode);
 			if(oldHandler!=null) oldHandler.setActive(false);

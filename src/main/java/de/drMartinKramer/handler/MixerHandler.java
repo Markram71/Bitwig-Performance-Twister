@@ -20,6 +20,7 @@
 
 package de.drMartinKramer.handler;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CueMarkerBank;
 import com.bitwig.extension.controller.api.Parameter;
@@ -48,13 +49,13 @@ public class MixerHandler extends AbstractCachingHandler
 		super(host);
 
 		//install an OSC handler that is associated to this mixer hander
-		this.oscModule = new OSC_MixerModule("Mixer Mode", host);
+		this.oscModule = new OSC_MixerModule(host);
 		
-		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS, 1, 0);
-	    this.remoteControlsPage = new RemoteControlsPage[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
-		this.sceneBank = host.createSceneBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS-2); //-1 for the shift button and another one for the stop button on Encoder 15  
+		this.trackBank = host.createMainTrackBank(MFT_Hardware.MFT_NUMBER_OF_ENCODERS, 1, 0);
+	    this.remoteControlsPage = new RemoteControlsPage[MFT_Hardware.MFT_NUMBER_OF_ENCODERS];
+		this.sceneBank = host.createSceneBank(MFT_Hardware.MFT_NUMBER_OF_ENCODERS-2); //-1 for the shift button and another one for the stop button on Encoder 15  
 		//we need a cue marker bank to be able to jump to the cue markers
-		this.cueMarkerBank = host.createArranger().createCueMarkerBank(MFT_Hardware.MFG_NUMBER_OF_ENCODERS-2); 
+		this.cueMarkerBank = host.createArranger().createCueMarkerBank(MFT_Hardware.MFT_NUMBER_OF_ENCODERS-2); 
 		
 		for (int i = 0; i < this.trackBank.getSizeOfBank (); i++)
 	    {
@@ -80,9 +81,9 @@ public class MixerHandler extends AbstractCachingHandler
 
 			//check if track actually exists
 			track.exists().markInterested();
-			track.exists().addValueObserver((exists)->this.reactToIsSelected(trackIndex, exists));
+			track.exists().addValueObserver((exists)->this.reactToTrackExists(trackIndex, exists));
 			
-			track.addIsSelectedInMixerObserver(isActive->reactToTrackExists(trackIndex, isActive));
+			track.addIsSelectedInMixerObserver(isSelected->reactToIsSelected(trackIndex, isSelected));
 		}
 	}// end of mixerHandler Constructor
 	
@@ -94,18 +95,15 @@ public class MixerHandler extends AbstractCachingHandler
 	 * @param newValue the new value of of the track volume
 	 */
     private void reactToTrackVolumeChange(int trackIndex, double newValue) {
-    	setEncoderRingValueCached(trackIndex,trackIndex,  (int) Math.round(newValue*127));
+    	setEncoderRingValueCached(MFT_Hardware.MFT_BANK1_BUTTON_01,trackIndex,  (int) Math.round(newValue*127));
     }
     
 	private void reactToTrackNameChange(int trackIndex, String newValue){
 		if(this.oscModule!= null){
-			oscModule.setEncoderName(trackIndex, newValue);
+			oscModule.sendEncoderName(trackIndex, newValue);
 		}
 	}
      
-	
-
-
 
     /**
      * This callback method is called when a color of a track in Bitwig is changed. We receive the trackIndex and the 
@@ -117,8 +115,7 @@ public class MixerHandler extends AbstractCachingHandler
      * @param blue the amount of blue in the color
      */
     private void reactToColorChange(int trackIndex, float red, float green, float blue) {
-    	int colorIndex = MFT_Colors.getClosestMFT_Color(red,green,blue);
-    	setEncoderColorCached(trackIndex, trackIndex,colorIndex);    	
+    	setEncoderColorCached(MFT_Hardware.MFT_BANK1_BUTTON_01, trackIndex, Color.fromRGB (red,green,blue));		  	
     }
 
 	/**
@@ -133,11 +130,23 @@ public class MixerHandler extends AbstractCachingHandler
 			isSelected ? 
 				MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS : 
 				MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_LOW_BRIGHTNESS);
-		oscModule.setEncoderSelected(trackIndex, isSelected);
+		oscModule.sendEncoderSelected(trackIndex, isSelected);
 	}
     
 	private void reactToTrackExists(int trackIndex, boolean exists){
-		oscModule.setEncoderActive(trackIndex, exists);
+		if(exists){
+			//we know that this track exists, and that also means that all track before exist, as well. 
+			//thus let's tell them all about it.
+			for(int i=0;i<=trackIndex;i++){
+				oscModule.sendEncoderExists(i, true);
+			}
+		}else{
+			//this track does not exist any more, thus all track that come after it are non-existant, as well
+			for(int i=trackIndex;i<MFT_Hardware.MFT_NUMBER_OF_ENCODERS;i++){
+				oscModule.sendEncoderExists(i, false);
+			}
+		}
+		
 	}
 
 	/**
@@ -194,11 +203,11 @@ public class MixerHandler extends AbstractCachingHandler
 				updateDelay=0;
 			}	
 		}else{
-			if(MFT_Configuration.isMixerClickAdnTurnFunctionPan()){
+			if(MFT_Configuration.isMixerPushAndTurnFunctionPan()){
 				track.pan().inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);
-			}else if(MFT_Configuration.isMixerClickAdnTurnFunctionSend1()){	
+			}else if(MFT_Configuration.isMixerPushAndTurnFunctionSend1()){	
 				track.sendBank().getItemAt(0).value().inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);				
-			}else if(MFT_Configuration.isMixerClickAdnTurnFunctionTrackRemote1()){
+			}else if(MFT_Configuration.isMixerPushAndTurnFunctionTrackRemote1()){
 				Parameter parameter = remoteControlsPage[index].getParameter(0);
 				if(parameter!=null)parameter.inc((msg.getData2()-64)*MFT_Configuration.getClickTurnFactor(), 128);
 			}

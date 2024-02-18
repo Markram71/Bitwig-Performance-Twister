@@ -19,6 +19,7 @@
 
 package de.drMartinKramer.handler;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.ControllerHost; 
 import de.drMartinKramer.hardware.MFT_Hardware;
 
@@ -33,45 +34,49 @@ public class AbstractCachingHandler extends AbstractHandler{
 
     
     /** A cache for the color of the encoder */
-    private int[] encoderColorCache = new int[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
-    private int[] encoderSpecialFXCache = new int[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
+    private Color[] encoderColorCache = new Color[MFT_Hardware.MFT_NUMBER_OF_ENCODERS];
+    private int[] encoderSpecialFXCache = new int[MFT_Hardware.MFT_NUMBER_OF_ENCODERS];
     /** A cache for the ring status  */
-    private int[] encoderRingCache = new int[MFT_Hardware.MFG_NUMBER_OF_ENCODERS];
+    private int[] encoderRingCache = new int[MFT_Hardware.MFT_NUMBER_OF_ENCODERS];
 
 
     AbstractCachingHandler(ControllerHost host)
     {
         super(host);
 
-        //Let's initialize the brightness cache to the highest brightness
-        for(int i=0;i<MFT_Hardware.MFG_NUMBER_OF_ENCODERS;i++){
+        //Initialize the caches
+        for(int i=0;i<MFT_Hardware.MFT_NUMBER_OF_ENCODERS;i++){
+            //Let's initialize the brightness cache to the highest brightness
             this.encoderSpecialFXCache[i] = MFT_Hardware.MFT_SPECIAL_ENCODER_COLOR_BRIGHTNESS_MESSAGE + MFT_Hardware.MFT_SPECIAL_ENCODER_MAX_BRIGHTNESS ;
+            this.encoderColorCache[i] = Color.fromRGB255(0,0, 0);
         }
     }
 
     
     /**
      * This method is called from BankHanlder to activate or deactivate this handler.
-     * @param isActive true if this handler should be active, false otherwise
+     * @param newActiveState true if this handler should be activated, false otherwise
      */
     @Override
      public void setActive(boolean  newActiveState){
-        if(this.isActive != newActiveState){ //the active mode is changing, so we should redraw the surface
-            this.isActive = newActiveState;
-            if(this.isActive)resetMFT_SurfaceAfterModeChange();
-        }
+        super.setActive(newActiveState); 
+        if(this.isActive)resetMFT_SurfaceAfterModeChange();
     }
 
     /**
      * Sets the encoder color and caches the color so that we can easily restore it
      * @param encoder the Midi CC number of the encoder
      * @param encoderNumber the number of the encoder (0-15)
-     * @param value new value for the color (0-127)
+     * @param color  the new color as Bitwig Color
      */
-    protected void setEncoderColorCached(int encoderID, int encoderNumber,int color){
-        if(isActive) setEncoderColor(encoderID, color);
-        this.encoderColorCache[encoderNumber] = color; //update the cache even when the handler is not active
+    protected void setEncoderColorCached(int encoderBase, int encoderIndex, Color color){
+        if(isActive) {
+            setEncoderColor(encoderBase, encoderIndex, color);             
+        }
+        this.encoderColorCache[encoderIndex] = color; 
     }
+
+    
 
     /**
      * Sets the encoder brightness and caches the brighness so that we can easily restore it
@@ -80,8 +85,10 @@ public class AbstractCachingHandler extends AbstractHandler{
      * @param value brightness (0-30)
      */
     protected void setEncoderSpecialFXCached(int encoderID, int encoderNumber,int fxID){
-        if(isActive)setEncoderSpecialColor(encoderNumber, fxID);
-        this.encoderSpecialFXCache[encoderNumber] = fxID; //update the cache even when the handler is not active
+        if(isActive){
+            setEncoderSpecialColor(encoderNumber, fxID);
+        } 
+        this.encoderSpecialFXCache[encoderNumber] = fxID;
     }
 
     /**
@@ -90,12 +97,11 @@ public class AbstractCachingHandler extends AbstractHandler{
      * @param encoderNumber the number of the encoder (0-15)
      * @param value new value for the ring (0-127)
      */
-    protected void setEncoderRingValueCached(int encoderID, int encoderNumber, int value){
-        if(isActive) setEncoderRingValue(encoderID, value);
-        /* we need to update the cache even if the handler is not active, since changes might occur 
-         * in the background, e.g. a track is changed
-        */ 
-        this.encoderRingCache[encoderNumber] = value;        
+    protected void setEncoderRingValueCached(int encoderBase, int encoderIndex, int value){
+        if(isActive) {
+            setEncoderValue(encoderBase, encoderIndex, value);   
+        }   
+        this.encoderRingCache[encoderIndex] = value;     
     }
 
 
@@ -108,10 +114,10 @@ public class AbstractCachingHandler extends AbstractHandler{
      * 
      */
     private void resetMFT_SurfaceAfterModeChange(){
-        for(int i=0;i<MFT_Hardware.MFG_NUMBER_OF_ENCODERS;i++){
-            setEncoderColor(MFT_Hardware.MFT_BANK1_BUTTON_01 +  i, this.encoderColorCache[i]);
-            setEncoderRingValue(MFT_Hardware.MFT_BANK1_BUTTON_01 +  i, this.encoderRingCache[i]);  
-            setEncoderSpecialFXCached(MFT_Hardware.MFT_BANK1_BUTTON_01 + i, i,this.encoderSpecialFXCache[i]);          
+        for(int i=0;i<MFT_Hardware.MFT_NUMBER_OF_ENCODERS;i++){
+            setEncoderColor(MFT_Hardware.MFT_BANK1_BUTTON_01, i, this.encoderColorCache[i]);
+            setEncoderValue(MFT_Hardware.MFT_BANK1_BUTTON_01 , i, this.encoderRingCache[i]);  
+            setEncoderSpecialFXCached(MFT_Hardware.MFT_BANK1_BUTTON_01 , i,this.encoderSpecialFXCache[i]);          
         } 
     }
 
