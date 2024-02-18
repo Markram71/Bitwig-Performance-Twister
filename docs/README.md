@@ -43,6 +43,9 @@ I see mostly the following use cases
 * quickly add an EQ to a track and control four bands
 * allow to use the Midi Fighter Twister also for Midi learn  
 
+The following picture shows how I use the Midi Fighter Twister with Bitwig. 
+![My studio desktop with Bitwig, the Midi Fighter Twister, and an Ipad to visualize what is going on](./resources/BitwigPerformanceTwisterInAction.png)
+
 ## Overview of the available features 
 Bitwig performance Twister offers the following features: 
 
