@@ -279,7 +279,7 @@ The following screenshot shows the first part of the configuration items.
 
 This most important configuration to use the OSC extension are the first three parameters. You need to get these right otherwise the the OSC extension will not work. The good think is, you don't need to deal with all the other configuration items. The initial setup might be a bit confusing. The following chart shows an example to facilitate the understanding of the setup.  
 
-![Sample OSC configuration](./resources/Sample_OSC_Configuration.png)
+![Sample OSC configuration](./resources/Sample_OSC_Configuration)
 
 One the left side you can see your computer on which Bitwig is running. Within Bitwig the Bitwig Performance Twister is running. This enables the communication between Bitwig and the Midi Fighter Twister (shown below) which is connected via USB to your computer. On the right side you can see a tablet that is running TouchOSC. TouchOSC and Bitwig communicate via the Bitwig Performance Twister script. In order to allow for a bi-directional communication, both side, Bitwig and TouchOSC must be configured to communicate to each other. 
 
@@ -290,7 +290,6 @@ On the other side, on the tablet you need to configure TouchOSC to communicate t
 In order to to get the communication going you need to consider two important things: 
 1. You need to supply the IP address of the other side
 2. The _receiving port_ and the _port to send to_ must be cross over. 
-
 
 The following screenshot shows some more OSC related configuration items. Again, these are useful it you want to use additional OSC functionality. Please visit the excellent site of MOSS with a detailed description on how these configuration items work. 
 ![Screenshot of the add controller dialog in Bitwig](./resources/OSC_Configuration_Part2.png)
