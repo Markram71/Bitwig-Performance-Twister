@@ -94,14 +94,14 @@ track with encoder 1 any more.
 
 | Encoder | Turn (Twisting)              | Click & turn | Click             | Long Click   | Shift Click (2) | RGB Light                   |
 |:-------:|------------------------------|--------------|-------------------|--------------|-----------------|--------------|
-|1        |select a track                |tbd           |toggle arm         |pin the track | scene or marker | green if track is selected  |
-|2        |volume of selected track      |tbd           |toggle solo        |n/a           | scene or marker | yellow if track is soloed   |
-|3        |panning selected track        |tbd           |toggle mute        |n/a           | scene or marker | orange if track is muted    |
-|4        |volume: master,cue, x-fader(1)|tbd           |toggle fill (2)    |n/a           | scene or marker | tbd                         |
-|5-8      |send to fx channel 1-4        |tbd           |toggle send enabled|n/a           | scene or marker | blue, dark blue if send disabled|
-|9-14     |track remote control 1-8      |tbd           |toggle send enabled|n/a           | scene or marker | color on Bitwig parameter page|
-|15       |track remote control 15b      |tbd           |toggle send enabled|n/a           | stop            | color on Bitwig parameter page|
-|16       |track remote control 16       |tbd           |toggle send enabled|n/a           | Shift button    | color on Bitwig parameter page|
+|1        |select a track                |              |toggle arm         |pin the track | scene or marker | green if track is selected  |
+|2        |volume of selected track      |              |toggle solo        |n/a           | scene or marker | yellow if track is soloed   |
+|3        |panning selected track        |              |toggle mute        |n/a           | scene or marker | orange if track is muted    |
+|4        |volume: master,cue, x-fader(1)|              |toggle fill (2)    |n/a           | scene or marker | tbd                         |
+|5-8      |send to fx channel 1-4        |              |toggle send enabled|n/a           | scene or marker | blue, dark blue if send disabled|
+|9-14     |track remote control 1-6      |              |                   |n/a           | scene or marker | color on Bitwig parameter page|
+|15       |track remote control 7        |              |                   |n/a           | stop            | color on Bitwig parameter page|
+|16       |track remote control 8        |              |                   |n/a           | Shift button    | color on Bitwig parameter page|
 
 #### Notes
 * (1) Encoder #4 on this bank can be configured to control the...
@@ -119,22 +119,22 @@ The control depends on the setting of the controller configuration. See [Control
 ### Mode 3 Device and Project-wide Remote Controls
 | Encoder | Turn (Twisting)        | Click & turn | Click                    | Long Click          | RGB Light                      |
 |:-------:|------------------------|--------------|--------------------------|---------------------|--------------------------------|
-|1        |device parameter 1      |tbd           |go to first device        |toggle device on/off | color on Bitwig parameter page |
-|2        |device parameter 2      |tbd           |go to previous deviece    |n/a                  | color on Bitwig parameter page |
-|3        |device parameter 3      |tbd           |go to next device         |n/a                  | color on Bitwig parameter page |
-|4        |device parameter 4      |tbd           |go to last device         |n/a                  | color on Bitwig parameter page |
-|5        |device parameter 5      |tbd           |go to first param bank    |n/a                  | color on Bitwig parameter page |
-|6        |device parameter 6      |tbd           |go to previous param bank |n/a                  | color on Bitwig parameter page |
-|7        |device parameter 7      |tbd           |go to next param bank     |n/a                  | color on Bitwig parameter page |
-|8        |device parameter 8      |tbd           |go to last param bank     |n/a                  | color on Bitwig parameter page |
-|9        |Project remote  1       |tbd           |go to first device        |toggle device on/off | color on Bitwig parameter page |
-|10       |Project remote  2       |tbd           |go to previous device     |n/a                  | color on Bitwig parameter page |
-|11       |Project remote  3       |tbd           |go to next device         |n/a                  | color on Bitwig parameter page |
-|12       |Project remote  4       |tbd           |go to last device         |n/a                  | color on Bitwig parameter page |
-|13       |Project remote  5       |tbd           |go to first param bank    |n/a                  | color on Bitwig parameter page |
-|14       |Project remote  6       |tbd           |go to previous param bank |n/a                  | color on Bitwig parameter page |
-|15       |Project remote  7       |tbd           |go to next param bank     |n/a                  | color on Bitwig parameter page |
-|16       |Project remote  8       |tbd           |go to last param bank     |n/a                  | color on Bitwig parameter page |
+|1        |device parameter 1      |              |go to first device        |toggle device on/off | color on Bitwig parameter page |
+|2        |device parameter 2      |              |go to previous deviece    |n/a                  | color on Bitwig parameter page |
+|3        |device parameter 3      |              |go to next device         |n/a                  | color on Bitwig parameter page |
+|4        |device parameter 4      |              |go to last device         |n/a                  | color on Bitwig parameter page |
+|5        |device parameter 5      |              |go to first param bank    |n/a                  | color on Bitwig parameter page |
+|6        |device parameter 6      |              |go to previous param bank |n/a                  | color on Bitwig parameter page |
+|7        |device parameter 7      |              |go to next param bank     |n/a                  | color on Bitwig parameter page |
+|8        |device parameter 8      |              |go to last param bank     |n/a                  | color on Bitwig parameter page |
+|9        |Project remote  1       |              |                          |n/a                  | color on Bitwig parameter page |
+|10       |Project remote  2       |              |                          |n/a                  | color on Bitwig parameter page |
+|11       |Project remote  3       |              |                          |n/a                  | color on Bitwig parameter page |
+|12       |Project remote  4       |              |                          |n/a                  | color on Bitwig parameter page |
+|13       |Project remote  5       |              |go to first prj.param bank    |n/a                  | color on Bitwig parameter page |
+|14       |Project remote  6       |              |go to previous prj.param bank |n/a                  | color on Bitwig parameter page |
+|15       |Project remote  7       |              |go to next prj.param bank     |n/a                  | color on Bitwig parameter page |
+|16       |Project remote  8       |              |go to last prj. param bank    |n/a                  | color on Bitwig parameter page |
 
 
 
@@ -147,10 +147,10 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 |2        |gain for band 2      |n/a           |toggle band on/off         |toggle window         | Bitwig EQ color of band 2 |
 |3        |gain for band 3      |n/a           |toggle band on/off         |n/a                   | Bitwig EQ color of band 3 |
 |4        |gain for band 4      |n/a           |toggle band on/off         |n/a                   | Bitwig EQ color of band 4 |
-|5        |frequency of bank 1  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 1 |
-|6        |frequency of bank 2  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 2 |
-|7        |frequency of bank 3  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 3 |
-|8        |frequency of bank 4  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 4 |
+|5        |frequency of bank 1  |change fast   |reset frequency to default |n/a                   | Bitwig EQ color of band 1 |
+|6        |frequency of bank 2  |change fast   |reset frequency to default |n/a                   | Bitwig EQ color of band 2 |
+|7        |frequency of bank 3  |change fast   |reset frequency to default |n/a                   | Bitwig EQ color of band 3 |
+|8        |frequency of bank 4  |change fast   |reset frequency to default |n/a                   | Bitwig EQ color of band 4 |
 |9        |Q valaue for band 1  |n/a           |reset Q to default         |n/a                   | Bitwig EQ color of band 1 |
 |10       |Q valaue for band 2  |n/a           |reset Q to default         |n/a                   | Bitwig EQ color of band 2 |
 |11       |Q valaue for band 3  |n/a           |reset Q to default         |n/a                   | Bitwig EQ color of band 3 |
