@@ -218,16 +218,17 @@ On the left side, under _Current Mode_ you can see which mode is currently activ
 * In the middle of the encoder, the name of the track is shown.
 * The currently selected track is indicated by star below the track name. In this case it's the track _Top Loop_.
 * On the right side of the encoder you can find further information about the functionality of each encoder. From top to bottom
-  ** What happens when you turn the encoder. In the mixer mode, it's the track volume.
-  ** The function when you press down an encoder and turn the encoder. This is configurable, in this setup it's the send to Effects Channel 1.
-  ** The function when you click an encoder. Here, it's to select the associated track.
-  ** What happens when you long click an encoder. In this setup it's to activate Solo
-  ** Lastly, what happens when you shift click an encoder. This is also configurable, in this example a shift click triggers a scene.
+  	* What happens when you turn the encoder. In the mixer mode, it's the track volume.
+  	* The function when you press down an encoder and turn the encoder. This is configurable, in this setup it's the send to Effects Channel 1.
+  	* The function when you click an encoder. Here, it's to select the associated track.
+  	* What happens when you long click an encoder. In this setup it's to activate Solo
+  	* Lastly, what happens when you shift click an encoder. This is also configurable, in this example a shift click triggers a scene.
 
 ### The Channel Strip Page
 The following screenshot shows the visualization of the Channel Strip mode.   
 
 ![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Channel_Strip.png)
+
   
 
 ### The EQ Page
@@ -248,13 +249,12 @@ The following screenshot shows the visualization of the Global Parameters mode.
   
 
 
-
-
 ## Configuration
 The _Bitwig Performance Twister_ can be configured to suit to your needs. In order to change the configuration click on the Bitwig Icon on the top of the Bitwig screen, then change to _configuration_ and there choose _controller_ on the left side. 
 
 ![Screenshot of the add controller dialog in Bitwig](./resources/configure_BPT.png)
 
+### Basic Configuration
 The following configuration items are avaialable: 
 * **_Global_**
     * **Encoder turn speedup factor**: This is a factor that influence how fast the encoder change values in Bitwig. A factor >1 speeds up the value change, a factor <1 slows down the speed of change.
@@ -271,6 +271,19 @@ The following configuration items are avaialable:
     * **Channel Strip Encoder #4 function**: This lets you control the Bitwig parameter which is changed when you turn the fourth encoder on the first row in the channel strip mode. You can choose _master volume_, crossfader_, or _cue volume_.           
 * **_Global Parameters Mode_**
 	* **Send bank messages before program change**: Encoder 12 lets you send program change messages. With encoder 11 you can specify the MSB and LSB of the bank message. In case "yes" is selected a bank message is sent before each program change message.  
+
+### Extended Configuration for the OSC Extension 
+Additional configuration is required and possible for the extension with OSC to enable visualization with tools with TouchOSC. _Bitwig Performance Twister_ utilizes the OSC implementation developed by Jürgen Moßgräber, aka MOSS. The following configuration items are directly associated to his OSC implementation. See additional information here [here](https://github.com/git-moss/DrivenByMoss). 
+
+The following screenshot shows the first part of the configuration items. 
+![Screenshot of the add controller dialog in Bitwig](./resources/OSC_Configuration_Part1.png)
+
+
+
+![Screenshot of the add controller dialog in Bitwig](./resources/OSC_Configuration_Part2.png)
+
+
+
 
 ## Installation
 The installation of _Bitwig Performance Twister_ is straight forward. It requires basically four steps: 1. download and unpack the zip file of the latest release, 2. update the Midi Fighter Twister with the configuration provided in the zip file , 3. place the Bitwig extension into the correct Bitwig folder and 4. configure the controller . Here's the installation step by step: 
@@ -293,7 +306,7 @@ The installation of _Bitwig Performance Twister_ is straight forward. It require
 
 ## Implementation Notes 
 * **Modes and Banks:** Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
-* Unfortunately, the color palette of the LED lights below the encoders of the Midi Fighter is limited. _Bitwig Performance Twister_ uses the approximation of [Twister Sister](...) by Dan Smith.
+* Unfortunately, the color palette of the LED lights below the encoders of the Midi Fighter is limited. 
 * Unfortunately I could not test this script on Windows or Linux. Please help to test it and make it available to these communities, as well. 
 
 ## Known Bugs
@@ -310,5 +323,5 @@ I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi con
 
 ## Dependencies
 _Bitwig Performance Twister_ uses the following libraries 
-* [Twister Sister](https://github.com/dozius/TwisterSister/tree/main), Copyright 2021 Dan Smith
+* [Driven by Moss](https://github.com/git-moss/DrivenByMoss), Copyright 2024 Jürgen Moßgräber
 
