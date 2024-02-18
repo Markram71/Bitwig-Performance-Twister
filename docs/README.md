@@ -147,10 +147,10 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 |2        |gain for band 2      |n/a           |toggle band on/off         |toggle window         | Bitwig EQ color of band 2 |
 |3        |gain for band 3      |n/a           |toggle band on/off         |n/a                   | Bitwig EQ color of band 3 |
 |4        |gain for band 4      |n/a           |toggle band on/off         |n/a                   | Bitwig EQ color of band 4 |
-|5        |frequency of bank 1  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 1 |
-|6        |frequency of bank 2  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 2 |
-|7        |frequency of bank 3  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 3 |
-|8        |frequency of bank 4  |n/a           |reset frequency to default |n/a                   | Bitwig EQ color of band 4 |
+|5        |frequency of bank 1  |change fast   |reset frequency to default |n/a                   | Bitwig EQ color of band 1 |
+|6        |frequency of bank 2  |change fast   |reset frequency to default |n/a                   | Bitwig EQ color of band 2 |
+|7        |frequency of bank 3  |change fast   |reset frequency to default |n/a                   | Bitwig EQ color of band 3 |
+|8        |frequency of bank 4  |change fast   |reset frequency to default |n/a                   | Bitwig EQ color of band 4 |
 |9        |Q valaue for band 1  |n/a           |reset Q to default         |n/a                   | Bitwig EQ color of band 1 |
 |10       |Q valaue for band 2  |n/a           |reset Q to default         |n/a                   | Bitwig EQ color of band 2 |
 |11       |Q valaue for band 3  |n/a           |reset Q to default         |n/a                   | Bitwig EQ color of band 3 |
