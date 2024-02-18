@@ -17,7 +17,8 @@ With this extension you will be able to use the midi controller
     1. [Mode 5 Global Parameters](#mode-5-global-parameters) 
     1. [Mode 6 User defined Controls](#mode-6-user-defined-controls) 
        
-1. [Configuration](#configuration)
+1. [OSC Extension](#OSC-Extension)
+2. [Configuration](#configuration)
 1. [Installation](#installation)
 1. [Implementation Notes](#implementation-notes)
 2. [Known Bugs](#known-bugs)
@@ -26,10 +27,12 @@ With this extension you will be able to use the midi controller
 
 
 ## Introduction
-Welcome to the _Bitwig Performance Twister_. I have built this controller script to be able to use the **Midi Fighter Twister** from DJ Tech Tools for my own performance needs. Although there are already controller extensions available for Bitwig, the did not fit my workflow or performance needs. When making design decision I kept the following principle in mind: 
+Welcome to the _Bitwig Performance Twister_. I have built this controller script to be able to use the **Midi Fighter Twister** (MFT )from DJ Tech Tools for my own performance needs. Although there are already controller extensions available for Bitwig, the did not fit my workflow or performance needs. When making design decision I kept the following principle in mind: 
 * focus on the functionality needed most often (pareto principle)
 * Don't try to make it complete
-* have control elements always in the same place to allow for better _muscle memory_, e.g. don't scroll through modes, but have a dedicated button for each mode 
+* have control elements always in the same place to allow for better _muscle memory_, e.g. don't scroll through modes, but have a dedicated button for each mode
+
+This script also has a built-in extension allow visiual feedback on what's happening on the Midi Fighter Twister by using devices like a table in conjunction with the MFT. For instance, I am using TouchOSC on an Ipad that I placed behind the MFT. That way I can directly see the function of each encoder. 
 
 ### Use cases
 I see mostly the following use cases
@@ -51,7 +54,9 @@ Bitwig performance Twister offers the following features:
     * **Global Parameters**: Access some global Bitwig functions and have access to transport controls
     * **User Mode**: Use the Midi Fighter Twister in its basic form, without and automatically mapped encoders  
 * **Long clicks:** By clicking and keeping the encoder pressed down for a short time, you can get access to a secondary action for some of the encoders
-* **Click & turn:** Click down an encoder button and turn the encoder while it's pressed down. This gives access to a secondary paramter which can be controlled with this same encoder.  
+* **Click & turn:** Click down an encoder button and turn the encoder while it's pressed down. This gives access to a secondary paramter which can be controlled with this same encoder.
+
+This script also comes with the OSC implementation provided by Jürgen Moßgräber inclucded. Additionaly there are OSC commands specifically for the MFT and a template for TouchOSC. Note, you can run the script without any OSC features, but with it, the functionality of the Midi Fighter Twister is greatly enhanced when using Bitwig. 
 
 ## What is not included
 Although _Bitwig Performance Twister_ offers a lot of features the following are currently **not** included (among others): 
@@ -197,6 +202,11 @@ This mode allows you to control many actions of the Bitwig transport section and
 
 ### Mode 6 User defined controls
 This mode simply allows to bypass the controller script and allows you to use it for your own Midi Learn mapping. When accessing the mode 6 the Midi Figther Twister is set internally to bank four. You can also configure the CC message and colors in the `Midifighter Utility`. Please keep the midi channels to five and six, respectively.  
+
+## OSC Extension
+This script extends the functionality of the Midi Fighter Twister with additional visual feedback.  
+
+
 
 ## Configuration
 The _Bitwig Performance Twister_ can be configured to suit to your needs. In order to change the configuration click on the Bitwig Icon on the top of the Bitwig screen, then change to _configuration_ and there choose _controller_ on the left side. 
