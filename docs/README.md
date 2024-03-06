@@ -183,7 +183,7 @@ This mode allows you to control many actions of the Bitwig transport section and
 |3        |cross fader           |                   |toggle record                   |                      | red if record enable            |
 |4        |arranger loop duration|arranger loop start|toggle arranger loop            |                      | blue if arranger loop enabled   |
 |5        |                      |                   |toggle fill (used by operators) |                      | off                             |
-|6        |                      |                   |toggle midi overdub             |                      | off                             |
+|6        |                      |                   |toggle arranger overdub         |toggle clip l. overdub| off                             |
 |7        |cue volume            |                   |toggle metronom                 |                      | off                             |
 |8        |tempo (normal)        |tempo (fine)       |tap tempo                       |                      | off                             |
 |9        |selected track        |                   |previous project                |                      | off                             |
