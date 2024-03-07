@@ -177,23 +177,23 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 This mode allows you to control many actions of the Bitwig transport section and global parameter like master volume, cue volume, cross fader setting, etc. You can also use it to quickly change the appearance of the Bitwig window, e.g. by toggling the inspector on the left side. Note: all encoders have function assign to clicking it, but not all encoders react to turning. 
 
 | Encoder | Turn (Twisting)      | Click & turn      | Click                          | Long Click           | RGB Light                       |
-|:-------:|----------------------|-------------------|--------------------------------|----------------------|---------------------------------|
-|1        |start cursor (coarse) |                   |start/pause                     |                      | green if play, off otherwise (1)|
-|2        |start cursorn (fine)  |                   |stop                            |toggle window         | off                             |
-|3        |cross fader           |                   |toggle record                   |                      | red if record enable            |
-|4        |arranger loop duration|arranger loop start|toggle arranger loop            |                      | blue if arranger loop enabled   |
-|5        |                      |                   |toggle fill (used by operators) |                      | off                             |
-|6        |                      |                   |toggle arranger overdub         |toggle clip l. overdub| off                             |
-|7        |cue volume            |                   |toggle metronom                 |                      | off                             |
-|8        |tempo (normal)        |tempo (fine)       |tap tempo                       |                      | off                             |
-|9        |selected track        |                   |previous project                |                      | off                             |
-|10       |master volume         |                   |next project                    |                      | off                             |
-|11       |Bank, LSB (3)         |Bank, MSB          |activate audio                  |                      | off                             |
-|12       |program change (3)    |prgrm chnge (fast) |n/a                             |                      | off                             |
-|13       |zoom in and out       |                   |toggle inspector                |toggle device view    | off                             |
-|14       |                      |                   |change to arranger view         |toggle mixer view     | off                             |
-|15       |                      |                   |change to mix view              |toggle note editor    | off                             |
-|16       |next/previous patch(2)|                   |change to edit view             |toggle full screen    | off                             |
+|:-------:|----------------------|-------------------|--------------------------------|-----------------------|---------------------------------|
+|1        |start cursor (coarse) |                   |start/pause                     |                       | green if play, off otherwise (1)|
+|2        |start cursorn (fine)  |                   |stop                            |toggle window          | off                             |
+|3        |cross fader           |                   |toggle record                   |                       | red if record enable            |
+|4        |arranger loop duration|arranger loop start|toggle arranger loop            |                       | blue if arranger loop enabled   |
+|5        |                      |                   |toggle fill (used by operators) |                       | off                             |
+|6        |                      |                   |toggle clip     overdub         |toggle arranger overdub| off                             |
+|7        |cue volume            |                   |toggle metronom                 |                       | off                             |
+|8        |tempo (normal)        |tempo (fine)       |tap tempo                       |                       | off                             |
+|9        |selected track        |                   |previous project                |                       | off                             |
+|10       |master volume         |                   |next project                    |                       | off                             |
+|11       |Bank, LSB (3)         |Bank, MSB          |activate audio                  |                       | off                             |
+|12       |program change (3)    |prgrm chnge (fast) |n/a                             |                       | off                             |
+|13       |zoom in and out       |                   |toggle inspector                |toggle device view     | off                             |
+|14       |                      |                   |change to arranger view         |toggle mixer view      | off                             |
+|15       |                      |                   |change to mix view              |toggle note editor     | off                             |
+|16       |next/previous patch(2)|                   |change to edit view             |toggle full screen     | off                             |
 
 #### Notes
 * (1) When Bitwig is playing the first encoder turns green and flashes in the rhythm of quarter notes. In order to allow for this feature to work correctly you need to send midi clock to the Midi Fighter Twister. You can do that by adding a track and installing a Bitwig _HW INSTRUMENT_ in the device chain. On the HW INSTRUMENT you need to select the Midi Fighter Twister as Midi Out and enable Midi Clock, see screenshot below. 
