@@ -199,5 +199,23 @@ public class MidiMessageWithContext extends ShortMidiMessage{
         return false;
     }
 
+    /**
+     * returns true if this message is triggered by a click on a potential (LEFT) shift button
+     * @return true if the 13th encoder is clicked or released 
+     */
+    public boolean isShiftButton_left(){
+        if(isButtonClickMessage()) {
+            final int encoderId = this.getData1();
+            if(encoderId == MFT_Hardware.MFT_BANK1_BUTTON_13 ||
+                encoderId == MFT_Hardware.MFT_BANK2_BUTTON_13 ||
+                encoderId == MFT_Hardware.MFT_BANK3_BUTTON_13 ||
+                encoderId == MFT_Hardware.MFT_BANK4_BUTTON_13)
+                {
+                    return true;
+                }              
+        }
+        return false;
+    }
+
 
 }

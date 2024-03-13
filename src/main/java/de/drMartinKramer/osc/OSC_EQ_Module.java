@@ -67,9 +67,12 @@
             this.encoderState[i].isSelected         = false;
             this.encoderState[i+4].isSelected       = false;
             this.encoderState[i+8].isSelected       = false;
-            this.encoderState[i+12].isSelected      = false; 
-            
+            this.encoderState[i+12].isSelected      = false;             
         }        
+
+        this.encoderState[0].longClickFunction = "toggle EQ"; 
+        this.encoderState[0].longClickFunction = "toggle window"; 
+        
     } //end of constructor 
      
  }

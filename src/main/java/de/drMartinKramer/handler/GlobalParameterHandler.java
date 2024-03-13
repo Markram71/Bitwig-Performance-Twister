@@ -207,7 +207,8 @@ public class GlobalParameterHandler extends AbstractCachingHandler{
 				this.transport.isFillModeActive().toggle();	                
 				return true;   
 			case MFT_Hardware.MFT_BANK1_BUTTON_06:
-				this.transport.isArrangerOverdubEnabled().toggle();      
+				if(msg.isLongClick())this.transport.isArrangerOverdubEnabled().toggle();     
+				else this.transport.isClipLauncherOverdubEnabled().toggle(); 
 				return true;
 			case MFT_Hardware.MFT_BANK1_BUTTON_07:
 				this.transport.isMetronomeEnabled().toggle();          

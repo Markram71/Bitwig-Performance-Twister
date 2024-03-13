@@ -43,6 +43,9 @@ public class AbstractHandler {
     protected boolean isActive = false; //is this handler currently active or not   
     private boolean isShiftPressed = false; //is the shift button pressed or not 
     private boolean isShiftConsumed = false; //has the shift button been consumed or not
+    private boolean isShiftPressed_left = false; //is the left shift button pressed or not 
+    private boolean isShiftConsumed_left = false; //has the left shift button been consumed or not
+    
     protected MidiIn midiIn = null; //the midi in port
     protected static NoteInput noteInput = null; //the note input port
     
@@ -101,7 +104,15 @@ public class AbstractHandler {
         return this.isShiftConsumed;
     }
 
-    protected void sendMidiToBitwig(int status, int data1, int data2){
+    protected boolean isShiftPressed_left(){
+        return this.isShiftPressed_left;
+    }   
+       
+    protected boolean isShiftConsumed_left(){
+        return this.isShiftConsumed_left;
+    }
+
+    public static void sendMidiToBitwig(int status, int data1, int data2){
          AbstractHandler.noteInput.sendRawMidiEvent(status, data1, data2);
     }
 
@@ -212,6 +223,31 @@ public class AbstractHandler {
                 }              
         }        
     }
+
+     /** 
+     * Check if the incoming midi message for a click on a LEFT shift button. A LEFT shift button
+     * is the encoder 13 on each bank. We also need to be careful, because we also want to 
+     * use the shift button as a normal button for short clicks and long clicks. 
+     * In case we want to use the shift button as shift button, we don't want to trigger the 
+     * action which is set as a long or short click. So, in the actual handler implementation
+     * we need to check if the Shift button has been "consumed". In that case, it was used as a 
+     * left shift button and we should not trigger the action for a short or long click.
+     * In this method we only set the "consumed" flag.
+     *  @param msg the incoming midi message      
+     */
+    private void checkShiftButton_left(MidiMessageWithContext msg){
+        if(msg.isControlChange() && msg.getChannel()==1){ //we have a click on an encoder
+            //if shift is already pressed and we have another encoder click, then the
+            //then we "consume" the shift button, i.e. we actually use the shift button as a shift button
+            //In case we consume the shift button, we should not use the button for a short or long click
+            if(this.isShiftPressed_left && !msg.isShiftButton_left()) this.isShiftConsumed_left = true;  
+            if(msg.isShiftButton_left())
+                {
+                    if(msg.getData2()==127) this.isShiftPressed_left = true;
+                    else this.isShiftPressed_left = false;
+                }              
+        }        
+    }
     
     /**
      * Handle incoming midi message from the MFT
@@ -221,11 +257,17 @@ public class AbstractHandler {
     public boolean handleMidi (MidiMessageWithContext msg){
         boolean isHandled = false;
         checkShiftButton(msg);        
+        checkShiftButton_left(msg);        
+        
         if(isShiftConsumed()&&msg.isShiftButton())return true; //shift is consumed, so we do not need to do anything
+        if(isShiftConsumed_left()&&msg.isShiftButton_left())return true; //shift is consumed, so we do not need to do anything
 		
         if (msg.isButtonReleaseMessage() &&  msg.isValidClick()) isHandled = handleButtonClick(msg);
 	    else if (msg.isEncoderTurnMessage()) isHandled =  handleEncoderTurn(msg);        
+        
         if(msg.isShiftButton()&&msg.getData2()==0) this.isShiftConsumed = false;
+        if(msg.isShiftButton_left()&&msg.getData2()==0) this.isShiftConsumed_left = false;
+
         return isHandled; //we did not handle any incoming midi        
     }
     

@@ -34,6 +34,5 @@ public class UserModeHandler extends AbstractHandler{
 		super(host);
 
         this.oscModule = new OSC_UserModule(host);
-    }
-	
+    }	
 }

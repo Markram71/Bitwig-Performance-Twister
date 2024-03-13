@@ -22,7 +22,6 @@ package de.drMartinKramer.osc;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.ControllerHost;
-
 import de.mossgrabers.controller.osc.protocol.OSCWriter;
 
 
@@ -77,7 +76,6 @@ public abstract class AbstractMFT_OSC_Module {
         for (int i= 0;i<NO_OF_ENCODERS;i++){
             this.encoderState[i] = new EncoderState();
         }
-
     }
     
     /**
@@ -243,4 +241,7 @@ public abstract class AbstractMFT_OSC_Module {
     }
 
 
+     
 }
+
+

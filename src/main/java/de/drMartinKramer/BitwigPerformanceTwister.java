@@ -36,6 +36,7 @@ import de.drMartinKramer.handler.DeviceHandler;
 import de.drMartinKramer.handler.EQ_Handler;
 import de.drMartinKramer.handler.GlobalParameterHandler;
 import de.drMartinKramer.handler.MixerHandler;
+import de.drMartinKramer.support.BitwigActionHelper;
 import de.drMartinKramer.support.ContextHandler;
 import de.drMartinKramer.support.MidiMessageWithContext;
 import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
@@ -95,8 +96,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
       //create a note input: this will make the MFT messages visible in Bitwig, with it's on input port. We can also filter there only for MFT bank 4
       //The CC messages on Bank 4 are sent on channel 5 and 6 
       
-      host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));
-     
+      host.getMidiInPort(0).setMidiCallback((ShortMidiMessageReceivedCallback)msg -> onMidi0(msg));    
       
 
       // Now, we can create a HashMap of Handlers in which we can store all the handlers
@@ -135,6 +135,15 @@ public class BitwigPerformanceTwister extends ControllerExtension
       }
       this.modeHandler.setOSC_Writer(oscWriter); // and also the mode handler needs to know the writer
       
+      //last but not least, let's create the OSC Modules for additional pages on the OSC surface
+      
+
+      //We can use the following class to get access to a list of all Bitwig Actions. 
+      //currently we don't need this any more, but I still leave it in for later usage.      
+      //BitwigActionHelper actionHelper = new BitwigActionHelper(host);
+      //actionHelper.saveActionList();
+
+
       //we schedule the initial startup of the MFT and give is some time to initialize itself
       host.scheduleTask((Runnable)()->scheduledInitialStartup(), 1500);
 
@@ -145,7 +154,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
     */
    public void scheduledInitialStartup(){
       //set the controller to the inital mode and show a popup notification for that. 
-      this.modeHandler.handleModeChange(MFT_Configuration.getFirstMode(), true);     
+      this.modeHandler.handleModeChangeViaSideButton(MFT_Configuration.getFirstMode(), true);     
    }
 
    @Override
@@ -168,6 +177,9 @@ public class BitwigPerformanceTwister extends ControllerExtension
          //an important first step is to add context to the midi message, e.g. let us know that an encoder was clicked shortly before
          MidiMessageWithContext mftMessage = contextHandler.createMidiMessageWithContext(msg);
 
+         //first check if we have a left shift click for a mode change
+         modeHandler.handleMidiForLeftShiftClick(mftMessage);
+
          //Now let's select a handler based on the mode
 		   if(mftMessage.isGlobalMessage()){ //but let's first check if a bank has changed, these are sent by global messages
             modeHandler.handleMidi(mftMessage);
@@ -181,7 +193,10 @@ public class BitwigPerformanceTwister extends ControllerExtension
             deviceHandler.handleMidi(mftMessage);
          } else if (modeHandler.getMode() == ModeHandler.MFT_MODE_GLOBAL){
             globalParameterHandler.handleMidi(mftMessage);
+         } else if (modeHandler.getMode() == ModeHandler.MFT_MODE_USER){
+            userModeHandler.handleMidi(mftMessage);
          }
+         
       }catch(Exception e) {
 		   host.errorln("Something went wrong after the MFT sent a Midi message. The script could not handle this message correctly. ");
 		   host.errorln("Exception thrown: " + e.getLocalizedMessage());

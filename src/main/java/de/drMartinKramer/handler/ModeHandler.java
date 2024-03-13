@@ -89,20 +89,46 @@ public class ModeHandler  extends AbstractHandler
 	}
 	
 	/**
+	 * Function checks if a message is an encoder to trigger a mode change via the left shift button
+	 * @param msg the incoming Midi message
+	 * @return true, if encoder 1, 2, 5, 6, 9, or 10 was clicked, false otherwise
+	 */
+	private boolean isLeftShiftModeChangeButton(MidiMessageWithContext msg){
+		final int encoderID = msg.getData1();
+		if(	msg.getData2()==0 && //encoder released
+			(encoderID == MFT_Hardware.MFT_BANK1_BUTTON_01 || encoderID == MFT_Hardware.MFT_BANK1_BUTTON_02 || 
+			encoderID == MFT_Hardware.MFT_BANK1_BUTTON_05 || encoderID == MFT_Hardware.MFT_BANK1_BUTTON_06 || 
+			encoderID == MFT_Hardware.MFT_BANK1_BUTTON_09 || encoderID == MFT_Hardware.MFT_BANK1_BUTTON_10 ||
+			encoderID == MFT_Hardware.MFT_BANK2_BUTTON_01 || encoderID == MFT_Hardware.MFT_BANK2_BUTTON_02 || 
+			encoderID == MFT_Hardware.MFT_BANK2_BUTTON_05 || encoderID == MFT_Hardware.MFT_BANK2_BUTTON_06 || 
+			encoderID == MFT_Hardware.MFT_BANK2_BUTTON_09 || encoderID == MFT_Hardware.MFT_BANK2_BUTTON_10 ||
+			encoderID == MFT_Hardware.MFT_BANK3_BUTTON_01 || encoderID == MFT_Hardware.MFT_BANK3_BUTTON_02 || 
+			encoderID == MFT_Hardware.MFT_BANK3_BUTTON_05 || encoderID == MFT_Hardware.MFT_BANK3_BUTTON_06 || 
+			encoderID == MFT_Hardware.MFT_BANK3_BUTTON_09 || encoderID == MFT_Hardware.MFT_BANK3_BUTTON_10 ||
+			encoderID == MFT_Hardware.MFT_BANK4_BUTTON_01 || encoderID == MFT_Hardware.MFT_BANK4_BUTTON_02 || 
+			encoderID == MFT_Hardware.MFT_BANK4_BUTTON_05 || encoderID == MFT_Hardware.MFT_BANK4_BUTTON_06 || 
+			encoderID == MFT_Hardware.MFT_BANK4_BUTTON_09 || encoderID == MFT_Hardware.MFT_BANK4_BUTTON_10)) 
+		{  
+			return true;
+		}else return false;
+	}
+
+	/**
 	 * Message is called from the main event handler to allow this method to react to any buttons clicked on the left or the right.
-	 * When any of the left or right button is clicked it results to a bank change or a transport command in Bitwig
-	 * @param The incoming Midi message
+	 * When any of the left or right button is clicked it results to a bank change or a transport command in Bitwig. 
+	 * @param msg incoming Midi message
 	 * @return true if the Midi message was handled by the bank handler, false if no bank midi message was sent. 
 	 */
 	@Override
-	public boolean handleMidi (MidiMessageWithContext msg){
-	   //check for CC message on channel 4 (which is here 3 and left/right button clicked which is indicated by value (data2) = 127)
+	public boolean handleMidi (MidiMessageWithContext msg){			
+		super.handleMidi(msg);
+		//check for CC message on channel 4 (which is here 3 and left/right button clicked which is indicated by value (data2) = 127)
 	    int sideButtonID = msg.getData1();	 
 		if (msg.isGlobalMessage() && msg.getData2()==127) 
 	    {	
 			//the button is clicked down, we change to a new bank            
 			lastModekDownClickTime = System.currentTimeMillis(); //record when the side click happened
-			return handleModeChange(sideButtonID, false);				
+			return handleModeChangeViaSideButton(sideButtonID, false);				
 		}else if (msg.isGlobalMessage() && msg.getData2()==0) 
 		{
 			//the consecutive up click 
@@ -110,15 +136,25 @@ public class ModeHandler  extends AbstractHandler
 			if(duration > MFT_Configuration.getGlobalLongClickMillis())
 			{				
 				//we have a long click, i.e. we need to change back to the last mode 
-				return handleModeChange(lastSideButtonID, false);
+				return handleModeChangeViaSideButton(lastSideButtonID, false);
 			}else 
 			{ //we have a short click, i.e. we will not return to the original bank
 				lastSideButtonID = sideButtonID; //store the last encoder ID
 				return true;
 			}
-		}
+		}		
 		return false;	    
 	}//end of handleMidi	
+
+
+	public void handleMidiForLeftShiftClick(MidiMessageWithContext msg){
+		super.handleMidi(msg);
+		if(this.isShiftPressed_left() && isLeftShiftModeChangeButton(msg))
+		{
+			//we have a shift click on one of the encoders, and we released one of the mode change encoders (1,2,5,6,9,10)
+			handleModeChangeViaLeftShift(msg.getData1(), false);
+		}
+	}
 
 	
 	/**
@@ -127,7 +163,7 @@ public class ModeHandler  extends AbstractHandler
 	 * @param buttonID The ID of the button that is delivered via a Midi CC message. 
 	 * @return if a bank transfer was successfully handled or not. 
 	 */
-	public boolean handleModeChange(int buttonID, boolean forceUpdate){
+	public boolean handleModeChangeViaSideButton(int buttonID, boolean forceUpdate){
 	// Click on a button on the left or the right		
 		switch (buttonID) //data1 contains the button number, we use this to differentiate the different side buttons
 		{   
@@ -154,7 +190,98 @@ public class ModeHandler  extends AbstractHandler
 				return false; //no midi was handled
 		}//end of switch
 		
-	}//end of handleBankChange
+	}//end of handleModeChange
+
+
+	/**
+	 * We have a second way of changing modes and that is via the left shift button.
+	 * Here we have to check for all buttons in the upper left area (in all MFT Modes)
+	 * @param buttonID the ID of the button release
+	 * @param forceUpdate 
+	 * @return true if a mode change was handled, false otherwise
+	 */
+	public boolean handleModeChangeViaLeftShift(int buttonID, boolean forceUpdate){	
+		switch (buttonID) //data1 contains the button number, we use this to differentiate the different encoder button
+		{   
+			case MFT_Hardware.MFT_BANK1_BUTTON_01:
+				handleModeChange(MFT_MODE_MIXER, 0, "Midi Fighter Twister: Mixer mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_02: 
+				handleModeChange(MFT_MODE_CHANNEL_STRIP, 1, "Midi Fighter Twister: Channel Strip Mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_05: 
+				handleModeChange(MFT_MODE_EQ, 0, "Midi Fighter Twister: EQ", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_06: 
+				handleModeChange(MFT_MODE_DEVICE, 2, "Midi Fighter Twister: Device mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_09: 
+				handleModeChange(MFT_MODE_GLOBAL, 0, "Midi Fighter Twister: Global Parameter mode", false);
+				return true;
+			case MFT_Hardware.MFT_BANK1_BUTTON_10: 
+				handleModeChange(MFT_MODE_USER, 3, "Midi Fighter Twister: User mode", false);
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_01:
+				handleModeChange(MFT_MODE_MIXER, 0, "Midi Fighter Twister: Mixer mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_02: 
+				handleModeChange(MFT_MODE_CHANNEL_STRIP, 1, "Midi Fighter Twister: Channel Strip Mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_05: 
+				handleModeChange(MFT_MODE_EQ, 0, "Midi Fighter Twister: EQ", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_06: 
+				handleModeChange(MFT_MODE_DEVICE, 2, "Midi Fighter Twister: Device mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_09: 
+				handleModeChange(MFT_MODE_GLOBAL, 0, "Midi Fighter Twister: Global Parameter mode", false);
+				return true;
+			case MFT_Hardware.MFT_BANK2_BUTTON_10: 
+				handleModeChange(MFT_MODE_USER, 3, "Midi Fighter Twister: User mode", false);
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_01:
+				handleModeChange(MFT_MODE_MIXER, 0, "Midi Fighter Twister: Mixer mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_02: 
+				handleModeChange(MFT_MODE_CHANNEL_STRIP, 1, "Midi Fighter Twister: Channel Strip Mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_05: 
+				handleModeChange(MFT_MODE_EQ, 0, "Midi Fighter Twister: EQ", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_06: 
+				handleModeChange(MFT_MODE_DEVICE, 2, "Midi Fighter Twister: Device mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_09: 
+				handleModeChange(MFT_MODE_GLOBAL, 0, "Midi Fighter Twister: Global Parameter mode", false);
+				return true;
+			case MFT_Hardware.MFT_BANK3_BUTTON_10: 
+				handleModeChange(MFT_MODE_USER, 3, "Midi Fighter Twister: User mode", false);
+				return true;
+			case MFT_Hardware.MFT_BANK4_BUTTON_01:
+				handleModeChange(MFT_MODE_MIXER, 0, "Midi Fighter Twister: Mixer mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK4_BUTTON_02: 
+				handleModeChange(MFT_MODE_CHANNEL_STRIP, 1, "Midi Fighter Twister: Channel Strip Mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK4_BUTTON_05: 
+				handleModeChange(MFT_MODE_EQ, 0, "Midi Fighter Twister: EQ", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK4_BUTTON_06: 
+				handleModeChange(MFT_MODE_DEVICE, 2, "Midi Fighter Twister: Device mode", false);				
+				return true;
+			case MFT_Hardware.MFT_BANK4_BUTTON_09: 
+				handleModeChange(MFT_MODE_GLOBAL, 0, "Midi Fighter Twister: Global Parameter mode", false);
+				return true;
+			case MFT_Hardware.MFT_BANK4_BUTTON_10: 
+				handleModeChange(MFT_MODE_USER, 3, "Midi Fighter Twister: User mode", false);
+				return true;
+			default: 
+				errorln("no mode change button identified");
+				return false; //no midi was handled
+		}//end of switch
+		
+	}//end of handleModeChange
+
 
 	/**
 	 * this messages handles all the internal changes and shows a pop up message in Bitwig

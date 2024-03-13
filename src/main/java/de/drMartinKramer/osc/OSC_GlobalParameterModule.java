@@ -55,7 +55,8 @@ public class OSC_GlobalParameterModule extends AbstractMFT_OSC_Module{
 
         this.encoderState[5].name = "Overdub";
         this.encoderState[5].turnFunction = "---";
-        this.encoderState[5].clickFunction = "toggle overdub";
+        this.encoderState[5].clickFunction = "t. clip overdub";
+        this.encoderState[5].longClickFunction = "t. arr. overdub";
 
         this.encoderState[6].name = "Metronom";
         this.encoderState[6].turnFunction = "---";
