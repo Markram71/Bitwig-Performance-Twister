@@ -9,6 +9,7 @@ With this extension you will be able to use the midi controller
     1. [Use cases](#use-cases)
 1. [Overview of available features](#overview-of-the-available-features)
 2. [What is not included](#what-is-not-included)
+3. [Changing Modes](#changing-modes)
 1. [Implemented Modes](#implemented-modes)
     1. [Mode 1 Mixer](#mode-1-mixer)
     1. [Mode 2 Channel Strip](#mode-2-channel-strip) 
@@ -41,7 +42,11 @@ I see mostly the following use cases
 * use the encoders to tweak device parameters
 * make use of Bitwig's new project remote controls
 * quickly add an EQ to a track and control four bands
-* allow to use the Midi Fighter Twister also for Midi learn  
+* allow to use the Midi Fighter Twister also for Midi learn
+* Use the OSC extension to build up your own touch screen (ala Hans Zimmer)  
+
+The following picture shows how I use the Midi Fighter Twister with Bitwig. 
+![My studio desktop with Bitwig, the Midi Fighter Twister, and an Ipad to visualize what is going on](./resources/BitwigPerformanceTwisterInAction.png)
 
 ## Overview of the available features 
 Bitwig performance Twister offers the following features: 
@@ -67,11 +72,25 @@ Although _Bitwig Performance Twister_ offers a lot of features the following are
 * editing notes
 * deletion of elements like tracks, devices, clips or notes
 
-
-## Implemented Modes
+## Changing Modes
 The following sections explain the mapping of encoders and the side buttons. For that, the following chart shows us where to find the encoders and side buttons. It comes from the Midi Fighter Twister manual: 
 ![A chart of the Midit Fighter Twister with three button on each side, starting with button 1 on the top. This midi controller has 16 encoders which are order in four columns and four rows.](./resources/MFT_layout.png)
 
+You can access the different modes of the Bitwig Performance Twister in two ways: 
+1. use the buttons on the side of the MFT and
+2. 2. use a combination of a shift encoder button and another encoder to change the mode to. For that encoder 13, the one on the left last row serves as the shift encoder for changing modes.  
+
+| Mode	 		| Side Button Access	     	 | Shift Click Access 						|
+|:----------------------|--------------------------------|--------------------------------------------------------------|
+|Mixer Mode		|Press left side encoder 1 	 |press and hoder encoder 13 (left shift) and click encoder 1   |
+|Channel Strip Mode	|Press right side encoder 1 	 |press and hoder encoder 13 (left shift) and click encoder 2   |
+|EQ Mode		|Press left side encoder 2 	 |press and hoder encoder 13 (left shift) and click encoder 5   |
+|Device Mode		|Press right side encoder 2 	 |press and hoder encoder 13 (left shift) and click encoder 6   |
+|Global Parameter Mode	|Press left side encoder 3 	 |press and hoder encoder 13 (left shift) and click encoder 9   |
+|User Mode 		|Press right side encoder 3 	 |press and hoder encoder 13 (left shift) and click encoder 10   |
+
+
+## Implemented Modes
 ### Mode 1 Mixer
 This bank or mode contains a basic mixer for 16 channels in Bitwig. Every encoder of the Midi Fighter Twister is associated to one track in Bitwig. 
 
@@ -174,23 +193,23 @@ This mode is there to help you twist and turn the prarameters of the Bitwig EQ+.
 This mode allows you to control many actions of the Bitwig transport section and global parameter like master volume, cue volume, cross fader setting, etc. You can also use it to quickly change the appearance of the Bitwig window, e.g. by toggling the inspector on the left side. Note: all encoders have function assign to clicking it, but not all encoders react to turning. 
 
 | Encoder | Turn (Twisting)      | Click & turn      | Click                          | Long Click           | RGB Light                       |
-|:-------:|----------------------|-------------------|--------------------------------|----------------------|---------------------------------|
-|1        |start cursor (coarse) |                   |start/pause                     |                      | green if play, off otherwise (1)|
-|2        |start cursorn (fine)  |                   |stop                            |toggle window         | off                             |
-|3        |cross fader           |                   |toggle record                   |                      | red if record enable            |
-|4        |arranger loop duration|arranger loop start|toggle arranger loop            |                      | blue if arranger loop enabled   |
-|5        |                      |                   |toggle fill (used by operators) |                      | off                             |
-|6        |                      |                   |toggle midi overdub             |                      | off                             |
-|7        |cue volume            |                   |toggle metronom                 |                      | off                             |
-|8        |tempo (normal)        |tempo (fine)       |tap tempo                       |                      | off                             |
-|9        |selected track        |                   |previous project                |                      | off                             |
-|10       |master volume         |                   |next project                    |                      | off                             |
-|11       |Bank, LSB (3)         |Bank, MSB          |activate audio                  |                      | off                             |
-|12       |program change (3)    |prgrm chnge (fast) |n/a                             |                      | off                             |
-|13       |zoom in and out       |                   |toggle inspector                |toggle device view    | off                             |
-|14       |                      |                   |change to arranger view         |toggle mixer view     | off                             |
-|15       |                      |                   |change to mix view              |toggle note editor    | off                             |
-|16       |next/previous patch(2)|                   |change to edit view             |toggle full screen    | off                             |
+|:-------:|----------------------|-------------------|--------------------------------|-----------------------|---------------------------------|
+|1        |start cursor (coarse) |                   |start/pause                     |                       | green if play, off otherwise (1)|
+|2        |start cursorn (fine)  |                   |stop                            |toggle window          | off                             |
+|3        |cross fader           |                   |toggle record                   |                       | red if record enable            |
+|4        |arranger loop duration|arranger loop start|toggle arranger loop            |                       | blue if arranger loop enabled   |
+|5        |                      |                   |toggle fill (used by operators) |                       | off                             |
+|6        |                      |                   |toggle clip     overdub         |toggle arranger overdub| off                             |
+|7        |cue volume            |                   |toggle metronom                 |                       | off                             |
+|8        |tempo (normal)        |tempo (fine)       |tap tempo                       |                       | off                             |
+|9        |selected track        |                   |previous project                |                       | off                             |
+|10       |master volume         |                   |next project                    |                       | off                             |
+|11       |Bank, LSB (3)         |Bank, MSB          |activate audio                  |                       | off                             |
+|12       |program change (3)    |prgrm chnge (fast) |n/a                             |                       | off                             |
+|13       |zoom in and out       |                   |toggle inspector                |toggle device view     | off                             |
+|14       |                      |                   |change to arranger view         |toggle mixer view      | off                             |
+|15       |                      |                   |change to mix view              |toggle note editor     | off                             |
+|16       |next/previous patch(2)|                   |change to edit view             |toggle full screen     | off                             |
 
 #### Notes
 * (1) When Bitwig is playing the first encoder turns green and flashes in the rhythm of quarter notes. In order to allow for this feature to work correctly you need to send midi clock to the Midi Fighter Twister. You can do that by adding a track and installing a Bitwig _HW INSTRUMENT_ in the device chain. On the HW INSTRUMENT you need to select the Midi Fighter Twister as Midi Out and enable Midi Clock, see screenshot below. 
@@ -332,7 +351,8 @@ Note: more information on TouchOSC is available [here](https://hexler.net/toucho
 
 ## Known Bugs
 * In the `MidiFighter Utility`tool, the check boxes, e.g. for the side buttons, don't seem to work corretly. The check box `Bank Side Buttons`under `Global Settings` needs to be de-activated and then the MFT needs to be flushed with this value. After flushing the check mark disappears, even if it had been checked before. It's important that is not activated. In this case the side buttons always send the same CC messages. And this is what we want.
-* The TouchOSC template is not complete yet. I plan to extend. Therefore some groups are still empty. 
+* The TouchOSC template is not complete yet. I plan to extend. Therefore some groups are still empty.
+* Changing modes via the left shift button (encoder #13): You need to click twice when changing the mode from the user mode into another mode.  
 
 ## Acknowledgements
 I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. 
