@@ -5,7 +5,7 @@ This is the description of the OSC extension to Bitwig Performance Twister. Plea
 
 ## Table of Contents <!-- omit in toc -->
 1. [Introduction to the OSC extension](#introduction)
-    1. [Use cases](#use-cases)
+1. [Available OSC Messages](#available-osc-messages)
 
 ## Introduction
 Bitwig Performance Twister is an extension for the DAW Bitwig to use the Midi controller "Midi Fighter Twister". I have added additional (optional) functionality to this script so 
@@ -19,7 +19,7 @@ With the OSC extension you are able to
 * use the full OSC implementation provided by the Bitwig extension *Driven by Moss* 
 
 
-## Available OSC Message
+## Available OSC Messages
 First of all, all OSC message that come with Jürgen Mossgräber's (aka MOSS) OSC implementation are avaialabe. For further information see his[web site for Bitwig](https://www.mossgrabers.de/Software/Bitwig/Bitwig.html) or his [DriveByMoss documentation](https://github.com/git-moss/DrivenByMoss/blob/master/DrivenByMoss-Manual.pdf). 
 
 Additionally, I have implemented the following messages. These are all commands which means that these messages can be send from an OSC surface to Bitwig. There is not message from Bitwig to the OSC device.  
