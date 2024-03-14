@@ -5,7 +5,12 @@ This is the description of the OSC extension to Bitwig Performance Twister. Plea
 
 ## Table of Contents <!-- omit in toc -->
 1. [Introduction to the OSC extension](#introduction)
-1. [Available OSC Messages](#available-osc-messages)
+2. [Available OSC Messages](#available-osc-messages)
+    1. [Table of Bitwig Performance Twister OSC Messages](table-of-bitwig-performance-twister-osc-messages)
+    1. [Adding Instruments and Effects](adding-instruments-and-effects)
+    1. [The XY element](the-xy-element)
+    1. [Access to the Bitwig Commands](access-to-the-bitwig-commands)
+      
 
 ## Introduction
 Bitwig Performance Twister is an extension for the DAW Bitwig to use the Midi controller "Midi Fighter Twister". I have added additional (optional) functionality to this script so 
@@ -22,7 +27,8 @@ With the OSC extension you are able to
 ## Available OSC Messages
 First of all, all OSC message that come with Jürgen Mossgräber's (aka MOSS) OSC implementation are avaialabe. For further information see his [web site for Bitwig](https://www.mossgrabers.de/Software/Bitwig/Bitwig.html) or his [DriveByMoss documentation](https://github.com/git-moss/DrivenByMoss/blob/master/DrivenByMoss-Manual.pdf). 
 
-Additionally, I have implemented the following messages. These are all commands which means that these messages can be send from an OSC surface to Bitwig. There is not message from Bitwig to the OSC device.  
+### Table of Bitwig Performance Twister OSC Messages
+Additionally, I have implemented the following messages. These are all commands which means that these messages can be send from an OSC surface to Bitwig. There is no message from Bitwig to the OSC device.  
 
 
 | Message/Command                  | Value                                        | Comment                                                                                         | 
@@ -48,3 +54,30 @@ Additionally, I have implemented the following messages. These are all commands 
 |addElements/FX/CLAP              | Bitwig Code of the Clap Effect (String)  | add the referenced VST2 effect at the end  of the device chain                                      |
 |addElements/FX/Bitwig              | Bitwig Code of the Bitwig Effect (String)  | add the referenced Bitwig effect at the end  of the device chain                                      |
 |addElements/Instrumet/Patch        | n/a  | not yet implemented                                      |
+
+
+### Adding Instruments and Effects
+to be documented
+
+### The XY element
+to be documented...
+
+![screenshot of the XY controller in TouchOSC](./resources/XY-controller.png)
+
+The XY elements needs to the have the following arguements in exactly this order: 
+1. "x"
+2. "y"
+3. Midi Channel (as Integer)
+4. Midi CC number for the x-axis (as Integer)
+5. Midi CC number for  y-axis (as Integer)
+
+See the following screenshot for the setup of the right XY controller
+
+![screenshot of the the configuration of the XY controller in TouchOSC](./resources/XY-controller-setup.png)
+
+
+
+### Access to the Bitwig Commands
+to be documented
+
+
