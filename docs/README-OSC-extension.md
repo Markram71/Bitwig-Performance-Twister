@@ -1,17 +1,20 @@
 # Bitwig Performance Twister - OSC Extension<!-- omit in toc -->
 
-This is the description of the OSC extension to Bitwig Performance Twister. Please go here for the general description of what Bitwig Performance Twister can do for you. 
+This is an extended description of the OSC extension to Bitwig Performance Twister. Please go [here](./READEME.md) for the general description of what Bitwig Performance Twister can do for you. 
   
 
 ## Table of Contents <!-- omit in toc -->
 1. [Introduction to the OSC extension](#introduction)
-2. [Available OSC Messages](#available-osc-messages)
+    1. [OSC Use Cases](#osc-use-cases) 
+3. [Available OSC Messages](#available-osc-messages)
     1. [Table of Bitwig Performance Twister OSC Messages](table-of-bitwig-performance-twister-osc-messages)
     1. [Adding Instruments and Effects](adding-instruments-and-effects)
     1. [The XY element](the-xy-element)
     1. [Access to the Bitwig Commands](access-to-the-bitwig-commands)
-      
+4. [Extended Configuration for using OSC](extended-configuration-for-using-osc)
+5. [OSC Installation in TouchOSC](osc-installation-in-touchosc)
 
+      
 ## Introduction
 Bitwig Performance Twister is an extension for the DAW Bitwig to use the Midi controller "Midi Fighter Twister". I have added additional (optional) functionality to this script so 
 that you can see what you are controlling with the Midi controller. You can use a any OSC capable device, that could be an iPad which is running TouchOSC, for instance. And that is 
@@ -23,6 +26,11 @@ With the OSC extension you are able to
 * add command buttons to trigger actions in Bitwig
 * use the full OSC implementation provided by the Bitwig extension *Driven by Moss* 
 
+### OSC Use Cases 
+I am using the OSC extension mainly for three distinct use cases: 
+1. Having a label of the MFT encoder directly places above the Midi Fighter Twister to quickly see the current mode and quickly find the not so often used features
+2. Have short cut buttons on the tablet to trigger off actions in Bitwig, e.g. add new tracks filled with my favorite internal or external instruments of effects
+3. Use TouchOSC elements like a XY-element to control plugins or Bitwig elements
 
 ## Available OSC Messages
 First of all, all OSC message that come with Jürgen Mossgräber's (aka MOSS) OSC implementation are avaialabe. For further information see his [web site for Bitwig](https://www.mossgrabers.de/Software/Bitwig/Bitwig.html) or his [DriveByMoss documentation](https://github.com/git-moss/DrivenByMoss/blob/master/DrivenByMoss-Manual.pdf). 
@@ -60,7 +68,7 @@ Additionally, I have implemented the following messages. These are all commands 
 to be documented
 
 ### The XY element
-to be documented...
+The XY element is a very useful feature of TouchOSC that lets you control two parameters with one finger. I have implemented the XY element in Bitwig Performanc Twister in such a way that you can easily configure to you own needs.   
 
 ![screenshot of the XY controller in TouchOSC](./resources/XY-controller.png)
 
@@ -79,5 +87,36 @@ See the following screenshot for the setup of the right XY controller
 
 ### Access to the Bitwig Commands
 to be documented
+
+
+
+## Extended Configuration for using OSC 
+Additional configuration is required and possible for the extension with OSC to enable visualization with tools with TouchOSC. _Bitwig Performance Twister_ utilizes the OSC implementation developed by Jürgen Moßgräber, aka MOSS. The following configuration items are directly associated to his OSC implementation. See additional information here [here](https://github.com/git-moss/DrivenByMoss). 
+
+The following screenshot shows the first part of the configuration items. 
+![Screenshot of the add controller dialog in Bitwig](./resources/OSC_Configuration_Part1.png)
+
+This most important configuration to use the OSC extension are the first three parameters. You need to get these right otherwise the the OSC extension will not work. The good think is, you don't need to deal with all the other configuration items. The initial setup might be a bit confusing. The following chart shows an example to facilitate the understanding of the setup.  
+
+![Sample OSC configuration](./resources/Sample_OSC_Configuration.png)
+
+One the left side you can see your computer on which Bitwig is running. Within Bitwig the Bitwig Performance Twister is running. This enables the communication between Bitwig and the Midi Fighter Twister (shown below) which is connected via USB to your computer. On the right side you can see a tablet that is running TouchOSC. TouchOSC and Bitwig communicate via the Bitwig Performance Twister script. In order to allow for a bi-directional communication, both side, Bitwig and TouchOSC must be configured to communicate to each other. 
+
+Let's start with the Bitwig side. Within the controller section you need to provide the address of the table that is running TouchOSC. You also need to provide the port number on which TouchOSC is listening to incoming OSC messages. Moreover you also need to provide the port number on which Bitwig is listening to incoming OSC messages from TouchOSC. 
+
+On the other side, on the tablet you need to configure TouchOSC to communicate to Bitwig. Again you need to provide the port number on both side. 
+
+In order to to get the communication going you need to consider two important things: 
+1. You need to supply the IP address of the other side
+2. The _receiving port_ and the _port to send to_ must be cross over. 
+
+The following screenshot shows some more OSC related configuration items. Again, these are useful it you want to use additional OSC functionality. Please visit the excellent site of MOSS with a detailed description on how these configuration items work. 
+![Screenshot of the add controller dialog in Bitwig](./resources/OSC_Configuration_Part2.png)
+
+### OSC Installation in TouchOSC
+When you want to extend the functionality of the script by using the OSC extension you also need to configure the OSC parameters, see section configuration above. 
+This script comes with a sample TouchOSC template. This file is part of the zip file, see above. The filename is `BitwigPerformanceTwister.tosc`. In TouchOSC, load up this file, configure the OSC in TouchOSC as described above. 
+
+Note: more information on TouchOSC is available [here](https://hexler.net/touchosc). 
 
 
