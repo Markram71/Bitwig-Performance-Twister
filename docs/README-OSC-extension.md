@@ -12,8 +12,9 @@ This is an extended description of the OSC extension to Bitwig Performance Twist
     1. [Adding Instruments and Effects](adding-instruments-and-effects)
     1. [The XY element](the-xy-element)
     1. [Access to the Bitwig Commands](access-to-the-bitwig-commands)
-4. [Extended Configuration for using OSC](extended-configuration-for-using-osc)
-5. [OSC Installation in TouchOSC](osc-installation-in-touchosc)
+4.  [Further Examples of Commands](further-examples-of-commands)
+5. [Extended Configuration for using OSC](extended-configuration-for-using-osc)
+6. [OSC Installation in TouchOSC](osc-installation-in-touchosc)
 
       
 ## Introduction
