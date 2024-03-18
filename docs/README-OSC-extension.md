@@ -81,7 +81,34 @@ Additionally, I have implemented the following messages. These are all commands 
 
 
 ### Adding Instruments and Effects
-to be documented
+One of the best use cases for a touch surface is to add new tracks with your favorites instruments or to add your favorite effects to the currently selected track. With the Bitwig Performance Twister this works as follows: 
+1. Add a button to your OSC surface
+2. Set up an OSC message of type: `addElements/Instrument/Bitwig`. 
+3. Add an argument to the message that contains the ID of the instrument to be inserted
+
+When click on the button, a new track will be createda and the instrument will be loaded into this new track. There are several variations to this commnand. First, instead of `Bitwig` you can use `VST2`, `VST3`, and `CLAP`to insert instruments using one of these plugin standards. And, secondly, you can use `FX` instead of Ìnstrument`in order to create a new effect at the end of the currently selected track.  
+
+The following screenshots shows a button that lets you add a new track with an Omnisphere instance on it: 
+![Adding the VST3 device Omnisphere with a button in TouchOSC](./resources/osc-adding-omnisphere.png)
+
+
+**But where can you get the information on the instrument to be inserted?**
+To get access to the instrumend and effect ID, you need to tell Bitwig to enable a context menue which allows you to copy the respective device ID to clipboard. In order to do this, you need to create a file called `config.json` in your user settings directly. Depending on the your platform you can find the directory here:   
+
+* Mac: Library/Application Support/Bitwig/Bitwig Studio
+* Windows: %LOCALAPPDATA%/Bitwig Studio
+* Linux: ~/.BitwigStudio
+
+Once you have created this file, add the following line to it: `can-copy-device-and-param-ids: true`
+
+After you have restarted Bitwig you can right-click on any device and then select `Copy device Id to clipboard`.
+
+**Note the following on device IDs:** 
+The format of the device ID depends on the plugin type. 
+* `VST2`needs a number, an integer as an argument
+* `VST3`and `Bitwig`required a String argument
+* When inserting a `CLAP` device you need to change the argument slightly, e.g. **Diva** will be loaded with `com.u-he.Diva`, i.e. you need to remove the version nummber and the preceeding "clap:" 
+
 
 ### The XY element
 The XY element is a very useful feature of TouchOSC that lets you control two parameters with one finger. I have implemented the XY element in Bitwig Performanc Twister in such a way that you can easily configure to you own needs.   
