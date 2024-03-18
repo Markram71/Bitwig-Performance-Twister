@@ -48,7 +48,7 @@ The following screenshot shows the page with additional commands:
 
 
 ## Available OSC Messages
-First of all, all OSC message that come with Jürgen Mossgräber's (aka MOSS) OSC implementation are avaialabe. For further information see his [web site for Bitwig](https://www.mossgrabers.de/Software/Bitwig/Bitwig.html) or his [DriveByMoss documentation](https://github.com/git-moss/DrivenByMoss/blob/master/DrivenByMoss-Manual.pdf). 
+First of all, all OSC message that come with Jürgen Mossgräber's (aka MOSS) OSC implementation are avaialabe. For further information see his [web site for Bitwig](https://www.mossgrabers.de/Software/Bitwig/Bitwig.html) or his [DrivenByMoss documentation](https://github.com/git-moss/DrivenByMoss/blob/master/DrivenByMoss-Manual.pdf). 
 
 ### Table of Bitwig Performance Twister OSC Messages
 Additionally, I have implemented the following messages. These are all commands which means that these messages can be send from an OSC surface to Bitwig. There is no message from Bitwig to the OSC device.  
