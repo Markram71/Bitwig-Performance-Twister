@@ -1,6 +1,6 @@
 # Bitwig Performance Twister - OSC Extension<!-- omit in toc -->
 
-This is an extended description of the OSC extension to Bitwig Performance Twister. Please go [here](./READEME.md) for the general description of what Bitwig Performance Twister can do for you. 
+This is an extended description of the OSC extension to Bitwig Performance Twister. Please go [here](./README.md) for the general description of what Bitwig Performance Twister can do for you. 
   
 
 ## Table of Contents <!-- omit in toc -->
