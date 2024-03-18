@@ -1,7 +1,11 @@
 ﻿
 # List of Bitwig Actions
+This list is a download of available actions in Bitwig which can be triggered via the API. 
 
-Download of Bitwig actions based on Bitwig version 5.1.2 
+**Note**
+* Download is based on Bitwig version 5.1.2
+* I have used a German version of Bitwig, thus the Action-Category and Description are in German.
+ 
 
 | Action-Category  |  Action-ID     | Description (German) |
 |:-----------------|:---------------|:---------------------|
