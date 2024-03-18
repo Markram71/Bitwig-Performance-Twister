@@ -6,15 +6,15 @@ This is an extended description of the OSC extension to Bitwig Performance Twist
 ## Table of Contents <!-- omit in toc -->
 1. [Introduction to the OSC extension](#introduction)
     1. [OSC Use Cases](#osc-use-cases)
-2. [The TouchOSC Surface](the-touchosc-surface) 
+2. [The TouchOSC Surface](#the-touchosc-surface) 
 3. [Available OSC Messages](#available-osc-messages)
-    1. [Table of Bitwig Performance Twister OSC Messages](table-of-bitwig-performance-twister-osc-messages)
-    1. [Adding Instruments and Effects](adding-instruments-and-effects)
-    1. [The XY element](the-xy-element)
-    1. [Access to the Bitwig Commands](access-to-the-bitwig-commands)
-4.  [Further Examples of Commands](further-examples-of-commands)
-5. [Extended Configuration for using OSC](extended-configuration-for-using-osc)
-6. [OSC Installation in TouchOSC](osc-installation-in-touchosc)
+    1. [Table of Bitwig Performance Twister OSC Messages](#table-of-bitwig-performance-twister-osc-messages)
+    1. [Adding Instruments and Effects](#adding-instruments-and-effects)
+    1. [The XY element](#the-xy-element)
+    1. [Access to the Bitwig Commands](#access-to-the-bitwig-commands)
+4.  [Further Examples of Commands](#further-examples-of-commands)
+5. [Extended Configuration for using OSC](#extended-configuration-for-using-osc)
+6. [OSC Installation in TouchOSC](#osc-installation-in-touchosc)
 
       
 ## Introduction
