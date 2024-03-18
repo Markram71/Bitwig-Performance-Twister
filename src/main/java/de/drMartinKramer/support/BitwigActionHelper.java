@@ -80,10 +80,10 @@ public class BitwigActionHelper {
     
     public void saveActionList(){
         try {
-            PrintWriter writer = new PrintWriter(new FileWriter("BitwigActions.txt", true));
+            PrintWriter writer = new PrintWriter(new FileWriter("BitwigActions.csv", true));
             for (String key : actionRecords.keySet()) {
                 ActionRecord record = actionRecords.get(key);
-                writer.println(record.actionCategory + ";" + record.actionId + ";" + record.actioName);
+                writer.println(record.actionCategory + "|" + record.actionId + "|" + record.actioName);
             }
             writer.close();
             MFT_Configuration.println("Action List saved successfully.");
