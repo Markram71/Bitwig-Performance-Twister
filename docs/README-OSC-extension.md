@@ -5,7 +5,8 @@ This is an extended description of the OSC extension to Bitwig Performance Twist
 
 ## Table of Contents <!-- omit in toc -->
 1. [Introduction to the OSC extension](#introduction)
-    1. [OSC Use Cases](#osc-use-cases) 
+    1. [OSC Use Cases](#osc-use-cases)
+2. [The TouchOSC Surface](the-touchosc-surface) 
 3. [Available OSC Messages](#available-osc-messages)
     1. [Table of Bitwig Performance Twister OSC Messages](table-of-bitwig-performance-twister-osc-messages)
     1. [Adding Instruments and Effects](adding-instruments-and-effects)
@@ -31,6 +32,19 @@ I am using the OSC extension mainly for three distinct use cases:
 1. Having a label of the MFT encoder directly places above the Midi Fighter Twister to quickly see the current mode and quickly find the not so often used features
 2. Have short cut buttons on the tablet to trigger off actions in Bitwig, e.g. add new tracks filled with my favorite internal or external instruments of effects
 3. Use TouchOSC elements like a XY-element to control plugins or Bitwig elements
+
+## The TouchOSC Surface
+Bitwig Performance Twister comes with a template for TouchOSC (see [here](https://hexler.net/touchosc)). The following picture shows how to use the TouchOSC Surface running on an Ipad which sits right behind the Midi Fighter Twiter. This is for the first OSC use case, see section above. 
+
+![Picture of a laptop running Bitwig, the Midi Fighter Twister on the left of the laptop and behind the midi controller an iPad showing the configuration of the Bitwig Performance Twister](./resources/BitwigPerformanceTwisterInAction.png)
+
+Additionally the template for TouchOSC contains tabs with commands for workflows often used in Bitwig. The current layout fits well to the author. The following screenshots shows the main commands section which lets you add new tracks, new instruments and effects on theses tracks and some commands for changing Bitwig's screen layout. But you are totally free to change the template to your own workflow and liking. See the TouchOSC documentation the following sections on how to do this.  
+
+![Screenshot of the TouchOSC surface, the main commands screen](./resources/osc-main-commands.png)
+
+The following screenshot shows the page with additional commands:  
+![Screenshot of the TouchOSC surface, the main commands screen](./resources/osc-additional-commands.png)
+
 
 ## Available OSC Messages
 First of all, all OSC message that come with Jürgen Mossgräber's (aka MOSS) OSC implementation are avaialabe. For further information see his [web site for Bitwig](https://www.mossgrabers.de/Software/Bitwig/Bitwig.html) or his [DriveByMoss documentation](https://github.com/git-moss/DrivenByMoss/blob/master/DrivenByMoss-Manual.pdf). 
@@ -88,6 +102,20 @@ See the following screenshot for the setup of the right XY controller
 ### Access to the Bitwig Commands
 to be documented
 
+### Further Examples of Commands
+The following screenshot of TouchOSC shows a button in TouchOSC which triggers the OK button in the Bitwig Browser. 
+![The configuration of the OK Button in TouchOSC](./resources/osc-browser-ok-button.png)
+
+On the left you can see the OK button, on the right the respective OSC message configuration in TouchOSC. We only need one OSC message. The message itself is made up of four components: "/", "browser", "/", and "commit". There are no arguments required. This is an OSC command provided by the OSC implementation by Jürgen Moßgräber. 
+
+The following example shows another way to implement a very similar action in TouchOSC: 
+![Another configuration of a the OK button in Bitwig](./resources/osc-ok-button2.png)
+
+In this example I have used the access to Bitwig commands to trigger an action that hits the OK button in a dialog. The effect is similar to the example above. Note the following differences though: 
+*  I have used variables "parent.name" and "name" to construct the OSC message from the names of the TouchOSC elements. The parent of the button is called "Commands" and the button itself is called "BitwigAction".
+*  The argument contains the actual action to be executed. In this case it is "Dialog: OK". 
+
+Please note that both button messages are only triggered on the "RISE" of the button. In other words, the OSC message is only sent when you click down the button and **not** when you release the button. When configuring your own template make sure to adjust the way the message is triggered for your own situation. See the TouchOSC documentation for further info on this topic. 
 
 
 ## Extended Configuration for using OSC 
