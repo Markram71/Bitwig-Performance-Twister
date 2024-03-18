@@ -7,6 +7,7 @@ With this extension you will be able to use the midi controller
 ## Table of Contents <!-- omit in toc -->
 1. [Introduction](#introduction)
     1. [Use cases](#use-cases)
+    2. [Visual Feedback with the OSC Extension](#visual-feedback-with-the-osc-extension)
 1. [Overview of available features](#overview-of-the-available-features)
 2. [What is not included](#what-is-not-included)
 3. [Changing Modes](#changing-modes)
@@ -28,12 +29,13 @@ With this extension you will be able to use the midi controller
 
 
 ## Introduction
-Welcome to the _Bitwig Performance Twister_. I have built this controller script to be able to use the **Midi Fighter Twister** (MFT )from DJ Tech Tools for my own performance needs. Although there are already controller extensions available for Bitwig, the did not fit my workflow or performance needs. When making design decision I kept the following principle in mind: 
+Welcome to the _Bitwig Performance Twister_. I have built this controller script to be able to use the **Midi Fighter Twister** (MFT) from DJ Tech Tools for my own performance needs. Although there are already controller extensions available for Bitwig, they did not fit my workflow or performance needs. When making design decision I kept the following principle in mind: 
 * focus on the functionality needed most often (pareto principle)
 * Don't try to make it complete
 * have control elements always in the same place to allow for better _muscle memory_, e.g. don't scroll through modes, but have a dedicated button for each mode
 
-This script also has a built-in extension allow visiual feedback on what's happening on the Midi Fighter Twister by using devices like a table in conjunction with the MFT. For instance, I am using TouchOSC on an Ipad that I placed behind the MFT. That way I can directly see the function of each encoder. 
+### Visual Feedback with the OSC extension
+This script also has a built-in extension allow visiual feedback on what's happening on the Midi Fighter Twister by using devices like a tablet in conjunction with the MFT. For instance, I am using TouchOSC on an Ipad that I placed behind the MFT. That way I can directly see the function of each encoder (see picture below). Further information, specifically on the OSC extension is available [here](./README-OSC-extension.md). 
 
 ### Use cases
 I see mostly the following use cases
@@ -43,7 +45,7 @@ I see mostly the following use cases
 * make use of Bitwig's new project remote controls
 * quickly add an EQ to a track and control four bands
 * allow to use the Midi Fighter Twister also for Midi learn
-* Use the OSC extension to build up your own touch screen (ala Hans Zimmer)  
+* Use the OSC extension to build up your own touch screen (ala Hans Zimmer), also see [here](./README-OSC-extension.md)
 
 The following picture shows how I use the Midi Fighter Twister with Bitwig. 
 ![My studio desktop with Bitwig, the Midi Fighter Twister, and an Ipad to visualize what is going on](./resources/BitwigPerformanceTwisterInAction.png)
@@ -61,14 +63,13 @@ Bitwig performance Twister offers the following features:
 * **Long clicks:** By clicking and keeping the encoder pressed down for a short time, you can get access to a secondary action for some of the encoders
 * **Click & turn:** Click down an encoder button and turn the encoder while it's pressed down. This gives access to a secondary paramter which can be controlled with this same encoder.
 
-This script also comes with the OSC implementation provided by Jürgen Moßgräber inclucded. Additionaly there are OSC commands specifically for the MFT and a template for TouchOSC. Note, you can run the script without any OSC features, but with it, the functionality of the Midi Fighter Twister is greatly enhanced when using Bitwig. 
+This script also comes with the OSC implementation provided by Jürgen Moßgräber inclucded. Additionaly there are OSC commands specifically for the MFT and a template for TouchOSC. Important **note**:  you can run the script without any OSC features, but with it, the functionality of the Midi Fighter Twister is greatly enhanced when using Bitwig. 
 
 ## What is not included
 Although _Bitwig Performance Twister_ offers a lot of features the following are currently **not** included (among others): 
 * arpeggiator
 * browsing for new devices
 * adding tracks, devices (with the exception of EQ+), or clips 
-* quantization
 * editing notes
 * deletion of elements like tracks, devices, clips or notes
 
@@ -271,6 +272,9 @@ The following screenshot shows the visualization of the Global Parameters mode.
 ![Screenshot of the channel strip mode in TouchOSC](./resources/OSC-Global_Parameter.png)
 
 The visualization with OSC is especially useful for a mode like the _Global Parameter Mode_. This mode contains a lot of different control possibilities. But without a screen on the Midi Figther Twister the different functionalities are hard to remember. Thus, a tablet placed behind the MFT comes in handy to show the meaning of the 16 encoders. 
+
+### Additional Features using OSC
+The OSC implementation allows to use a touch screen with Bitwig Performance Twister in the style of Hans Zimmer. Please see [here](./README-OSC-extension.md) for further information.  
   
 ## Configuration
 The _Bitwig Performance Twister_ can be configured to suit to your needs. In order to change the configuration click on the Bitwig Icon on the top of the Bitwig screen, then change to _configuration_ and there choose _controller_ on the left side. 
@@ -295,29 +299,6 @@ The following configuration items are avaialable:
 * **_Global Parameters Mode_**
 	* **Send bank messages before program change**: Encoder 12 lets you send program change messages. With encoder 11 you can specify the MSB and LSB of the bank message. In case "yes" is selected a bank message is sent before each program change message.  
 
-### Extended Configuration for the OSC Extension 
-Additional configuration is required and possible for the extension with OSC to enable visualization with tools with TouchOSC. _Bitwig Performance Twister_ utilizes the OSC implementation developed by Jürgen Moßgräber, aka MOSS. The following configuration items are directly associated to his OSC implementation. See additional information here [here](https://github.com/git-moss/DrivenByMoss). 
-
-The following screenshot shows the first part of the configuration items. 
-![Screenshot of the add controller dialog in Bitwig](./resources/OSC_Configuration_Part1.png)
-
-This most important configuration to use the OSC extension are the first three parameters. You need to get these right otherwise the the OSC extension will not work. The good think is, you don't need to deal with all the other configuration items. The initial setup might be a bit confusing. The following chart shows an example to facilitate the understanding of the setup.  
-
-![Sample OSC configuration](./resources/Sample_OSC_Configuration.png)
-
-One the left side you can see your computer on which Bitwig is running. Within Bitwig the Bitwig Performance Twister is running. This enables the communication between Bitwig and the Midi Fighter Twister (shown below) which is connected via USB to your computer. On the right side you can see a tablet that is running TouchOSC. TouchOSC and Bitwig communicate via the Bitwig Performance Twister script. In order to allow for a bi-directional communication, both side, Bitwig and TouchOSC must be configured to communicate to each other. 
-
-Let's start with the Bitwig side. Within the controller section you need to provide the address of the table that is running TouchOSC. You also need to provide the port number on which TouchOSC is listening to incoming OSC messages. Moreover you also need to provide the port number on which Bitwig is listening to incoming OSC messages from TouchOSC. 
-
-On the other side, on the tablet you need to configure TouchOSC to communicate to Bitwig. Again you need to provide the port number on both side. 
-
-In order to to get the communication going you need to consider two important things: 
-1. You need to supply the IP address of the other side
-2. The _receiving port_ and the _port to send to_ must be cross over. 
-
-The following screenshot shows some more OSC related configuration items. Again, these are useful it you want to use additional OSC functionality. Please visit the excellent site of MOSS with a detailed description on how these configuration items work. 
-![Screenshot of the add controller dialog in Bitwig](./resources/OSC_Configuration_Part2.png)
-
 
 ## Installation
 The installation of _Bitwig Performance Twister_ is straight forward. It requires basically four steps: 1. download and unpack the zip file of the latest release, 2. update the Midi Fighter Twister with the configuration provided in the zip file , 3. place the Bitwig extension into the correct Bitwig folder and 4. configure the controller . Here's the installation step by step: 
@@ -336,12 +317,6 @@ The installation of _Bitwig Performance Twister_ is straight forward. It require
 
 7. Select the input and output midi connection by choosing `Midi Fighter Twister`from the dropdown box, see screenshot below
 ![Screenshot of the add controller dialog in Bitwig](./resources/add_controller_BPT2.png)
-
-### OSC Installation (in TouchOSC)
-When you want to extend the functionality of the script by using the OSC extension you also need to configure the OSC parameters, see section configuration above. 
-This script comes with a sample TouchOSC template. This file is part of the zip file, see above. The filename is `BitwigPerformanceTwister.tosc`. In TouchOSC, load up this file, configure the OSC in TouchOSC as described above. 
-
-Note: more information on TouchOSC is available [here](https://hexler.net/touchosc). 
 
 ## Implementation Notes 
 * **Modes and Banks:** Although the Midi Performance Twister (this script) has six modes, the Midi Fighter Twister (the hardware device) has only four banks. The modes which are associated to the left side buttons (mixer mode, EQ mode, global mode) are mapped to the first bank of the hardware device. The channel strip mode is mapped to bank two. The device mode is mapped to bank three. The user assignable mode on bank four. This is also the bank that you can freely assign to your liking. Changing any parameter on banks one to three of the hardware device will cause this script to malfunction.
