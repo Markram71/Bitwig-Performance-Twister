@@ -56,6 +56,7 @@ Additionally, I have implemented the following messages. These are all commands 
 
 | Message/Command                  | Value                                        | Comment                                                                                         | 
 |:---------------------------------|----------------------------------------------|-------------------------------------------------------------------------------------------------|
+|Commands/BitwigAction             | launches an Action in Bitwig                 | very powerful command to launch an action in Bitwig similar to using the Commander, see below description below |
 |Commands/addTrack                 | n/a                                          | adds a new empty instrument track                                                               |
 |Commands/addFX                    | n/a                                          | adds a new empty FX track                                                                       |
 |Commands/addAudio                 | n/a                                          | adds a new empty audio track                                                                    |
@@ -97,7 +98,6 @@ The XY elements needs to the have the following arguements in exactly this order
 See the following screenshot for the setup of the right XY controller
 
 ![screenshot of the the configuration of the XY controller in TouchOSC](./resources/XY-controller-setup.png)
-
 
 
 ### Access to the Bitwig Commands
