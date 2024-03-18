@@ -101,7 +101,16 @@ See the following screenshot for the setup of the right XY controller
 
 
 ### Access to the Bitwig Commands
-to be documented
+The Bitwig API lets you invoice commands which are (probably) identical to the actions you can trigger using the *Commander*. This is very helpful feature of Bitwig which you can access by pressing *Control* + *Enter* (on a Mac). 
+In order to see which Bitwig actions are available, I have downloaded the list of actions directly from the Bitwig API. See [here](docs/Bitwig-commands.md) for the complete list. 
+
+These Bitwig commands are now available to be triggered via OSC. That means you can build a an OSC surface that can trigger each of these (currently) 704 actions. 
+
+In order to launch an action you need to send the following message via OSC: 
+* Message: `/Commands/BitwigAction`
+* Argument: A string with the Action-Id
+
+See the next section for an example of such a Bitwig action (here to trigger the OK-Button in dialog window). 
 
 ### Further Examples of Commands
 The following screenshot of TouchOSC shows a button in TouchOSC which triggers the OK button in the Bitwig Browser. 
