@@ -46,6 +46,9 @@ Additionally the template for TouchOSC contains tabs with commands for workflows
 The following screenshot shows the page with additional commands:  
 ![Screenshot of the TouchOSC surface, the main commands screen](./resources/osc-additional-commands.png)
 
+### Important Note on the TouchOSCBridge
+With the Bitwig Performance Twister Script you do not need the TouchOSC Bridge. The reasons is that in this setup you only need to send OSC messages from TouchOSC to Bitwig. Of course, you can still activate the TouchOSC Bridge and also send Midi message (in parallel to the OSC message). But removing the need to have the OSC bridge running removes one architecture component and that's a good thing.   
+
 
 ## Available OSC Messages
 First of all, all OSC message that come with Jürgen Mossgräber's (aka MOSS) OSC implementation are avaialabe. For further information see his [web site for Bitwig](https://www.mossgrabers.de/Software/Bitwig/Bitwig.html) or his [DrivenByMoss documentation](https://github.com/git-moss/DrivenByMoss/blob/master/DrivenByMoss-Manual.pdf). 
