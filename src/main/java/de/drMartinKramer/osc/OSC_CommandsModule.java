@@ -20,7 +20,6 @@
 
  package de.drMartinKramer.osc;
 
-import de.drMartinKramer.MFT_Configuration;
 import de.drMartinKramer.handler.AbstractHandler;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
@@ -49,8 +48,7 @@ import java.util.LinkedList;
      public OSC_CommandsModule (final IHost host, final IModel model, final IOpenSoundControlWriter writer)
      {
          super (host, model, writer);
-         this.application = model.getApplication();
-         //model.getApplication().
+         this.application = model.getApplication();         
      }
  
  
@@ -63,7 +61,8 @@ import java.util.LinkedList;
          {
             "Commands",            
             "setClipLength", 
-            "XY"          
+            "XY", 
+            "CC"          
          };
      }
  
@@ -81,6 +80,9 @@ import java.util.LinkedList;
                 break;
             case "XY":
                 executeXY_Message(path, value);
+                break;
+            case "CC":
+                executeCC_Message(path, value);
                 break;
             default:
                 throw new UnknownCommandException (command);
@@ -196,6 +198,22 @@ import java.util.LinkedList;
             host.println("Error while parsing XY element: " + e.getLocalizedMessage());
         }
      }
+
+     private void executeCC_Message(final LinkedList<String> path, final Object value){
+        try{ //we need to make a whole lot of risky stuff here (casting, parsing, etc.)
+            //first parse the value array from OSC
+            final Object[] valueArray = (Object[]) value;
+            final int x = toInteger(valueArray[0]);
+            final int MidiChannel = toInteger(valueArray[1]);
+            final int xCC = toInteger(valueArray[2]);
+            
+            //then send CC messages to Bitwig, one for x and one for y
+            AbstractHandler.sendMidiToBitwig(0xB0 + MidiChannel, xCC, x);             
+        }catch(Exception e){
+            host.println("Error while parsing XY element: " + e.getLocalizedMessage());
+        }
+     }
+
 }
      
 

@@ -20,10 +20,12 @@
 
 package de.drMartinKramer.osc;
 
+import de.drMartinKramer.MFT_Configuration;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
 import de.mossgrabers.controller.osc.module.AbstractModule;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -105,8 +107,8 @@ public class OSC_AddElementsModule extends AbstractModule{
             case "CLAP":
                 addCLAP_Instrument(path, value);
                 break;
-            case "Patch":
-                addPatchInstrument(path, value);
+            case "preset":
+                addInstrumentPreset(path, value);
                 break;
             default:
                 throw new UnknownCommandException (path.get(1));
@@ -170,10 +172,30 @@ public class OSC_AddElementsModule extends AbstractModule{
         }
     }
 
-    private void addPatchInstrument(LinkedList<String> path, Object value) {
-        this.model.getApplication().addInstrumentTrack();
-        //TODO        
-        host.println("Not yet implemented: add Patch Instrument" + value.toString());
+    private void addInstrumentPreset(LinkedList<String> path, Object value) {
+        try{
+            this.model.getApplication().addInstrumentTrack();final ITrack cursorTrack = this.model.getCursorTrack ();
+            final Object[] valueArray = (Object[]) value;
+            
+            if (cursorTrack.doesExist ()){ 
+                InsertionPoint endOfDeviceChainInsertionPoint = cursorTrack.endOfDeviceChainInsertionPoint();
+                endOfDeviceChainInsertionPoint.insertBitwigDevice(UUID.fromString(valueArray[0].toString()));  
+            }
+            final int position = toInteger(valueArray[1]);
+            final IBrowser browser = this.model.getBrowser ();
+            browser.replace (this.model.getCursorDevice ());
+            
+            final int browserDelay = 200;
+            int delayTime = browserDelay;
+            for (int i = 0;i<position; i++){
+                host.scheduleTask((Runnable)()->{browser.selectNextResult ();}, delayTime);
+                delayTime += browserDelay; 
+            }
+            host.scheduleTask((Runnable)()->{browser.stopBrowsing (true);}, delayTime);
+            
+        }catch(Exception e){
+            host.println("Error while parsing XY element: " + e.getLocalizedMessage());
+        }
     }
 
     private void addBitwigFX(LinkedList<String> path, Object value) {
