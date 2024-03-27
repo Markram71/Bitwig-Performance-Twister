@@ -73,6 +73,8 @@ Although _Bitwig Performance Twister_ offers a lot of features the following are
 * editing notes
 * deletion of elements like tracks, devices, clips or notes
 
+Some of the features are available via the OSC extension, though. You can add tracks with your favorite plugins, for example. 
+
 ## Changing Modes
 The following sections explain the mapping of encoders and the side buttons. For that, the following chart shows us where to find the encoders and side buttons. It comes from the Midi Fighter Twister manual: 
 ![A chart of the Midit Fighter Twister with three button on each side, starting with button 1 on the top. This midi controller has 16 encoders which are order in four columns and four rows.](./resources/MFT_layout.png)
@@ -93,7 +95,7 @@ You can access the different modes of the Bitwig Performance Twister in two ways
 
 ## Implemented Modes
 ### Mode 1 Mixer
-This bank or mode contains a basic mixer for 16 channels in Bitwig. Every encoder of the Midi Fighter Twister is associated to one track in Bitwig. 
+This mode contains a basic mixer for 16 channels in Bitwig. Every encoder of the Midi Fighter Twister is associated to one track in Bitwig. 
 
 | Encoder | Turn (Twisting)      | Click & turn | Click           | Long Click            |Shift Click (1)      | RGB Light                   |
 |:-------:|----------------------|--------------|-----------------|-----------------------|---------------------|-----------------------------|
@@ -107,7 +109,7 @@ This bank or mode contains a basic mixer for 16 channels in Bitwig. Every encode
 * (3) A long click on an encoder adds another action. Again, you can customize the action in the controller configuration. You can choose from the following three actions: 1. record arm the track, mute, or solo the track. 
 
 ### Mode 2 Channel Strip
-This bank focuses on a single selected track. The first encoder is used to select a track. The other encoders are
+This mode focuses on a single selected track. The first encoder is used to select a track. The other encoders are
 can be used to change parameters for this selected track. 
 
 Obviously you can use other controllers or Bitwig itself to change the selected track. The encoder in this bank 
@@ -220,7 +222,7 @@ This mode allows you to control many actions of the Bitwig transport section and
 ![HW Instrument configure to send MIDI clock to the Midi Fighter Twister](./resources/sending_Midi_clock_to_MFT.png)
 
 ### Mode 6 User defined controls
-This mode simply allows to bypass the controller script and allows you to use it for your own Midi Learn mapping. When accessing the mode 6 the Midi Figther Twister is set internally to bank four. You can also configure the CC message and colors in the `Midifighter Utility`. Please keep the midi channels to five and six, respectively.  
+This mode simply allows to bypass the controller script and allows you to use it for your own Midi Learn mapping. When accessing the mode 6 the Midi Figther Twister is set internally to bank four. You can also configure the CC message and colors in the `Midifighter Utility`. Please keep the midi channels to five and six, respectively (as these two channels are directly passed though into Bitwig - as opposed to being routed into the controller script).  
 
 ## OSC Extension
 This script extends the functionality of the Midi Fighter Twister with additional visual feedback. This is based on OSC, the Open Sound Protocol. This protocol allow to connect an additional device (like a tablet or another computer or phone) with this script and control Bitwig or just visualize what you are controlling the the Midid Fighter Twister. By doing this you greatly enhance your workflow, i.e. by using the Midi Fighter Twister with its great encoders and also being able to see what you can control (as the MFT does not have any screens). With this functionality you can either
@@ -330,7 +332,7 @@ The installation of _Bitwig Performance Twister_ is straight forward. It require
 * Changing modes via the left shift button (encoder #13): You need to click twice when changing the mode from the user mode into another mode.  
 
 ## Acknowledgements
-I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. 
+I am very thankful to Jürgen Moßgräber (MOSS) for his support of the midi controller API. I am using several of his scripts for other controllers and the youtube videos on how to use the Bitwig controller API have been a tremendous help. I could not have implemented this without his contributions. Moreover, folks on KVR have been kind to answer my questions I post there. 
 
 
 ## License
