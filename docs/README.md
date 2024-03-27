@@ -2,7 +2,7 @@
 
 This is an extension for the Bitwig DAW (Digital Audio Workstation). 
 With this extension you will be able to use the midi controller 
-"Midi Fighter Twister" by DJ TechTools (see https://www.midifighter.com/#Twister). 
+"Midi Fighter Twister" by DJ TechTools (see https://www.midifighter.com/#Twister). Moreover, optionally, you can also visualize what is happening on the Midi Fighter Twister with an OSC app like TouchOSC.   
 
 ## Table of Contents <!-- omit in toc -->
 1. [Introduction](#introduction)
