@@ -188,3 +188,24 @@ This script comes with a sample TouchOSC template. This file is part of the zip 
 Note: more information on TouchOSC is available [here](https://hexler.net/touchosc). 
 
 
+## Some more Screenshots of Bitwig Performance Twister in TouchOSC
+
+Here we have some screenshot from Bitwig Performance Twister in TouchOSC. I will later provide more information on how to configure these individual buttons, faders or grids. 
+
+![Screenshot showing how to configure faders to create CC messages](./resources/configurring-faders.png)
+
+![Screenshot showing hwo to configure a button to load a preset by opening the browser and scrolling down](./resources/configuring-presetByNumbers.png)
+
+![Screenshot showing how to load a preset via a filename](./resources/configuring-presetByName.png)
+
+![Screenshot showing how to configure a button to load a VST3 instrument](./resources/new-VST3-instrument.png)
+
+![Screenshot showing how to configure a button to load a Bitwig Effect ](./resources/new-Bitwig-FX.png)
+
+![Screenshot showing how to configure a grid in TouchOSC to send many different program change messages](./resources/using-a-grid-for-program-change-messages.png)
+
+![Screenshot showing of how to configure a button to send a program change messages that is 10 numbers lower than the last program change message](./resources/decrease-program-change-by10.png)
+
+
+
+
