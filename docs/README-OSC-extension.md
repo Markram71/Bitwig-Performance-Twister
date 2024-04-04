@@ -8,7 +8,7 @@ This is an extended description of the OSC extension to Bitwig Performance Twist
     1. [OSC Use Cases](#osc-use-cases)
 2. [The TouchOSC Surface](#the-touchosc-surface) 
 3. [Available OSC Messages](#available-osc-messages)
-    1. [Table of Bitwig Performance Twister OSC Messages](#table-of-bitwig-performance-twister-osc-messages)
+    1. [Tables of Bitwig Performance Twister OSC Messages](#tables-of-bitwig-performance-twister-osc-messages)
     1. [Adding Instruments and Effects](#adding-instruments-and-effects)
     1. [The XY element](#the-xy-element)
     1. [Access to the Bitwig Commands](#access-to-the-bitwig-commands)
@@ -53,8 +53,11 @@ With the Bitwig Performance Twister Script you do not need the TouchOSC Bridge. 
 ## Available OSC Messages
 First of all, all OSC message that come with Jürgen Mossgräber's (aka MOSS) OSC implementation are avaialabe. For further information see his [web site for Bitwig](https://www.mossgrabers.de/Software/Bitwig/Bitwig.html) or his [DrivenByMoss documentation](https://github.com/git-moss/DrivenByMoss/blob/master/DrivenByMoss-Manual.pdf). 
 
-### Table of Bitwig Performance Twister OSC Messages
-Additionally, I have implemented the following messages. These are all commands which means that these messages can be send from an OSC surface to Bitwig. There is no message from Bitwig to the OSC device.  
+### Tables of Bitwig Performance Twister OSC Messages
+Additionally, I have implemented the following messages. 
+
+#### Commands from OSC to Bitwig
+The following are all commands which means that these messages can be send from an OSC surface to Bitwig.   
 
 
 | Message/Command                  | Value                                        | Comment                                                                                         | 
@@ -81,6 +84,22 @@ Additionally, I have implemented the following messages. These are all commands 
 |addElements/FX/CLAP              | Bitwig Code of the Clap Effect (String)  | add the referenced VST2 effect at the end  of the device chain                                      |
 |addElements/FX/Bitwig              | Bitwig Code of the Bitwig Effect (String)  | add the referenced Bitwig effect at the end  of the device chain                                      |
 |addElements/Instrumet/Patch        | n/a  | not yet implemented                                      |
+
+#### Commands from Bitwig to TouchOSC
+The following messages are sent from Bitwig to an OSC surface.  Most of them are used to represent the status of the Midi Fighter Twister. In the following table `n`denotes the number of the encoder (Integer 0..15). 
+
+| Message                          | Value                                                | Comment                                                                                           | 
+|:---------------------------------|------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+|bpt_encoder/n/value               | the value of the nth encoder                         | Integer (0..127)                                                                                  |
+|bpt_encoder/n/name                | the name of the encoder, e.g. the name of the track  | short String message with the name of the encoder                                                 |
+|bpt_encoder/n/turnFunction        | which function is applied when turning encoder n     | short String message to explain the function                                                      |
+|bpt_encoder/n/pushTurnFunction    | function for push and turn                           | short String message to explain the push&function                                                 |
+|bpt_encoder/n/clickFunction       | what happens when you click an encoder               | short String message to explain the click function                                                |
+|bpt_encoder/n/longClickFunction   | what happens when you long-click an encoder          | short String message to explain the function for longer clicks                                    |
+|bpt_encoder/n/shiftClickFunction  | what happens when you shift-click                    | short String message to explain the function of a click when the shift encoder is also pushed down|
+|bpt_encoder/n/isSelected          | indicates whether an encoder is selected or not      | important e.g. in the mixer mode. With that you can track which encoder/track is currently selected|
+|bpt_encoder/n/exists              | indicates whether an encoder exists or not           | sometimes an encoder does not have function, it can then be deactivated on the OSC surface        |
+
 
 
 ### Adding Instruments and Effects
@@ -186,5 +205,26 @@ When you want to extend the functionality of the script by using the OSC extensi
 This script comes with a sample TouchOSC template. This file is part of the zip file, see above. The filename is `BitwigPerformanceTwister.tosc`. In TouchOSC, load up this file, configure the OSC in TouchOSC as described above. 
 
 Note: more information on TouchOSC is available [here](https://hexler.net/touchosc). 
+
+
+## Some more Screenshots of Bitwig Performance Twister in TouchOSC
+
+Here we have some screenshot from Bitwig Performance Twister in TouchOSC. I will later provide more information on how to configure these individual buttons, faders or grids. 
+
+![Screenshot showing how to configure faders to create CC messages](./resources/configurring-faders.png)
+
+![Screenshot showing hwo to configure a button to load a preset by opening the browser and scrolling down](./resources/configuring-presetByNumbers.png)
+
+![Screenshot showing how to load a preset via a filename](./resources/configuring-presetByName.png)
+
+![Screenshot showing how to configure a button to load a VST3 instrument](./resources/new-VST3-instrument.png)
+
+![Screenshot showing how to configure a button to load a Bitwig Effect ](./resources/new-Bitwig-FX.png)
+
+![Screenshot showing how to configure a grid in TouchOSC to send many different program change messages](./resources/using-a-grid-for-program-change-messages.png)
+
+![Screenshot showing of how to configure a button to send a program change messages that is 10 numbers lower than the last program change message](./resources/decrease-program-change-by10.png)
+
+
 
 
