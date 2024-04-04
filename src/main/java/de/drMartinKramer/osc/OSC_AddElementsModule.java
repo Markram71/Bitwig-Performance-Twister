@@ -107,8 +107,11 @@ public class OSC_AddElementsModule extends AbstractModule{
             case "CLAP":
                 addCLAP_Instrument(path, value);
                 break;
-            case "preset":
-                addInstrumentPreset(path, value);
+            case "presetByNumber":
+                addInstrumentPresetbyNumber(path, value);
+                break;
+            case "presetByName":
+                addInstrumentPresetbyName(path, value);
                 break;
             default:
                 throw new UnknownCommandException (path.get(1));
@@ -172,7 +175,27 @@ public class OSC_AddElementsModule extends AbstractModule{
         }
     }
 
-    private void addInstrumentPreset(LinkedList<String> path, Object value) {
+    private void addInstrumentPresetbyName(LinkedList<String> path, Object value) {
+        try{
+            this.model.getApplication().addInstrumentTrack();final ITrack cursorTrack = this.model.getCursorTrack ();
+            final Object[] valueArray = (Object[]) value;
+            final String filePath = valueArray[0].toString();
+            final String instrumentName = valueArray[1].toString();
+            
+            host.println("Load Instrument: " + filePath + instrumentName);
+            if (cursorTrack.doesExist ()){ 
+                InsertionPoint endOfDeviceChainInsertionPoint = cursorTrack.endOfDeviceChainInsertionPoint();
+                endOfDeviceChainInsertionPoint.insertFile(filePath + "/" + instrumentName);  
+            }
+            
+        }catch(Exception e){
+            host.println("Error while parsing XY element: " + e.getLocalizedMessage());
+        }
+    }
+
+
+
+    private void addInstrumentPresetbyNumber(LinkedList<String> path, Object value) {
         try{
             this.model.getApplication().addInstrumentTrack();final ITrack cursorTrack = this.model.getCursorTrack ();
             final Object[] valueArray = (Object[]) value;
