@@ -49,7 +49,7 @@ public class BitwigPerformanceTwisterDefinition extends ControllerExtensionDefin
    @Override
    public String getVersion()
    {
-      return "1.1";
+      return "2.2";
    }
 
    @Override
