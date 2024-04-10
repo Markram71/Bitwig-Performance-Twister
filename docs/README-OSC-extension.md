@@ -225,6 +225,8 @@ Here we have some screenshot from Bitwig Performance Twister in TouchOSC. I will
 
 ![Screenshot showing of how to configure a button to send a program change messages that is 10 numbers lower than the last program change message](./resources/decrease-program-change-by10.png)
 
+![Screenshot showing of how to use a Bitwig Midi Modulator to capture CC messages](./resources/capturing-cc-with-midi-modulator.png)
+
 
 
 
