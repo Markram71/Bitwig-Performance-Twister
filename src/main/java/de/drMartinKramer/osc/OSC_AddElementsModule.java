@@ -131,6 +131,9 @@ public class OSC_AddElementsModule extends AbstractModule{
             case "Bitwig":
                 addBitwigFX(path, value);
                 break;
+            case "CLAP":
+                addCLAP_FX(path, value);
+                break;
             default:
                 throw new UnknownCommandException (path.get(1));
         }
@@ -240,6 +243,13 @@ public class OSC_AddElementsModule extends AbstractModule{
         if (cursorTrack.doesExist ()){ 
             InsertionPoint endOfDeviceChainInsertionPoint = cursorTrack.endOfDeviceChainInsertionPoint();
             endOfDeviceChainInsertionPoint.insertVST2Device(Integer.parseInt(value.toString()));  
+        }
+    }
+    private void addCLAP_FX(LinkedList<String> path, Object value) {
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (cursorTrack.doesExist ()){ 
+            InsertionPoint endOfDeviceChainInsertionPoint = cursorTrack.endOfDeviceChainInsertionPoint();
+            endOfDeviceChainInsertionPoint.insertCLAPDevice(value.toString());  
         }
     }
 }
