@@ -160,6 +160,29 @@ See the following screenshot for the setup of the right XY controller
 
 ![screenshot of the the configuration of the XY controller in TouchOSC](./resources/XY-controller-setup.png)
 
+### Loading Presets by opening the Browser
+With a simple OSC command you can do automate the following steps: 
+1. create a new track
+2. load a Bitwig instrument into it
+3. open the preset browser
+4. scroll down a specified number of times
+5. open the selected preset
+
+The following screenshot shows how to the parameterize such a command: 
+
+![Screenshot showing hwo to configure a button to load a preset by opening the browser and scrolling down](./resources/configuring-presetByNumbers.png)
+
+This is the message for this command: `/addElements/Instruments/presetByNumber`with the following arguments: 
+1. ID of the Bitwig Device (String) 
+2. Num (Integer 1..)
+
+Note there is a slight delay between each consecutive step down in the results page in the browser. This command is executed quick, but still takes some short time. Morever, it relies on the same order presets. Thus, the following way to load presets is quicker, more versatile and also more robust...
+
+### Loading Presets by Name
+
+![Screenshot showing how to load a preset via a filename](./resources/configuring-presetByName.png)
+
+
 
 ### Access to the Bitwig Commands
 The Bitwig API lets you invoice commands which are (probably) identical to the actions you can trigger using the *Commander*. This is very helpful feature of Bitwig which you can access by pressing *Control* + *Enter* (on a Mac). 
@@ -224,9 +247,6 @@ Note: more information on TouchOSC is available [here](https://hexler.net/toucho
 Here we have some screenshot from Bitwig Performance Twister in TouchOSC. I will later provide more information on how to configure these individual buttons, faders or grids. 
 
 
-![Screenshot showing hwo to configure a button to load a preset by opening the browser and scrolling down](./resources/configuring-presetByNumbers.png)
-
-![Screenshot showing how to load a preset via a filename](./resources/configuring-presetByName.png)
 
 ![Screenshot showing how to configure a button to load a VST3 instrument](./resources/new-VST3-instrument.png)
 
