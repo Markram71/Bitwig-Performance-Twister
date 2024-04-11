@@ -131,6 +131,18 @@ The format of the device ID depends on the plugin type.
 * `VST3`and `Bitwig`required a String argument
 * When inserting a `CLAP` device you need to change the argument slightly, e.g. **Diva** will be loaded with `com.u-he.Diva`, i.e. you need to remove the version nummber and the preceeding "clap:" 
 
+### Creating CC messages
+You can send CC message with the OSC surface. This itself is not really an important news since you very easily send CC messages with an OSC surface like Touch OSC. The difference here is that the BitwigPerformanceTwister script translates an OSC message into a Midi CC message. With that you do not need to send Midi messages from the OSC surface. And that means you don't need the TouchOSC bridge. 
+
+The following screenshots shows how to configure a fader in TouchOSC
+
+![Screenshot showing how to configure faders to create CC messages](./resources/configurring-faders.png)
+
+The OSC message is `/CC/name` whereas name is the name of the CC message. It is useful for debugging OSC messages but does not have any effect on the resulting Midi CC message. The message has the following arguments: 
+1. "x": the value of the message (Integer 0.127)
+2. Midi Channel (Integer 0..15)
+3. Control Change number (Integer 0..127) 
+
 
 ### The XY element
 The XY element is a very useful feature of TouchOSC that lets you control two parameters with one finger. I have implemented the XY element in Bitwig Performanc Twister in such a way that you can easily configure to you own needs.   
@@ -211,7 +223,6 @@ Note: more information on TouchOSC is available [here](https://hexler.net/toucho
 
 Here we have some screenshot from Bitwig Performance Twister in TouchOSC. I will later provide more information on how to configure these individual buttons, faders or grids. 
 
-![Screenshot showing how to configure faders to create CC messages](./resources/configurring-faders.png)
 
 ![Screenshot showing hwo to configure a button to load a preset by opening the browser and scrolling down](./resources/configuring-presetByNumbers.png)
 
