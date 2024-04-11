@@ -60,30 +60,33 @@ Additionally, I have implemented the following messages.
 The following are all commands which means that these messages can be send from an OSC surface to Bitwig.   
 
 
-| Message/Command                  | Value                                        | Comment                                                                                         | 
-|:---------------------------------|----------------------------------------------|-------------------------------------------------------------------------------------------------|
-|Commands/BitwigAction             | launches an Action in Bitwig                 | very powerful command to launch an action in Bitwig similar to using the Commander, see below description below |
-|Commands/addTrack                 | n/a                                          | adds a new empty instrument track                                                               |
-|Commands/addFX                    | n/a                                          | adds a new empty FX track                                                                       |
-|Commands/addAudio                 | n/a                                          | adds a new empty audio track                                                                    |
-|Commands/showArranger             | n/a                                          | switches to show the Arranger in the main window                                                |
-|Commands/showMixer                | n/a                                          | switches to show the Mixer in the main window                                                   |
-|Commands/showEditor               | n/a                                          | switches to show the editor in the main window                                                  |
-|Commands/toggleDevice             | n/a                                          | toggles the device window in the lower part of the Bitwig window                                |
-|Commands/toggleMixer              | n/a                                          | toggles the mixer window in the lower part of the Bitwig window                                 |
-|Commands/toggleInspector          | n/a                                          | toggles the Inspector on and off                                                                |
-|Commands/toggleFullScreen         | n/a                                          | toggle Bitwig to full screen and back                                                           |
-|Commands/bounce                   | n/a                                          | executes the bounce command (if possible)                                                       |
-|Commands/bounceInPlace            | n/a                                          | exectues bounce in place (if possible)                                                          |
-|addElements/Instrument/VST2       | Bitwig Code of the VST2 instrument (Integer) | add a new track and put the referenced VST2 instrument at the beginning of the device chain     |
-|addElements/Instrument/VST3       | Bitwig Code of the VST3 instrument (String)  | add a new track and put the referenced VST3 instrument at the beginning of the device chain     |
-|addElements/Instrument/CLAP       |  Bitwig Code of the CLAP instrument (String)  | add a new track and put the referenced CLAP instrument at the beginning of the device chain    |
-|addElements/Instrument/Bitwig     |  Bitwig Code of the Bitwig instrument (String)  | add a new track and put the referenced Bitwig instrument at the beginning of the device chain    |
-|addElements/FX/VST2               | Bitwig Code of the VST2 Effect (Integer)    | add the referenced VST2 effect at the end  of the device chain                                      |
-|addElements/FX/VST3               | Bitwig Code of the VST3 Effect (String)  | add the referenced VST3 effect at the end  of the device chain                                      |
-|addElements/FX/CLAP              | Bitwig Code of the Clap Effect (String)  | add the referenced VST2 effect at the end  of the device chain                                      |
-|addElements/FX/Bitwig              | Bitwig Code of the Bitwig Effect (String)  | add the referenced Bitwig effect at the end  of the device chain                                      |
-|addElements/Instrumet/Patch        | n/a  | not yet implemented                                      |
+| Message/Command                  | Value                                            | Comment                                                                                         | 
+|:---------------------------------|--------------------------------------------------|-------------------------------------------------------------------------------------------------|
+|Commands/BitwigAction             | launches an Action in Bitwig                     | very powerful command to launch an action in Bitwig similar to using the Commander, see below description below |
+|Commands/addTrack                 | n/a                                              | adds a new empty instrument track                                                               |
+|Commands/addFX                    | n/a                                              | adds a new empty FX track                                                                       |
+|Commands/addAudio                 | n/a                                              | adds a new empty audio track                                                                    |
+|Commands/showArranger             | n/a                                              | switches to show the Arranger in the main window                                                |
+|Commands/showMixer                | n/a                                              | switches to show the Mixer in the main window                                                   |
+|Commands/showEditor               | n/a                                              | switches to show the editor in the main window                                                  |
+|Commands/toggleDevice             | n/a                                              | toggles the device window in the lower part of the Bitwig window                                |
+|Commands/toggleMixer              | n/a                                              | toggles the mixer window in the lower part of the Bitwig window                                 |
+|Commands/toggleInspector          | n/a                                              | toggles the Inspector on and off                                                                |
+|Commands/toggleFullScreen         | n/a                                              | toggle Bitwig to full screen and back                                                           |
+|Commands/bounce                   | n/a                                              | executes the bounce command (if possible)                                                       |
+|Commands/bounceInPlace            | n/a                                              | exectues bounce in place (if possible)                                                          |
+|CC/name                           | value, Midi channel (0..16), CC number (0..127)  | send a CC number on the specific midi                                                           |
+|addElements/Instrument/VST2       | Bitwig Code of the VST2 instrument (Integer)     | add a new track and put the referenced VST2 instrument at the beginning of the device chain     |
+|addElements/Instrument/VST3       | Bitwig Code of the VST3 instrument (String)      | add a new track and put the referenced VST3 instrument at the beginning of the device chain     |
+|addElements/Instrument/CLAP       |  Bitwig Code of the CLAP instrument (String)     | add a new track and put the referenced CLAP instrument at the beginning of the device chain     |
+|addElements/Instrument/Bitwig     |  Bitwig Code of the Bitwig instrument (String)   | add a new track and put the referenced Bitwig instrument at the beginning of the device chain   |
+|addElements/FX/VST2               | Bitwig Code of the VST2 Effect (Integer)         | add the referenced VST2 effect at the end  of the device chain                                  |
+|addElements/FX/VST3               | Bitwig Code of the VST3 Effect (String)          | add the referenced VST3 effect at the end  of the device chain                                  |
+|addElements/FX/CLAP               | Bitwig Code of the Clap Effect (String)          | add the referenced VST2 effect at the end  of the device chain                                  |
+|addElements/FX/Bitwig              | Bitwig Code of the Bitwig Effect (String)       | add the referenced Bitwig effect at the end  of the device chain                                |
+|addElements/Instrumet/PresetByNumber| Bitwig device ID, n (number of steps down)     | load a Bitwig instrument, open the preset browser, step down n-times, load preset               |
+|addElements/Instrumet/PresetByName| path, preset name                                | create a new track, load the file instrument that can be accesses by concatenating path and filename|
+
 
 #### Commands from Bitwig to TouchOSC
 The following messages are sent from Bitwig to an OSC surface.  Most of them are used to represent the status of the Midi Fighter Twister. In the following table `n`denotes the number of the encoder (Integer 0..15). 
@@ -142,6 +145,12 @@ The OSC message is `/CC/name` whereas name is the name of the CC message. It is 
 1. "x": the value of the message (Integer 0.127)
 2. Midi Channel (Integer 0..15)
 3. Control Change number (Integer 0..127) 
+
+**Important Note**: For whatever reason, Bitwig is not always reacting the incoming CC message, e.g. it seems to be impossible to simply map a controller to the TouchOSC fader. With a Midi Monitor like (`showMidi`) it is easy to see that the CC message is actually coming in, but the mapping does not seems to work. This is a documented problem. The following screenshot shows a workaround: 
+
+![Screenshot showing of how to use a Bitwig Midi Modulator to capture CC messages](./resources/capturing-cc-with-midi-modulator.png)
+
+You simply add a `Midi Modulator`to the device and set it to the correct CC message. You can also learn the CC message. With that intermediate step you can _capture_ the CC message and then modulate your device. Not straight forward, but it works. 
 
 
 ### The XY element
@@ -255,8 +264,6 @@ Here we have some screenshot from Bitwig Performance Twister in TouchOSC. I will
 ![Screenshot showing how to configure a grid in TouchOSC to send many different program change messages](./resources/using-a-grid-for-program-change-messages.png)
 
 ![Screenshot showing of how to configure a button to send a program change messages that is 10 numbers lower than the last program change message](./resources/decrease-program-change-by10.png)
-
-![Screenshot showing of how to use a Bitwig Midi Modulator to capture CC messages](./resources/capturing-cc-with-midi-modulator.png)
 
 
 
