@@ -60,30 +60,38 @@ Additionally, I have implemented the following messages.
 The following are all commands which means that these messages can be send from an OSC surface to Bitwig.   
 
 
-| Message/Command                  | Value                                        | Comment                                                                                         | 
-|:---------------------------------|----------------------------------------------|-------------------------------------------------------------------------------------------------|
-|Commands/BitwigAction             | launches an Action in Bitwig                 | very powerful command to launch an action in Bitwig similar to using the Commander, see below description below |
-|Commands/addTrack                 | n/a                                          | adds a new empty instrument track                                                               |
-|Commands/addFX                    | n/a                                          | adds a new empty FX track                                                                       |
-|Commands/addAudio                 | n/a                                          | adds a new empty audio track                                                                    |
-|Commands/showArranger             | n/a                                          | switches to show the Arranger in the main window                                                |
-|Commands/showMixer                | n/a                                          | switches to show the Mixer in the main window                                                   |
-|Commands/showEditor               | n/a                                          | switches to show the editor in the main window                                                  |
-|Commands/toggleDevice             | n/a                                          | toggles the device window in the lower part of the Bitwig window                                |
-|Commands/toggleMixer              | n/a                                          | toggles the mixer window in the lower part of the Bitwig window                                 |
-|Commands/toggleInspector          | n/a                                          | toggles the Inspector on and off                                                                |
-|Commands/toggleFullScreen         | n/a                                          | toggle Bitwig to full screen and back                                                           |
-|Commands/bounce                   | n/a                                          | executes the bounce command (if possible)                                                       |
-|Commands/bounceInPlace            | n/a                                          | exectues bounce in place (if possible)                                                          |
-|addElements/Instrument/VST2       | Bitwig Code of the VST2 instrument (Integer) | add a new track and put the referenced VST2 instrument at the beginning of the device chain     |
-|addElements/Instrument/VST3       | Bitwig Code of the VST3 instrument (String)  | add a new track and put the referenced VST3 instrument at the beginning of the device chain     |
-|addElements/Instrument/CLAP       |  Bitwig Code of the CLAP instrument (String)  | add a new track and put the referenced CLAP instrument at the beginning of the device chain    |
-|addElements/Instrument/Bitwig     |  Bitwig Code of the Bitwig instrument (String)  | add a new track and put the referenced Bitwig instrument at the beginning of the device chain    |
-|addElements/FX/VST2               | Bitwig Code of the VST2 Effect (Integer)    | add the referenced VST2 effect at the end  of the device chain                                      |
-|addElements/FX/VST3               | Bitwig Code of the VST3 Effect (String)  | add the referenced VST3 effect at the end  of the device chain                                      |
-|addElements/FX/CLAP              | Bitwig Code of the Clap Effect (String)  | add the referenced VST2 effect at the end  of the device chain                                      |
-|addElements/FX/Bitwig              | Bitwig Code of the Bitwig Effect (String)  | add the referenced Bitwig effect at the end  of the device chain                                      |
-|addElements/Instrumet/Patch        | n/a  | not yet implemented                                      |
+| Message/Command                  | Value                                            | Comment                                                                                         | 
+|:---------------------------------|--------------------------------------------------|-------------------------------------------------------------------------------------------------|
+|Commands/BitwigAction             | launches an Action in Bitwig                     | very powerful command to launch an action in Bitwig similar to using the Commander, see below description below |
+|Commands/addTrack                 | n/a                                              | adds a new empty instrument track                                                               |
+|Commands/addFX                    | n/a                                              | adds a new empty FX track                                                                       |
+|Commands/addAudio                 | n/a                                              | adds a new empty audio track                                                                    |
+|Commands/showArranger             | n/a                                              | switches to show the Arranger in the main window                                                |
+|Commands/showMixer                | n/a                                              | switches to show the Mixer in the main window                                                   |
+|Commands/showEditor               | n/a                                              | switches to show the editor in the main window                                                  |
+|Commands/toggleDevice             | n/a                                              | toggles the device window in the lower part of the Bitwig window                                |
+|Commands/toggleMixer              | n/a                                              | toggles the mixer window in the lower part of the Bitwig window                                 |
+|Commands/toggleInspector          | n/a                                              | toggles the Inspector on and off                                                                |
+|Commands/toggleFullScreen         | n/a                                              | toggle Bitwig to full screen and back                                                           |
+|Commands/bounce                   | n/a                                              | executes the bounce command (if possible)                                                       |
+|Commands/bounceInPlace            | n/a                                              | exectues bounce in place (if possible)                                                          |
+|CC/name                           | value, Midi channel (0..16), CC number (0..127)  | send a CC number on the specific midi                                                           |
+|/programChange/set                | Midi channel (0..15), program change message (0..127)| send a program change message on the specific channel                                       |
+|/programChange/-                  | n (Integer)                                      | send a program change message on Midi channel of the last program change message, that n lower than the last one|
+|/programChange/+                  | n (Integer)                                      | send a program change message on Midi channel of the last program change message, that n higher than the last one|
+|addElements/Instrument/VST2       | Bitwig Code of the VST2 instrument (Integer)     | add a new track and put the referenced VST2 instrument at the beginning of the device chain     |
+|addElements/Instrument/VST3       | Bitwig Code of the VST3 instrument (String)      | add a new track and put the referenced VST3 instrument at the beginning of the device chain     |
+|addElements/Instrument/CLAP       |  Bitwig Code of the CLAP instrument (String)     | add a new track and put the referenced CLAP instrument at the beginning of the device chain     |
+|addElements/Instrument/Bitwig     |  Bitwig Code of the Bitwig instrument (String)   | add a new track and put the referenced Bitwig instrument at the beginning of the device chain   |
+|addElements/FX/VST2               | Bitwig Code of the VST2 Effect (Integer)         | add the referenced VST2 effect at the end  of the device chain                                  |
+|addElements/FX/VST3               | Bitwig Code of the VST3 Effect (String)          | add the referenced VST3 effect at the end  of the device chain                                  |
+|addElements/FX/CLAP               | Bitwig Code of the Clap Effect (String)          | add the referenced VST2 effect at the end  of the device chain                                  |
+|addElements/FX/Bitwig              | Bitwig Code of the Bitwig Effect (String)       | add the referenced Bitwig effect at the end  of the device chain                                |
+|addElements/Instrumet/PresetByNumber| Bitwig device ID, n (number of steps down)     | load a Bitwig instrument, open the preset browser, step down n-times, load preset               |
+|addElements/Instrumet/PresetByName| path, preset name                                | create a new track, load the instrument that can be accessed by concatenating path and filename |
+|addElements/FX/PresetByName       | path, preset name                                | loads the device / effect which can be accessd by concatenating path and filename               |
+
+
 
 #### Commands from Bitwig to TouchOSC
 The following messages are sent from Bitwig to an OSC surface.  Most of them are used to represent the status of the Midi Fighter Twister. In the following table `n`denotes the number of the encoder (Integer 0..15). 
@@ -111,7 +119,11 @@ One of the best use cases for a touch surface is to add new tracks with your fav
 When click on the button, a new track will be createda and the instrument will be loaded into this new track. There are several variations to this commnand. First, instead of `Bitwig` you can use `VST2`, `VST3`, and `CLAP`to insert instruments using one of these plugin standards. And, secondly, you can use `FX` instead of Ìnstrument`in order to create a new effect at the end of the currently selected track.  
 
 The following screenshots shows a button that lets you add a new track with an Omnisphere instance on it: 
+![Screenshot showing how to configure a button to load a VST3 instrument](./resources/new-VST3-instrument.png)
+
+Let's zoom in to see the configuration of the OSC message:  
 ![Adding the VST3 device Omnisphere with a button in TouchOSC](./resources/osc-adding-omnisphere.png)
+
 
 
 **But where can you get the information on the instrument to be inserted?**
@@ -132,6 +144,33 @@ The format of the device ID depends on the plugin type.
 * When inserting a `CLAP` device you need to change the argument slightly, e.g. **Diva** will be loaded with `com.u-he.Diva`, i.e. you need to remove the version nummber and the preceeding "clap:" 
 
 
+The following screenshot shows how to load an effect: 
+
+![Screenshot showing how to configure a button to load a Bitwig Effect ](./resources/new-Bitwig-FX.png)
+
+Note that the only difference between loading a new instrument and an effect is that for loading an instrument the script creates an emptry track before loading the device. 
+
+
+
+### Creating CC messages
+You can send CC message with the OSC surface. This itself is not really an important news since you very easily send CC messages with an OSC surface like Touch OSC. The difference here is that the BitwigPerformanceTwister script translates an OSC message into a Midi CC message. With that you do not need to send Midi messages from the OSC surface. And that means you don't need the TouchOSC bridge. 
+
+The following screenshots shows how to configure a fader in TouchOSC
+
+![Screenshot showing how to configure faders to create CC messages](./resources/configurring-faders.png)
+
+The OSC message is `/CC/name` whereas name is the name of the CC message. It is useful for debugging OSC messages but does not have any effect on the resulting Midi CC message. The message has the following arguments: 
+1. "x": the value of the message (Integer 0.127)
+2. Midi Channel (Integer 0..15)
+3. Control Change number (Integer 0..127) 
+
+**Important Note**: For whatever reason, Bitwig is not always reacting the incoming CC message, e.g. it seems to be impossible to simply map a controller to the TouchOSC fader. With a Midi Monitor like (`showMidi`) it is easy to see that the CC message is actually coming in, but the mapping does not seems to work. This is a documented problem. The following screenshot shows a workaround: 
+
+![Screenshot showing of how to use a Bitwig Midi Modulator to capture CC messages](./resources/capturing-cc-with-midi-modulator.png)
+
+You simply add a `Midi Modulator`to the device and set it to the correct CC message. You can also learn the CC message. With that intermediate step you can _capture_ the CC message and then modulate your device. Not straight forward, but it works. 
+
+
 ### The XY element
 The XY element is a very useful feature of TouchOSC that lets you control two parameters with one finger. I have implemented the XY element in Bitwig Performanc Twister in such a way that you can easily configure to you own needs.   
 
@@ -147,6 +186,52 @@ The XY elements needs to the have the following arguements in exactly this order
 See the following screenshot for the setup of the right XY controller
 
 ![screenshot of the the configuration of the XY controller in TouchOSC](./resources/XY-controller-setup.png)
+
+### Loading Presets by opening the Browser
+With a simple OSC command you can do automate the following steps: 
+1. create a new track
+2. load a Bitwig instrument into it
+3. open the preset browser
+4. scroll down a specified number of times
+5. open the selected preset
+
+The following screenshot shows how to the parameterize such a command: 
+
+![Screenshot showing hwo to configure a button to load a preset by opening the browser and scrolling down](./resources/configuring-presetByNumbers.png)
+
+This is the message for this command: `/addElements/Instruments/presetByNumber`with the following arguments: 
+1. ID of the Bitwig Device (String) 
+2. Num (Integer 1..)
+
+Note there is a slight delay between each consecutive step down in the results page in the browser. This command is executed quick, but still takes some short time. Morever, it relies on the same order presets. Thus, the following way to load presets is quicker, more versatile and also more robust...
+
+### Loading Presets by Name
+A more robust way to load presets is to use the following OSC command: `/addElements/Instrument/PresetByName` or `/addElements/FX/PresetByName`. The difference between these two commands is that the former creates a new track before loading the preset device. 
+
+![Screenshot showing how to load a preset via a filename](./resources/configuring-presetByName.png)
+
+The command has the following arguments: 
+1. Path (String)
+2. Filename (String)
+
+In order to access the preset, the script simply concatenates path and filename. But why would one then need two arguments you might say. This is to simplify copying buttons on the OSC surface. With two arguments, so only need to chante the filename argument and leave the path untouched. 
+
+**Note** So far I was only able to use absolute path names. I also was able to test this on MacOs. 
+
+### Sending Midi Program Change Messages
+Sending Program Change Messages is an easy and powerful way to change sound. That could be external synths (that usually implement this feature) or even VST instrument. One of my favorite synth, Omnisphere supports Program Change messages. And since Omnisphere has so many good sounds it is specifically suited to receive program change message from the TouchScreen.  
+
+The following screenshot shows how to configure a grid element in TouchOSC that can send 64 different program change messages. The OSC message for sending a specific program change message is `/programChange/set`. It has the following arguments: 
+1. Midi Channel (Integer 0..15)
+2. Program Change message (Integer 0..127)
+
+![Screenshot showing how to configure a grid in TouchOSC to send many different program change messages](./resources/using-a-grid-for-program-change-messages.png)
+
+You can also send a _relative_ program change message. That is a program change message that relates to the last program change message send. The following screenshot shows and example. `/programChange/+`sends program change message that is `n`higher on the same Midi channel as the last message. `/programChange/-`the then then corresponding decreased message.  
+
+![Screenshot showing of how to configure a button to send a program change messages that is 10 numbers lower than the last program change message](./resources/decrease-program-change-by10.png)
+
+Note: Omnisphere only seems to react to Program Change messages when it's loaded as a VST2 and not as a VST3 plugin device. 
 
 
 ### Access to the Bitwig Commands
@@ -205,27 +290,6 @@ When you want to extend the functionality of the script by using the OSC extensi
 This script comes with a sample TouchOSC template. This file is part of the zip file, see above. The filename is `BitwigPerformanceTwister.tosc`. In TouchOSC, load up this file, configure the OSC in TouchOSC as described above. 
 
 Note: more information on TouchOSC is available [here](https://hexler.net/touchosc). 
-
-
-## Some more Screenshots of Bitwig Performance Twister in TouchOSC
-
-Here we have some screenshot from Bitwig Performance Twister in TouchOSC. I will later provide more information on how to configure these individual buttons, faders or grids. 
-
-![Screenshot showing how to configure faders to create CC messages](./resources/configurring-faders.png)
-
-![Screenshot showing hwo to configure a button to load a preset by opening the browser and scrolling down](./resources/configuring-presetByNumbers.png)
-
-![Screenshot showing how to load a preset via a filename](./resources/configuring-presetByName.png)
-
-![Screenshot showing how to configure a button to load a VST3 instrument](./resources/new-VST3-instrument.png)
-
-![Screenshot showing how to configure a button to load a Bitwig Effect ](./resources/new-Bitwig-FX.png)
-
-![Screenshot showing how to configure a grid in TouchOSC to send many different program change messages](./resources/using-a-grid-for-program-change-messages.png)
-
-![Screenshot showing of how to configure a button to send a program change messages that is 10 numbers lower than the last program change message](./resources/decrease-program-change-by10.png)
-
-![Screenshot showing of how to use a Bitwig Midi Modulator to capture CC messages](./resources/capturing-cc-with-midi-modulator.png)
 
 
 
