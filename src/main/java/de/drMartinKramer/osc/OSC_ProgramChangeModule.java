@@ -20,19 +20,13 @@
 package de.drMartinKramer.osc;
 
 import java.util.LinkedList;
-import java.util.UUID;
-
-import com.bitwig.extension.controller.api.InsertionPoint;
-
 import de.drMartinKramer.handler.AbstractHandler;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
 import de.mossgrabers.controller.osc.module.AbstractModule;
-import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
 /**

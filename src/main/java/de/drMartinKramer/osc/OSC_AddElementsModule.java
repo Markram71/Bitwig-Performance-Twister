@@ -20,7 +20,6 @@
 
 package de.drMartinKramer.osc;
 
-import de.drMartinKramer.MFT_Configuration;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;

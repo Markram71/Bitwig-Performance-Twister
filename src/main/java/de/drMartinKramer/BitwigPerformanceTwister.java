@@ -36,7 +36,6 @@ import de.drMartinKramer.handler.DeviceHandler;
 import de.drMartinKramer.handler.EQ_Handler;
 import de.drMartinKramer.handler.GlobalParameterHandler;
 import de.drMartinKramer.handler.MixerHandler;
-import de.drMartinKramer.support.BitwigActionHelper;
 import de.drMartinKramer.support.ContextHandler;
 import de.drMartinKramer.support.MidiMessageWithContext;
 import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
