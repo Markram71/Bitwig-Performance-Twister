@@ -303,8 +303,8 @@ The following configuration items are avaialable:
 
 
 ## Installation
-The installation of _Bitwig Performance Twister_ is straight forward. It requires basically four steps: 1. download and unpack the zip file of the [https://github.com/Markram71/Bitwig-Performance-Twister/releases](latest release), 2. update the Midi Fighter Twister with the configuration provided in the zip file , 3. place the Bitwig extension into the correct Bitwig folder and 4. configure the controller . Here's the installation step by step: 
-1. Download the zip file from [https://github.com/Markram71/Bitwig-Performance-Twister/releases](here) and upack to whereever you like it
+The installation of _Bitwig Performance Twister_ is straight forward. It requires basically four steps: 1. download and unpack the zip file of the [latest release](https://github.com/Markram71/Bitwig-Performance-Twister/releases), 2. update the Midi Fighter Twister with the configuration provided in the zip file , 3. place the Bitwig extension into the correct Bitwig folder and 4. configure the controller . Here's the installation step by step: 
+1. Download the zip file from [here](https://github.com/Markram71/Bitwig-Performance-Twister/releases) and upack to whereever you like it
 2. Open `Midifighter Utility` application that comes with the Midi Fighter Twister (optionally and a good idea, you might need/want to update to the latest firmware by using `Tools -> Load Factory Firmware -> Midi Fighter Twister 4 (02 Oct 2019)`
 3. Load the configuration into the `Midifigther Utility` with `File -> Import Settings...`. Then upload the configuration into the midi controller with a click on `SEND TO MIDIGFIGHTER`.
 4. Copy `BitwigPerformanceTwister.bwextension` to the following location:
