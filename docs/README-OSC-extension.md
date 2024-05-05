@@ -76,6 +76,7 @@ The following are all commands which means that these messages can be send from 
 |Commands/bounce                   | n/a                                              | executes the bounce command (if possible)                                                       |
 |Commands/bounceInPlace            | n/a                                              | exectues bounce in place (if possible)                                                          |
 |CC/name                           | value, Midi channel (0..16), CC number (0..127)  | send a CC number on the specific midi                                                           |
+|XY/name                           | value x,value y, Midi channel (0..16), CC (X), CC (Y)  | send two two CC message on a specified channel, useful for XY elements, see documentation below|
 |/programChange/set                | Midi channel (0..15), program change message (0..127)| send a program change message on the specific channel                                       |
 |/programChange/-                  | n (Integer)                                      | send a program change message on Midi channel of the last program change message, that n lower than the last one|
 |/programChange/+                  | n (Integer)                                      | send a program change message on Midi channel of the last program change message, that n higher than the last one|
