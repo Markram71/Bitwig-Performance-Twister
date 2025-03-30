@@ -237,7 +237,7 @@ Note: Omnisphere only seems to react to Program Change messages when it's loaded
 
 ### Access to the Bitwig Commands
 The Bitwig API lets you invoice commands which are (probably) identical to the actions you can trigger using the *Commander*. This is very helpful feature of Bitwig which you can access by pressing *Control* + *Enter* (on a Mac). 
-In order to see which Bitwig actions are available, I have downloaded the list of actions directly from the Bitwig API. See [here](docs/Bitwig-commands.md) for the complete list. 
+In order to see which Bitwig actions are available, I have downloaded the list of actions directly from the Bitwig API. See [here](Bitwig-commands.md) for the complete list. 
 
 These Bitwig commands are now available to be triggered via OSC. That means you can build a an OSC surface that can trigger each of these (currently) 704 actions. 
 
