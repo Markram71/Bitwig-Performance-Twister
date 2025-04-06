@@ -176,7 +176,7 @@ public class MFT_ColorMapper {
         mftColorList.add(Color.fromRGB255(64, 49, 226));
         mftColorList.add(Color.fromRGB255(55, 48, 224));
         
-        MFT_Configuration.println("Size of the MFT Color List: " + mftColorList.size() + " colors");
+        //MFT_Configuration.println("Size of the MFT Color List: " + mftColorList.size() + " colors");
 
 
         eqColorList.add(Color.fromRGB255(91, 23, 20));
@@ -307,7 +307,7 @@ public class MFT_ColorMapper {
         eqColorList.add(Color.fromRGB255(180, 180, 180));
         eqColorList.add(Color.fromRGB255(83, 83, 83));
         
-        MFT_Configuration.println("Size of the Bitwig Color List: " + eqColorList.size() + " colors");
+        //MFT_Configuration.println("Size of the Bitwig Color List: " + eqColorList.size() + " colors");
     }
 
     /** 

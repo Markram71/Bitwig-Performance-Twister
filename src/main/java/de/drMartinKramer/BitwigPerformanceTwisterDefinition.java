@@ -49,7 +49,7 @@ public class BitwigPerformanceTwisterDefinition extends ControllerExtensionDefin
    @Override
    public String getVersion()
    {
-      return "2.2";
+      return "2.3";
    }
 
    @Override
@@ -73,7 +73,7 @@ public class BitwigPerformanceTwisterDefinition extends ControllerExtensionDefin
    @Override
    public int getRequiredAPIVersion()
    {
-      return 18;
+      return 20;
    }
 
    @Override

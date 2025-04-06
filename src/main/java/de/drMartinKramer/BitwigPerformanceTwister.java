@@ -145,6 +145,7 @@ public class BitwigPerformanceTwister extends ControllerExtension
 
       //we schedule the initial startup of the MFT and give is some time to initialize itself
       host.scheduleTask((Runnable)()->scheduledInitialStartup(), 1500);
+      host.println("Midi Fighter Twister Script (by MKR) successfully initialized.");
 
    } //end of init
 
